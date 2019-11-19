@@ -1,6 +1,7 @@
 import { Graphics, RAD_TO_DEG, DEG_TO_RAD, Polygon, Point } from "pixi.js";
-import { Factory } from "../../../gibbon";
+import { Factory, Geom } from "../../../gibbon";
 import * as PIXI from 'pixi.js';
+import { Linear } from "gsap";
 
 /**
  * @const {number} HOLE_COLOR - Pixi holes have a lot of limitations.
@@ -22,7 +23,7 @@ export default class SnowFactory extends Factory {
 		sprite.buttonMode = true;
 
 
-		const tex = this.flakeTex();
+		const tex = this.flakeTex( 100, 16 );
 		sprite.texture = tex;
 
 	//	sprite.addChild(g);
@@ -31,18 +32,26 @@ export default class SnowFactory extends Factory {
 
 	}
 
-	flakeTex( r=100, arc=DEG_TO_RAD*(360/16) ){
+	flakeTex( r=100, segs=16 ){
 
+		let arc=DEG_TO_RAD*(360/segs)
 		let tex = PIXI.RenderTexture.create( 2*r, 2*r );
 
 		let g = this.makeSnowArc( r, 0, arc );
-		g.position.set(r,r);
 
-		for( let theta = 0; theta < 2*Math.PI; theta += arc ) {
+		let base = this.renderer.generateTexture(g, Linear,2);
+		let s = PIXI.Sprite.from(base);
+		//g.position.set(r,r);
 
+		let mat = new PIXI.Matrix();
+		mat.translate(r,r);
+		let theta = 0;
+		for( let i = 0; i < 1; i++ ) {
+
+			s.rotation = theta;
 			g.rotation = theta;
-
-			this.renderer.render( g, tex, false );
+			theta += arc;
+			this.renderer.render(g, tex, false,mat );
 
 		}
 
@@ -72,7 +81,29 @@ export default class SnowFactory extends Factory {
 
 		g.endFill();
 
+		/*g.beginFill( HOLE_COLOR );
+		g.drawPolygon( new Polygon( new Point(10,10), new Point(20,20), new Point(80,0)))
+		g.endFill();*/
+
+		this.cutPoly(g, radius, minArc, maxArc);
+		this.cutPoly(g, radius, minArc, maxArc);
+
 		return g;
+
+	}
+
+	cutPoly( g, r=100, minTheta=0, maxTheta=2*Math.PI ){
+
+		let p = this.randPoly();
+
+		let t = minTheta + Math.random()*(maxTheta-minTheta);
+		r = Math.random()*r;
+
+		Geom.move( p, r*Math.cos(t), r*Math.sin(t) );
+
+		g.beginFill( HOLE_COLOR,1);
+		g.drawPolygon( p );
+		g.endFill();
 
 	}
 
@@ -96,7 +127,7 @@ export default class SnowFactory extends Factory {
 			r = minRadius + Math.random()*(maxRadius-minRadius);
 			pts[i] = new Point( r*Math.cos(theta), r*Math.sin(theta) );
 
-			theta += step;
+			theta = Math.random()*Math.PI;
 
 		}
 
