@@ -1,0 +1,28 @@
+{
+  "name": "snowflake",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --watch --config webpack.dev.config.js",
+    "build": "webpack --watch --config webpack.dist.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/lerpinglemur/snowflake.git"
+  },
+  "author": "lemur",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/lerpinglemur/snowflake/issues"
+  },
+  "homepage": "https://gitlab.com/lerpinglemur/snowflake#readme",
+  "dependencies": {
+    "gibbon.js": "^1.0.9",
+    "pixi.js": "^5.2.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  }
+}
