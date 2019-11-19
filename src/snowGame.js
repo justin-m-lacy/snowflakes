@@ -1,8 +1,14 @@
-import { Game } from "../../gibbon";
+import { Game, Group } from "../../gibbon";
 import SnowFactory from "./create/snowFactory";
 import * as PIXI from 'pixi.js';
 
 export default class SnowGame extends Game {
+
+	/**
+	 * @property {Group} flakes
+	 */
+	get flakes() {return this._flakes; }
+	set flakes(v) { this._flakes =v;}
 
 	/**
 	 * Construction done in init() to allow Game to be a shared export
@@ -41,10 +47,12 @@ export default class SnowGame extends Game {
 
 		this.stage.interactive = true;
 
-		this.stage.on('click', this.createFlake, this );
+		this.stage.on('click', this.stageClicked, this );
 
-		let s = this.factory.createFlake( new PIXI.Point(100,100));
-		this.objectLayer.addChild(s );
+		this.flakes = new Group( this, new PIXI.Container() );
+		this.objectLayer.addChild( this.flakes.clip );
+
+		let s = this.createFlake( new PIXI.Point(100,100));
 
 		this.start();
 
@@ -54,13 +62,19 @@ export default class SnowGame extends Game {
 	 *
 	 * @param {InteractionEvent} evt
 	 */
-	createFlake( evt ){
+	stageClicked(evt){
+		this.createFlake(evt.data.global);
+	}
 
-		let pt = evt.data.global;
-		console.log(pt);
+
+	/**
+	 *
+	 * @param {Point} pt
+	 */
+	createFlake( pt ){
+
 		let s = this.factory.createFlake(pt);
-
-		this.objectLayer.addChild(s);
+		this.flakes.addChild(s);
 	}
 
 	snowClicked(s) {

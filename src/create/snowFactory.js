@@ -49,6 +49,7 @@ export default class SnowFactory extends Factory {
 
 		const tex = this.flakeTex( 100, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
+		sprite.pivot = new Point(tex.width/2,tex.height/2);
 
 	//	sprite.addChild(g);
 

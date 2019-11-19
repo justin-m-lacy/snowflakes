@@ -54650,9 +54650,9 @@ class Group {
 	get subgroups() { return this._subgroups; }
 
 	/**
-	 * 
-	 * @param {Game} game 
-	 * @param {DisplayObject} [clip=null] 
+	 *
+	 * @param {Game} game
+	 * @param {DisplayObject} [clip=null]
 	 */
 	constructor( game, clip=null ) {
 
@@ -54702,7 +54702,7 @@ class Group {
 	show() {
 
 		if ( this._clip ) this._clip.visible = false;
-		
+
 		if ( this.subgroups ) {
 			for( let i = this.subgroups.length-1; i>=0; i-- ) {
 				this.subgroups[i].show();
@@ -54726,8 +54726,8 @@ class Group {
 	}
 
 	/**
-	 * 
-	 * @param {string} gname 
+	 *
+	 * @param {string} gname
 	 */
 	findGroup( gname ) {
 
@@ -54741,8 +54741,8 @@ class Group {
 	}
 
 	/**
-	 * 
-	 * @param {Group} g 
+	 *
+	 * @param {Group} g
 	 */
 	addGroup( g ) {
 
@@ -54752,8 +54752,8 @@ class Group {
 	}
 
 	/**
-	 * 
-	 * @param {Group} g 
+	 *
+	 * @param {Group} g
 	 */
 	removeGroup( g ) {
 
@@ -54768,8 +54768,16 @@ class Group {
 	}
 
 	/**
-	 * 
-	 * @param {GameObject} obj 
+	 * Add a PIXI DisplayObject as a child of the group's clip..
+	 * @param {DisplayObject} clip
+	 */
+	addChild( clip ) {
+		if ( this._clip ) this._clip.addChild( clip );
+	}
+
+	/**
+	 *
+	 * @param {GameObject} obj
 	 */
 	add( obj ) {
 
@@ -101814,6 +101822,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		const tex = this.flakeTex( 100, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
+		sprite.pivot = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](tex.width/2,tex.height/2);
 
 	//	sprite.addChild(g);
 
@@ -102007,6 +102016,12 @@ __webpack_require__.r(__webpack_exports__);
 class SnowGame extends _gibbon__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 
 	/**
+	 * @property {Group} flakes
+	 */
+	get flakes() {return this._flakes; }
+	set flakes(v) { this._flakes =v;}
+
+	/**
 	 * Construction done in init() to allow Game to be a shared export
 	 * but initialized from index.js.
 	 * @param {PIXI.Application} app - PIXI Application.
@@ -102043,10 +102058,12 @@ class SnowGame extends _gibbon__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 
 		this.stage.interactive = true;
 
-		this.stage.on('click', this.createFlake, this );
+		this.stage.on('click', this.stageClicked, this );
 
-		let s = this.factory.createFlake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](100,100));
-		this.objectLayer.addChild(s );
+		this.flakes = new _gibbon__WEBPACK_IMPORTED_MODULE_0__["Group"]( this, new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Container"]() );
+		this.objectLayer.addChild( this.flakes.clip );
+
+		let s = this.createFlake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](100,100));
 
 		this.start();
 
@@ -102056,13 +102073,19 @@ class SnowGame extends _gibbon__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 	 *
 	 * @param {InteractionEvent} evt
 	 */
-	createFlake( evt ){
+	stageClicked(evt){
+		this.createFlake(evt.data.global);
+	}
 
-		let pt = evt.data.global;
-		console.log(pt);
+
+	/**
+	 *
+	 * @param {Point} pt
+	 */
+	createFlake( pt ){
+
 		let s = this.factory.createFlake(pt);
-
-		this.objectLayer.addChild(s);
+		this.flakes.addChild(s);
 	}
 
 	snowClicked(s) {
