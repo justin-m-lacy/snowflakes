@@ -1,7 +1,6 @@
 import { Graphics, RAD_TO_DEG, DEG_TO_RAD, Polygon, Point } from "pixi.js";
 import { Factory, Geom } from "../../../gibbon";
 import * as PIXI from 'pixi.js';
-import { Linear } from "gsap";
 
 /**
  * @const {number} HOLE_COLOR - Pixi holes have a lot of limitations.
@@ -9,11 +8,18 @@ import { Linear } from "gsap";
  */
 const HOLE_COLOR = 0xFF0000;
 
+const SEGMENTS = 16;
+
 export default class SnowFactory extends Factory {
 
 	constructor( game ){
 
 		super(game);
+
+		this.segments = SEGMENTS;
+
+		this.baseArc = this.makeArc( 2*Math.PI/SEGMENTS );
+
 	}
 
 	createFlake( fill, alpha ){
@@ -39,16 +45,11 @@ export default class SnowFactory extends Factory {
 
 		let g = this.makeSnowArc( r, 0, arc );
 
-		let base = this.renderer.generateTexture(g, Linear,2);
-		let s = PIXI.Sprite.from(base);
-		//g.position.set(r,r);
-
 		let mat = new PIXI.Matrix();
 		mat.translate(r,r);
 		let theta = 0;
-		for( let i = 0; i < 1; i++ ) {
+		for( let i = 0; i < segs; i++ ) {
 
-			s.rotation = theta;
 			g.rotation = theta;
 			theta += arc;
 			this.renderer.render(g, tex, false,mat );
@@ -63,40 +64,61 @@ export default class SnowFactory extends Factory {
 	 * Create the base snowflake subarc.
 	 * @param {number} fill
 	 * @param {number} alpha
+	 * @returns {PIXI.DisplayObject}
 	 */
 	makeSnowArc( radius=100, minArc=0, maxArc=360/16, fill=0xffffff, alpha=1 ) {
+
+		const clip = new PIXI.Container();
 
 		const g = new Graphics();
 		g.interactive = false;
 		g.buttonMode = false;
 
-		g.beginFill( fill, alpha );
-
 		g.moveTo(0,0);
-
+		g.beginFill( fill, alpha );
 		g.arc(0,0, radius, minArc, maxArc );
-		/*g.lineTo( radius*Math.cos(minArc ), radius*Math.PI( minArc ) );
-		g.arcTo();
-		g.lineTo(0,0);*/
-
 		g.endFill();
 
-		/*g.beginFill( HOLE_COLOR );
-		g.drawPolygon( new Polygon( new Point(10,10), new Point(20,20), new Point(80,0)))
-		g.endFill();*/
 
-		this.cutPoly(g, radius, minArc, maxArc);
-		this.cutPoly(g, radius, minArc, maxArc);
+		const cut = new Graphics();
+		cut.blendMode = PIXI.BLEND_MODES.ERASE;
+		cut.mask = this.baseArc;
+
+		this.cutPoly(cut, radius, minArc, maxArc);
+		this.cutPoly(cut, radius, minArc, maxArc);
+		this.cutPoly(cut, radius, minArc, maxArc);
+		this.cutPoly(cut, radius, minArc, maxArc);
+		this.cutPoly(cut, radius, minArc, maxArc);
+		this.cutPoly(cut, radius, minArc, maxArc);
+
+		clip.addChild(this.baseArc);
+		clip.addChild(g);
+		clip.addChild(cut);
+
+		return clip;
+
+	}
+
+	makeArc( arc, radius=100, fill=0xffffff, alpha=1 ){
+
+		const g = new Graphics();
+		g.interactive = false;
+		g.buttonMode = false;
+
+		g.moveTo(0,0);
+		g.beginFill( fill, alpha );
+		g.arc(0,0, radius, 0, arc );
+		g.endFill();
 
 		return g;
 
 	}
 
-	cutPoly( g, r=100, minTheta=0, maxTheta=2*Math.PI ){
+	cutPoly( g, r=100, minArc=0, maxArc=2*Math.PI ){
 
 		let p = this.randPoly();
 
-		let t = minTheta + Math.random()*(maxTheta-minTheta);
+		let t = minArc + Math.random()*(maxArc-minArc);
 		r = Math.random()*r;
 
 		Geom.move( p, r*Math.cos(t), r*Math.sin(t) );
@@ -115,7 +137,7 @@ export default class SnowFactory extends Factory {
 	 * @param {number} maxRadius
 	 * @returns {PIXI.Polygon}
 	 */
-	randPoly( minPoints=3, maxPoints=5, minRadius=5, maxRadius=10 ){
+	randPoly( minPoints=3, maxPoints=4, minRadius=4, maxRadius=10 ){
 
 		const len = minPoints + Math.floor( Math.random()*(1+maxPoints-minPoints) );
 		const step = 2*Math.PI/maxPoints;
@@ -127,7 +149,7 @@ export default class SnowFactory extends Factory {
 			r = minRadius + Math.random()*(maxRadius-minRadius);
 			pts[i] = new Point( r*Math.cos(theta), r*Math.sin(theta) );
 
-			theta = Math.random()*Math.PI;
+			theta += step;
 
 		}
 
