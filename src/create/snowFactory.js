@@ -14,6 +14,12 @@ const HOLE_COLOR = 0xFF0000;
 const MIN_RADIUS = 50;
 const MAX_RADIUS = 100;
 
+/**
+ * Min/max arc gap as percent of arc.
+ */
+const MIN_GAP = 0.2;
+const MAX_GAP = 0.5;
+
 const MIN_SEGS = 8;
 const MAX_SEGS = 20;
 
@@ -55,7 +61,8 @@ export default class SnowFactory extends Factory {
 		let arc=DEG_TO_RAD*(360/segs)
 		let tex = PIXI.RenderTexture.create( 2*r, 2*r );
 
-		let g = this.makeSnowArc( r, arc );
+		let gap = Math.random() < 0.5 ? 0 : randRange( MIN_GAP, MAX_GAP );
+		let g = this.makeSnowArc( r, arc*(1-gap) );
 
 		let mat = new PIXI.Matrix();
 		mat.translate(r,r);

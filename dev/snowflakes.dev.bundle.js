@@ -101779,6 +101779,12 @@ const HOLE_COLOR = 0xFF0000;
 const MIN_RADIUS = 50;
 const MAX_RADIUS = 100;
 
+/**
+ * Min/max arc gap as percent of arc.
+ */
+const MIN_GAP = 0.2;
+const MAX_GAP = 0.5;
+
 const MIN_SEGS = 8;
 const MAX_SEGS = 20;
 
@@ -101820,7 +101826,8 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		let arc=pixi_js__WEBPACK_IMPORTED_MODULE_0__["DEG_TO_RAD"]*(360/segs)
 		let tex = pixi_js__WEBPACK_IMPORTED_MODULE_0__["RenderTexture"].create( 2*r, 2*r );
 
-		let g = this.makeSnowArc( r, arc );
+		let gap = Math.random() < 0.5 ? 0 : randRange( MIN_GAP, MAX_GAP );
+		let g = this.makeSnowArc( r, arc*(1-gap) );
 
 		let mat = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Matrix"]();
 		mat.translate(r,r);
@@ -102038,10 +102045,7 @@ class SnowGame extends _gibbon__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 
 		this.stage.on('click', this.createFlake, this );
 
-		let s = this.factory.createFlake();
-		s.x = 100;
-		s.y = 100;
-
+		let s = this.factory.createFlake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](100,100));
 		this.objectLayer.addChild(s );
 
 		this.start();

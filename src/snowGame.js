@@ -43,10 +43,7 @@ export default class SnowGame extends Game {
 
 		this.stage.on('click', this.createFlake, this );
 
-		let s = this.factory.createFlake();
-		s.x = 100;
-		s.y = 100;
-
+		let s = this.factory.createFlake( new PIXI.Point(100,100));
 		this.objectLayer.addChild(s );
 
 		this.start();
