@@ -101776,6 +101776,9 @@ const randRange = (min,max)=>{ return min + ( Math.random()*(max-min)) }
  */
 const HOLE_COLOR = 0xFF0000;
 
+const MIN_RADIUS = 50;
+const MAX_RADIUS = 100;
+
 const MIN_SEGS = 8;
 const MAX_SEGS = 20;
 
@@ -101788,17 +101791,20 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		super(game);
 
+		this.drawTex = pixi_js__WEBPACK_IMPORTED_MODULE_0__["RenderTexture"].create()
 		this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
 		this.maskArc = this.baseArc.clone();
 
 	}
 
-	createFlake( fill, alpha ){
+	createFlake( loc ){
 
 		const sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Sprite"]();
 		sprite.interactive = true;
-		sprite.buttonMode = true;
+		//sprite.buttonMode = true;
 
+		if (!loc) loc = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]();
+		sprite.position.set( loc.x, loc.y );
 
 		const tex = this.flakeTex( 100, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
@@ -101814,7 +101820,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		let arc=pixi_js__WEBPACK_IMPORTED_MODULE_0__["DEG_TO_RAD"]*(360/segs)
 		let tex = pixi_js__WEBPACK_IMPORTED_MODULE_0__["RenderTexture"].create( 2*r, 2*r );
 
-		let g = this.makeSnowArc( r, 0, arc );
+		let g = this.makeSnowArc( r, arc );
 
 		let mat = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Matrix"]();
 		mat.translate(r,r);
@@ -101837,7 +101843,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 	 * @param {number} alpha
 	 * @returns {PIXI.DisplayObject}
 	 */
-	makeSnowArc( radius=100, minArc=0, maxArc=360/16, fill=0xffffff, alpha=1 ) {
+	makeSnowArc( radius=100, maxArc=360/16, fill=0xffffff ) {
 
 		const clip = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Container"]();
 
@@ -101848,12 +101854,10 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		cut.blendMode = pixi_js__WEBPACK_IMPORTED_MODULE_0__["BLEND_MODES"].ERASE;
 		cut.mask = mask;
 
-		this.cutPoly(cut, radius, minArc, maxArc);
-		this.cutPoly(cut, radius, minArc, maxArc);
-		this.cutPoly(cut, radius, minArc, maxArc);
-		this.cutPoly(cut, radius, minArc, maxArc);
-		this.cutPoly(cut, radius, minArc, maxArc);
-		this.cutPoly(cut, radius, minArc, maxArc);
+		let cuts = randInt( MIN_CUTS, MAX_CUTS );
+		for( let i = 0; i < cuts; i++ ) {
+			this.cutPoly(cut, radius, 0, maxArc);
+		}
 
 		clip.addChild( mask );
 		clip.addChild( base );
@@ -101863,14 +101867,14 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 	}
 
-	makeArc( arc, radius=100, fill=0xffffff, alpha=1 ){
+	makeArc( arc, radius=100, fill=0xffffff ){
 
 		const g = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Graphics"]();
 		g.interactive = false;
 		g.buttonMode = false;
 
 		g.moveTo(0,0);
-		g.beginFill( fill, alpha );
+		g.beginFill( fill );
 		g.arc(0,0, radius, 0, arc );
 		g.endFill();
 
@@ -102018,6 +102022,7 @@ class SnowGame extends _gibbon__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 
 		this.emitter.on( 'snow-clicked', this.snowClicked, this );
+
 	}
 
 	/**
@@ -102029,6 +102034,10 @@ class SnowGame extends _gibbon__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 
 		console.log('ASSETS LOADED');
 
+		this.stage.interactive = true;
+
+		this.stage.on('click', this.createFlake, this );
+
 		let s = this.factory.createFlake();
 		s.x = 100;
 		s.y = 100;
@@ -102037,6 +102046,19 @@ class SnowGame extends _gibbon__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 
 		this.start();
 
+	}
+
+	/**
+	 *
+	 * @param {InteractionEvent} evt
+	 */
+	createFlake( evt ){
+
+		let pt = evt.data.global;
+		console.log(pt);
+		let s = this.factory.createFlake(pt);
+
+		this.objectLayer.addChild(s);
 	}
 
 	snowClicked(s) {

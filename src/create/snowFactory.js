@@ -11,6 +11,9 @@ const randRange = (min,max)=>{ return min + ( Math.random()*(max-min)) }
  */
 const HOLE_COLOR = 0xFF0000;
 
+const MIN_RADIUS = 50;
+const MAX_RADIUS = 100;
+
 const MIN_SEGS = 8;
 const MAX_SEGS = 20;
 
@@ -23,17 +26,20 @@ export default class SnowFactory extends Factory {
 
 		super(game);
 
+		this.drawTex = PIXI.RenderTexture.create()
 		this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
 		this.maskArc = this.baseArc.clone();
 
 	}
 
-	createFlake( fill, alpha ){
+	createFlake( loc ){
 
 		const sprite = new PIXI.Sprite();
 		sprite.interactive = true;
-		sprite.buttonMode = true;
+		//sprite.buttonMode = true;
 
+		if (!loc) loc = new Point();
+		sprite.position.set( loc.x, loc.y );
 
 		const tex = this.flakeTex( 100, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
@@ -49,7 +55,7 @@ export default class SnowFactory extends Factory {
 		let arc=DEG_TO_RAD*(360/segs)
 		let tex = PIXI.RenderTexture.create( 2*r, 2*r );
 
-		let g = this.makeSnowArc( r, 0, arc );
+		let g = this.makeSnowArc( r, arc );
 
 		let mat = new PIXI.Matrix();
 		mat.translate(r,r);
@@ -72,7 +78,7 @@ export default class SnowFactory extends Factory {
 	 * @param {number} alpha
 	 * @returns {PIXI.DisplayObject}
 	 */
-	makeSnowArc( radius=100, minArc=0, maxArc=360/16, fill=0xffffff, alpha=1 ) {
+	makeSnowArc( radius=100, maxArc=360/16, fill=0xffffff ) {
 
 		const clip = new PIXI.Container();
 
@@ -83,12 +89,10 @@ export default class SnowFactory extends Factory {
 		cut.blendMode = PIXI.BLEND_MODES.ERASE;
 		cut.mask = mask;
 
-		this.cutPoly(cut, radius, minArc, maxArc);
-		this.cutPoly(cut, radius, minArc, maxArc);
-		this.cutPoly(cut, radius, minArc, maxArc);
-		this.cutPoly(cut, radius, minArc, maxArc);
-		this.cutPoly(cut, radius, minArc, maxArc);
-		this.cutPoly(cut, radius, minArc, maxArc);
+		let cuts = randInt( MIN_CUTS, MAX_CUTS );
+		for( let i = 0; i < cuts; i++ ) {
+			this.cutPoly(cut, radius, 0, maxArc);
+		}
 
 		clip.addChild( mask );
 		clip.addChild( base );
@@ -98,14 +102,14 @@ export default class SnowFactory extends Factory {
 
 	}
 
-	makeArc( arc, radius=100, fill=0xffffff, alpha=1 ){
+	makeArc( arc, radius=100, fill=0xffffff ){
 
 		const g = new Graphics();
 		g.interactive = false;
 		g.buttonMode = false;
 
 		g.moveTo(0,0);
-		g.beginFill( fill, alpha );
+		g.beginFill( fill );
 		g.arc(0,0, radius, 0, arc );
 		g.endFill();
 

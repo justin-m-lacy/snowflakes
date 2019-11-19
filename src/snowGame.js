@@ -27,6 +27,7 @@ export default class SnowGame extends Game {
 		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 
 		this.emitter.on( 'snow-clicked', this.snowClicked, this );
+
 	}
 
 	/**
@@ -38,6 +39,10 @@ export default class SnowGame extends Game {
 
 		console.log('ASSETS LOADED');
 
+		this.stage.interactive = true;
+
+		this.stage.on('click', this.createFlake, this );
+
 		let s = this.factory.createFlake();
 		s.x = 100;
 		s.y = 100;
@@ -46,6 +51,19 @@ export default class SnowGame extends Game {
 
 		this.start();
 
+	}
+
+	/**
+	 *
+	 * @param {InteractionEvent} evt
+	 */
+	createFlake( evt ){
+
+		let pt = evt.data.global;
+		console.log(pt);
+		let s = this.factory.createFlake(pt);
+
+		this.objectLayer.addChild(s);
 	}
 
 	snowClicked(s) {
