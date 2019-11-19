@@ -1,6 +1,9 @@
-import { Graphics, RAD_TO_DEG, DEG_TO_RAD, Polygon, Point } from "pixi.js";
+import { Graphics, DEG_TO_RAD, Polygon, Point } from "pixi.js";
 import { Factory, Geom } from "../../../gibbon";
 import * as PIXI from 'pixi.js';
+
+const randInt = (min,max)=>{ return min + Math.ceil( Math.random()*(max-min)) }
+const randRange = (min,max)=>{ return min + ( Math.random()*(max-min)) }
 
 /**
  * @const {number} HOLE_COLOR - Pixi holes have a lot of limitations.
@@ -8,7 +11,11 @@ import * as PIXI from 'pixi.js';
  */
 const HOLE_COLOR = 0xFF0000;
 
-const SEGMENTS = 16;
+const MIN_SEGS = 8;
+const MAX_SEGS = 20;
+
+const MIN_CUTS = 8;
+const MAX_CUTS = 16;
 
 export default class SnowFactory extends Factory {
 
@@ -16,9 +23,8 @@ export default class SnowFactory extends Factory {
 
 		super(game);
 
-		this.segments = SEGMENTS;
-
-		this.baseArc = this.makeArc( 2*Math.PI/SEGMENTS );
+		this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
+		this.maskArc = this.baseArc.clone();
 
 	}
 
@@ -29,7 +35,7 @@ export default class SnowFactory extends Factory {
 		sprite.buttonMode = true;
 
 
-		const tex = this.flakeTex( 100, 16 );
+		const tex = this.flakeTex( 100, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
 
 	//	sprite.addChild(g);
@@ -70,19 +76,12 @@ export default class SnowFactory extends Factory {
 
 		const clip = new PIXI.Container();
 
-		const g = new Graphics();
-		g.interactive = false;
-		g.buttonMode = false;
-
-		g.moveTo(0,0);
-		g.beginFill( fill, alpha );
-		g.arc(0,0, radius, minArc, maxArc );
-		g.endFill();
-
+		const base = this.makeArc( maxArc, radius, fill );
+		const mask = base.clone();
 
 		const cut = new Graphics();
 		cut.blendMode = PIXI.BLEND_MODES.ERASE;
-		cut.mask = this.baseArc;
+		cut.mask = mask;
 
 		this.cutPoly(cut, radius, minArc, maxArc);
 		this.cutPoly(cut, radius, minArc, maxArc);
@@ -91,8 +90,8 @@ export default class SnowFactory extends Factory {
 		this.cutPoly(cut, radius, minArc, maxArc);
 		this.cutPoly(cut, radius, minArc, maxArc);
 
-		clip.addChild(this.baseArc);
-		clip.addChild(g);
+		clip.addChild( mask );
+		clip.addChild( base );
 		clip.addChild(cut);
 
 		return clip;
@@ -139,7 +138,7 @@ export default class SnowFactory extends Factory {
 	 */
 	randPoly( minPoints=3, maxPoints=4, minRadius=4, maxRadius=10 ){
 
-		const len = minPoints + Math.floor( Math.random()*(1+maxPoints-minPoints) );
+		const len = randInt(minPoints, maxPoints );
 		const step = 2*Math.PI/maxPoints;
 
 		let pts = new Array(len);
