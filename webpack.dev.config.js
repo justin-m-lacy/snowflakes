@@ -6,6 +6,7 @@ module.exports = {
 	entry:{
 		snowflakes:"./src/index.js"
 	},
+	devtool:false,
 	output:{
 
 		path:path.resolve( __dirname, "dev"),

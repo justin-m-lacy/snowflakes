@@ -1,4 +1,6 @@
 import { Graphics, RAD_TO_DEG, DEG_TO_RAD, Polygon, Point } from "pixi.js";
+import { Factory } from "../../../gibbon";
+import * as PIXI from 'pixi.js';
 
 /**
  * @const {number} HOLE_COLOR - Pixi holes have a lot of limitations.
@@ -6,9 +8,45 @@ import { Graphics, RAD_TO_DEG, DEG_TO_RAD, Polygon, Point } from "pixi.js";
  */
 const HOLE_COLOR = 0xFF0000;
 
-export default class SnowFactory {
+export default class SnowFactory extends Factory {
 
-	constructor(){
+	constructor( game ){
+
+		super(game);
+	}
+
+	createFlake( fill, alpha ){
+
+		const sprite = new PIXI.Sprite();
+		sprite.interactive = true;
+		sprite.buttonMode = true;
+
+
+		const tex = this.flakeTex();
+		sprite.texture = tex;
+
+	//	sprite.addChild(g);
+
+		return sprite;
+
+	}
+
+	flakeTex( r=100, arc=DEG_TO_RAD*(360/16) ){
+
+		let tex = PIXI.RenderTexture.create( 2*r, 2*r );
+
+		let g = this.makeSnowArc( r, 0, arc );
+		g.position.set(r,r);
+
+		for( let theta = 0; theta < 2*Math.PI; theta += arc ) {
+
+			g.rotation = theta;
+
+			this.renderer.render( g, tex, false );
+
+		}
+
+		return tex;
 
 	}
 
@@ -27,7 +65,7 @@ export default class SnowFactory {
 
 		g.moveTo(0,0);
 
-		g.arc(0,0, radius, minArc, maxArc, true );
+		g.arc(0,0, radius, minArc, maxArc );
 		/*g.lineTo( radius*Math.cos(minArc ), radius*Math.PI( minArc ) );
 		g.arcTo();
 		g.lineTo(0,0);*/
@@ -63,25 +101,6 @@ export default class SnowFactory {
 		}
 
 		return new Polygon( pts );
-
-	}
-
-	createFlake( fill, alpha ){
-
-		const sprite = new PIXI.Sprite();
-		sprite.interactive = true;
-		sprite.buttonMode = true;
-
-
-		const g = new Graphics();
-		g.beginFill( fill, alpha );
-
-
-		g.endFill();
-
-		sprite.addChild(g);
-
-		return sprite;
 
 	}
 

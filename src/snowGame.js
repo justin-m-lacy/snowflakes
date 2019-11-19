@@ -1,4 +1,6 @@
 import { Game } from "../../gibbon";
+import SnowFactory from "./create/snowFactory";
+import * as PIXI from 'pixi.js';
 
 export default class SnowGame extends Game {
 
@@ -14,14 +16,13 @@ export default class SnowGame extends Game {
 		this.enableWheel();
 		this.wheelScale = 3;
 
+		this.factory = new SnowFactory( this );
+
 	}
 
 	init() {
 
 		super.init();
-		this.objectLayer.addChild( planetLayer );
-
-		this.ui = new UiManager( this );
 
 		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 
@@ -36,6 +37,15 @@ export default class SnowGame extends Game {
 	assetsLoaded( loader, resources ) {
 
 		console.log('ASSETS LOADED');
+
+		let s = this.factory.createFlake();
+		s.x = 100;
+		s.y = 100;
+
+		this.objectLayer.addChild(s );
+
+		this.start();
+
 	}
 
 	snowClicked(s) {

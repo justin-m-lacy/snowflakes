@@ -4,3 +4,10 @@ Application.renderer
 PIXI.autoDetectRenderer()
 PIXI.RenderTexture.create(800, 600);
 renderer.render( display, texture );
+
+
+http://pixijs.download/release/docs/PIXI.Renderer.html
+
+http://pixijs.download/release/docs/PIXI.Sprite.html
+
+http://pixijs.download/release/docs/PIXI.Graphics.html

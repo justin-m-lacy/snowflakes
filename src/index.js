@@ -16,7 +16,8 @@ const app = new PIXI.Application({
 	height:window.innerHeight,
 	autoResize:true,
 	transparent:false,
-	antialias:true
+	antialias:true,
+	backgroundColor:0x000055
 });
 
 WebFont.load({
