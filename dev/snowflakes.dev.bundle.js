@@ -393,13 +393,22 @@ class Mover extends _src_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
 	}
 
+	/**
+	 * Set mover velocity.
+	 * @param {number} vx
+	 * @param {number} vy
+	 */
+	set(vx,vy) {
+		this.velocity.set(vx,vy);
+	}
+
 	update(delta) {
 
 		//this.clip.position = pos;
 		if ( this._omegaAcc !== 0 ) this._omega += this._omegaAcc*delta;
 		if ( this._omega > this._omegaMax ) this._omega = this._omegaMax;
 		else if ( this._omega < -this._omegaMax ) this._omega = -this._omegaMax;
-		
+
 		this.rotation += this._omega*delta;
 		console.assert( Math.abs(this.clip.rotation) <= 2*Math.PI, 'ERR: Large Mover Rotation: ' + this.clip.rotation );
 
@@ -427,7 +436,7 @@ class Mover extends _src_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
 /*!**************************!*\
   !*** ../gibbon/index.js ***!
   \**************************/
-/*! exports provided: Engine, Game, Component, Factory, GameObject, Mover, Camera, Library, Group, LoadGroup, Geom, default */
+/*! exports provided: Engine, Game, Component, Factory, GameObject, Mover, Camera, Library, Group, LoadGroup, Geom, Rand, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -465,6 +474,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_geom__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./utils/geom */ "../gibbon/utils/geom.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Geom", function() { return _utils_geom__WEBPACK_IMPORTED_MODULE_10__["default"]; });
 
+/* harmony import */ var _utils_rand__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./utils/rand */ "../gibbon/utils/rand.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Rand", function() { return _utils_rand__WEBPACK_IMPORTED_MODULE_11__["default"]; });
+
+
 
 
 
@@ -491,7 +504,8 @@ const Gibbon = {
 	Factory: _src_factory__WEBPACK_IMPORTED_MODULE_2__["default"],
 	Library: _src_library__WEBPACK_IMPORTED_MODULE_6__["default"],
 	Camera: _components_camera__WEBPACK_IMPORTED_MODULE_5__["default"],
-	Mover: _components_mover__WEBPACK_IMPORTED_MODULE_4__["default"]
+	Mover: _components_mover__WEBPACK_IMPORTED_MODULE_4__["default"],
+	Rand: _utils_rand__WEBPACK_IMPORTED_MODULE_11__["default"]
 
 }
 /* harmony default export */ __webpack_exports__["default"] = (Gibbon);
@@ -55243,6 +55257,33 @@ __webpack_require__.r(__webpack_exports__);
 	},
 
 	/**
+	 * sets the values of mat to a reflection across normal axis a,b
+	 * without altering tx,ty.
+	 * @returns {Matrix}
+	 */
+	setReflect:(mat,a,b)=>{
+		mat.set(  1-2*b*b, 2*a*b, 2*a*b, 1-2*a*a, mat.tx, mat.ty);
+	},
+
+	/**
+	 * @returns {PIXI.Matrix} - reflection matrix across the normal a,b.
+	 */
+	reflection:(a,b)=>{
+		return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Matrix"]( 1-2*b*b, 2*a*b, 2*a*b, 1-2*a*a );
+	},
+
+	/**
+	 * @returns {PIXI.Point} point normal to p.
+	 */
+	norm:(p)=>{ return new Point(p.y, -p.x)},
+
+	/**
+	 * @returns {number} - magnitude of the cross product p1xp2
+	 * left hand rule; normals point screen upwards.
+	 */
+	cross:(p1, p2)=>{ return p1.x*p2.y - p1.y*p2.x; },
+
+	/**
 	 * move() is separate from translate() because of how PIXI
 	 * handles Polygon point storage.
 	 * @property {PIXI.Polygon} poly - polygon to translate.
@@ -55298,6 +55339,29 @@ __webpack_require__.r(__webpack_exports__);
 		}
 
 	}
+
+});
+
+/***/ }),
+
+/***/ "../gibbon/utils/rand.js":
+/*!*******************************!*\
+  !*** ../gibbon/utils/rand.js ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+
+	/**
+	 * @returns {number} random integer in min,max inclusive
+	 */
+	randInt:(min,max)=>{ return min + Math.floor( Math.random()*(max+1-min)) },
+
+	randRange:(min,max)=>{ return min + ( Math.random()*(max-min)) }
 
 });
 
@@ -101774,9 +101838,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const { randInt, randRange} = _gibbon__WEBPACK_IMPORTED_MODULE_1__["default"].Rand;
+const { move, setReflect, reflection } = _gibbon__WEBPACK_IMPORTED_MODULE_1__["default"].Geom;
 
-const randInt = (min,max)=>{ return min + Math.ceil( Math.random()*(max-min)) }
-const randRange = (min,max)=>{ return min + ( Math.random()*(max-min)) }
+
+
 
 /**
  * @const {number} HOLE_COLOR - Pixi holes have a lot of limitations.
@@ -101790,14 +101856,16 @@ const MAX_RADIUS = 100;
 /**
  * Min/max arc gap as percent of arc.
  */
-const MIN_GAP = 0.2;
-const MAX_GAP = 0.5;
+const MIN_GAP = 0.1;
+const MAX_GAP = 0.25;
 
-const MIN_SEGS = 8;
-const MAX_SEGS = 20;
+const MIN_SEGS = 6;
+const MAX_SEGS = 12;
 
 const MIN_CUTS = 8;
 const MAX_CUTS = 16;
+
+const SNOW_SCALE = 0.25;
 
 class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
@@ -101820,9 +101888,12 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		if (!loc) loc = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]();
 		sprite.position.set( loc.x, loc.y );
 
-		const tex = this.flakeTex( 100, randInt( MIN_SEGS, MAX_SEGS ) );
+		let r = MAX_RADIUS;
+		const tex = this.flakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
-		sprite.pivot = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](tex.width/2,tex.height/2);
+		sprite.pivot = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( r, r);
+
+		sprite.scale = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( SNOW_SCALE, SNOW_SCALE );
 
 	//	sprite.addChild(g);
 
@@ -101832,26 +101903,84 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 	flakeTex( r=100, segs=16 ){
 
+		if ( (segs % 2) !== 0 ) segs++;
+
 		let arc=pixi_js__WEBPACK_IMPORTED_MODULE_0__["DEG_TO_RAD"]*(360/segs)
 		let tex = pixi_js__WEBPACK_IMPORTED_MODULE_0__["RenderTexture"].create( 2*r, 2*r );
 
-		let gap = Math.random() < 0.5 ? 0 : randRange( MIN_GAP, MAX_GAP );
-		let g = this.makeSnowArc( r, arc*(1-gap) );
+		let g = this.makeSnowArc( r, arc );
 
 		let mat = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Matrix"]();
 		mat.translate(r,r);
-		let theta = 0;
+
+		var a,b;
+		var theta = 0;
 		for( let i = 0; i < segs; i++ ) {
 
-			g.rotation = theta;
+			if ( i%2 === 1){
+				g.scale = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](1,-1);
+				g.rotation = -theta - arc;
+			} else {
+				g.rotation = theta;
+				g.scale = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](1,1);
+			}
+
 			theta += arc;
-			this.renderer.render(g, tex, false,mat );
+
+			this.renderer.render( g, tex, false, mat );
+
+			//a = Math.cos(arc);
+			//b = Math.sin(arc);
+			//setReflect(mat, a, b );
 
 		}
 
 		return tex;
 
 	}
+
+	// sprite swap reflect.
+	/*flakeTex( r=100, segs=16 ){
+
+		if ( segs % 2 !== 0 ) segs++;
+
+		let arc=DEG_TO_RAD*(360/segs)
+		let tex1 = PIXI.RenderTexture.create( 2*r, 2*r );
+		let tex2 = PIXI.RenderTexture.create( 2*r, 2*r );
+
+		let s1 = new PIXI.Sprite(tex1);
+		let s2 = new PIXI.Sprite(tex2);
+
+		let gap = Math.random() < 0.5 ? 0 : randRange( MIN_GAP, MAX_GAP );
+		let g = this.makeSnowArc( r, arc*(1-gap) );
+
+		let mat = new PIXI.Matrix();
+		mat.translate(r,r);
+		this.renderer.render(g, tex1, false,mat );
+
+		var s3, tex3;
+		for( let i = 1; i <4; i *=2 ) {
+
+			var a = Math.cos(arc);
+			var b = Math.sin(arc);
+			setReflect(mat, a, b );
+			arc*=2;
+
+			this.renderer.render( s1, tex2, false, mat );
+			tex3 = tex2;
+			s3 = s1;
+
+			s1 = s2;
+			tex2 = tex1;
+
+			s2 = s3;
+			tex1 = tex3;
+
+
+		}
+		return tex1;
+
+	}*/
 
 	/**
 	 * Create the base snowflake subarc.
@@ -101863,7 +101992,11 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		const clip = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Container"]();
 
-		const base = this.makeArc( maxArc, radius, fill );
+		let gap = Math.random() < 0.5 ? 0 : randRange( MIN_GAP, MAX_GAP );
+		let minArc = gap*maxArc;
+		maxArc -= minArc;
+
+		const base = this.makeArc( minArc, maxArc, radius, fill );
 		const mask = base.clone();
 
 		const cut = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Graphics"]();
@@ -101872,7 +102005,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		let cuts = randInt( MIN_CUTS, MAX_CUTS );
 		for( let i = 0; i < cuts; i++ ) {
-			this.cutPoly(cut, radius, 0, maxArc);
+			this.cutPoly(cut, radius, minArc, maxArc);
 		}
 
 		clip.addChild( mask );
@@ -101883,7 +102016,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 	}
 
-	makeArc( arc, radius=100, fill=0xffffff ){
+	makeArc( minArc, arc, radius=100, fill=0xffffff ){
 
 		const g = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Graphics"]();
 		g.interactive = false;
@@ -101891,7 +102024,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		g.moveTo(0,0);
 		g.beginFill( fill );
-		g.arc(0,0, radius, 0, arc );
+		g.arc(0,0, radius, minArc, arc );
 		g.endFill();
 
 		return g;
@@ -101905,7 +102038,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		let t = minArc + Math.random()*(maxArc-minArc);
 		r = Math.random()*r;
 
-		_gibbon__WEBPACK_IMPORTED_MODULE_1__["Geom"].move( p, r*Math.cos(t), r*Math.sin(t) );
+		move( p, r*Math.cos(t), r*Math.sin(t) );
 
 		g.beginFill( HOLE_COLOR,1);
 		g.drawPolygon( p );
@@ -101938,6 +102071,95 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		}
 
 		return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Polygon"]( pts );
+
+	}
+
+}
+
+/***/ }),
+
+/***/ "./src/groups/snowGroup.js":
+/*!*********************************!*\
+  !*** ./src/groups/snowGroup.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SnowGroup; });
+/* harmony import */ var gibbon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gibbon.js */ "../gibbon/index.js");
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
+
+
+
+const { randInt, randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
+
+class SnowGroup extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Group"] {
+
+	/**
+	 * @property {Point} wind
+	 */
+	get wind(){return this._wind;}
+	set wind(v){this._wind=v;}
+
+	/**
+	 *
+	 * @param {Game} game
+	 */
+	constructor( game ) {
+
+		super(game, new pixi_js__WEBPACK_IMPORTED_MODULE_1__["Container"]() );
+
+		this.factory = game.factory;
+
+		this.wind = new pixi_js__WEBPACK_IMPORTED_MODULE_1__["Point"]( randRange(-2, 2), 1 );
+
+		this.count = 0;
+
+	}
+
+		/**
+	 *
+	 * @param {Point} pt
+	 */
+	createFlake( pt ){
+
+		let s = this.factory.createFlake(pt);
+		let g = new gibbon_js__WEBPACK_IMPORTED_MODULE_0__["GameObject"](s);
+
+		let mv = g.add( gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Mover"]);
+		mv.set( randRange(-1,1), randRange(-1,1) );
+
+		this.add(g);
+
+		this.count++;
+
+	}
+
+	start(){
+		this.game.addUpdater(this.update)
+	};
+
+	unpause(){
+		this.game.addUpdater(this.update );
+	}
+
+	pause(){
+		this.game.removeUpdater(this.update);
+	}
+
+	update( delta ){
+
+		let vx = delta*this._wind.x;
+		let vy = delta*this._wind.y;
+
+		for( let i = this.objects.length-1; i>=0; i-- ) {
+
+			var f = this.objects[i];
+			f.translate( vx, vy );
+
+		}
 
 	}
 
@@ -102009,6 +102231,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _gibbon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../gibbon */ "../gibbon/index.js");
 /* harmony import */ var _create_snowFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create/snowFactory */ "./src/create/snowFactory.js");
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
+/* harmony import */ var _groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./groups/snowGroup */ "./src/groups/snowGroup.js");
+
+
 
 
 
@@ -102016,7 +102241,7 @@ __webpack_require__.r(__webpack_exports__);
 class SnowGame extends _gibbon__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 
 	/**
-	 * @property {Group} flakes
+	 * @property {SnowGroup} flakes
 	 */
 	get flakes() {return this._flakes; }
 	set flakes(v) { this._flakes =v;}
@@ -102060,10 +102285,10 @@ class SnowGame extends _gibbon__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 
 		this.stage.on('click', this.stageClicked, this );
 
-		this.flakes = new _gibbon__WEBPACK_IMPORTED_MODULE_0__["Group"]( this, new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Container"]() );
+		this.flakes = new _groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["default"]( this );
 		this.objectLayer.addChild( this.flakes.clip );
 
-		let s = this.createFlake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](100,100));
+		this.flakes.createFlake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](100,100));
 
 		this.start();
 
@@ -102074,19 +102299,10 @@ class SnowGame extends _gibbon__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 	 * @param {InteractionEvent} evt
 	 */
 	stageClicked(evt){
-		this.createFlake(evt.data.global);
+		this.flakes.createFlake(evt.data.global);
 	}
 
 
-	/**
-	 *
-	 * @param {Point} pt
-	 */
-	createFlake( pt ){
-
-		let s = this.factory.createFlake(pt);
-		this.flakes.addChild(s);
-	}
 
 	snowClicked(s) {
 	}
