@@ -3,6 +3,7 @@ import SnowFactory from "./create/snowFactory";
 import * as PIXI from 'pixi.js';
 import {Point} from 'pixi.js';
 import SnowGroup from "./groups/snowGroup";
+import StarGroup from "./groups/starGroup";
 
 export default class SnowGame extends Game {
 
@@ -53,6 +54,9 @@ export default class SnowGame extends Game {
 
 		this.flakes = new SnowGroup( this );
 		this.objectLayer.addChild( this.flakes.clip );
+
+		this.stars = new StarGroup(this);
+		this.backgroundLayer.addChild( this.stars.clip );
 
 		this.flakes.createFlake( new PIXI.Point(100,100));
 

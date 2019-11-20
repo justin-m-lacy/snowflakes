@@ -19,8 +19,8 @@ const MAX_RADIUS = 100;
 /**
  * Min/max arc gap as percent of arc.
  */
-const MIN_GAP = 0.1;
-const MAX_GAP = 0.25;
+const MIN_GAP = 0.15;
+const MAX_GAP = 0.3;
 
 const MIN_SEGS = 6;
 const MAX_SEGS = 12;
@@ -36,9 +36,9 @@ export default class SnowFactory extends Factory {
 
 		super(game);
 
-		this.drawTex = PIXI.RenderTexture.create()
-		this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
-		this.maskArc = this.baseArc.clone();
+		//this.drawTex = PIXI.RenderTexture.create()
+		//this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
+		//this.maskArc = this.baseArc.clone();
 
 	}
 
@@ -76,7 +76,6 @@ export default class SnowFactory extends Factory {
 		let mat = new PIXI.Matrix();
 		mat.translate(r,r);
 
-		var a,b;
 		var theta = 0;
 		for( let i = 0; i < segs; i++ ) {
 
@@ -155,7 +154,7 @@ export default class SnowFactory extends Factory {
 
 		const clip = new PIXI.Container();
 
-		let gap = Math.random() < 0.5 ? 0 : randRange( MIN_GAP, MAX_GAP );
+		let gap = Math.random() < 0.2 ? 0 : randRange( MIN_GAP, MAX_GAP );
 		let minArc = gap*maxArc;
 		maxArc -= minArc;
 

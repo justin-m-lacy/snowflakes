@@ -1,9 +1,10 @@
 import Gibbon, { Game, Group, GameObject, Mover, Rand } from "gibbon.js";
-import { Point, Container } from "pixi.js";
+import { Point, Container, System } from "pixi.js";
+import BoundsDestroy from "gibbon.js/systems/boundsDestroy";
 
 const { randInt, randRange } = Rand;
 
-export default class SnowGroup extends Group {
+export default class SnowGroup extends BoundsDestroy {
 
 	/**
 	 * @property {Point} wind
@@ -21,13 +22,17 @@ export default class SnowGroup extends Group {
 
 		this.factory = game.factory;
 
-		this.wind = new Point( randRange(-2, 2), 1 );
+		this.wind = new Point( randRange(-2, 2), randRange(0.2, 0.7 ) );
+
+		this.bounds = game.screen;
 
 		this.count = 0;
 
+		this.start();
+
 	}
 
-		/**
+	/**
 	 *
 	 * @param {Point} pt
 	 */
@@ -45,18 +50,6 @@ export default class SnowGroup extends Group {
 
 	}
 
-	start(){
-		this.game.addUpdater(this.update)
-	};
-
-	unpause(){
-		this.game.addUpdater(this.update );
-	}
-
-	pause(){
-		this.game.removeUpdater(this.update);
-	}
-
 	update( delta ){
 
 		let vx = delta*this._wind.x;
@@ -69,6 +62,7 @@ export default class SnowGroup extends Group {
 
 		}
 
+		super.update(delta);
 	}
 
 }
