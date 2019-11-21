@@ -25,7 +25,7 @@ export const FLAKE_RADIUS = 20;
 /**
  * Min/max arc gap as percent of arc.
  */
-const MIN_GAP = 0.15;
+const MIN_GAP = 0.08;
 const MAX_GAP = 0.3;
 
 const MIN_SEGS = 6;
@@ -124,7 +124,7 @@ export default class SnowFactory extends Factory {
 
 		const clip = new PIXI.Container();
 
-		let gap = Math.random() < 0.1 ? 0 : randRange( MIN_GAP, MAX_GAP );
+		let gap = randRange( MIN_GAP, MAX_GAP );
 		let minArc = gap*maxArc;
 		maxArc -= minArc;
 
@@ -136,8 +136,11 @@ export default class SnowFactory extends Factory {
 		//cut.mask = mask;
 
 
-		this.cutArc(cut, minArc, maxArc, radius );
-		this.cutArc(cut, maxArc, minArc, radius );
+		//this.randArcCuts( cut, minArc, maxArc, radius );
+		this.randArcCuts( cut, minArc, maxArc, radius );
+		this.randArcCuts( cut, minArc, maxArc, radius );
+		//this.cutArc(cut, minArc, maxArc, radius );
+		//this.cutArc(cut, maxArc, minArc, radius );
 
 		/*
 		let cuts = randInt( MIN_CUTS, MAX_CUTS );
@@ -177,25 +180,43 @@ export default class SnowFactory extends Factory {
 	 */
 	randArcCuts( g, minArc, maxArc, radius ) {
 
-		let r = 0.025;
+		let r = 0.01;
+		let halfArc = (maxArc+minArc)/2;
 
-		var cos1 = Math.cos(minArc);
-		var sin1 = Math.sin(minArc);
+		while ( r <= 1.4 ) {
 
-		while ( r <= 1 ) {
+			var s = r;
 
-			var dr = r + 0.05 + 0.2*Math.random();
+			while ( s >= 0 ) {
 
-			var a = randRange( minArc+0.1, (minArc+maxArc)/2 );
-			var rmid = r + 0.2*Math.random();
+				var a = randRange( minArc, halfArc );
+				g.moveTo( r*Math.cos(a)*radius, r*Math.sin(a)*radius );
 
-			g.beginFill( HOLE_COLOR );
-			g.drawPolygon( [r*radius*cos1, r*radius*sin1,
-						(dr)*radius*cos1, (dr)*radius*sin1,
-						rmid*radius*Math.cos(a), rmid*radius*Math.sin(a)] );
-			g.endFill();
+				g.beginFill( HOLE_COLOR );
 
-			r = dr;
+				a = randRange( halfArc, maxArc);
+				var r2 = r + 0.4*Math.random();
+				g.lineTo( r2*Math.cos(a)*radius, r2*Math.sin(a)*radius );
+
+				a = randRange(minArc, maxArc);
+				r2 = r + 0.2 + 0.2*Math.random();
+				g.lineTo( r2*Math.cos(a)*radius, r2*Math.sin(a)*radius);
+
+				if ( Math.random() < 0.7 ) {
+					a = randRange(minArc, maxArc);
+					r2 = r + 0.05 + 0.2*Math.random();
+					g.lineTo( r2*Math.cos(a)*radius, r2*Math.sin(a)*radius);
+				}
+
+				g.closePath();
+				g.endFill();
+
+				s -= 0.12;
+
+			}
+
+			// next r.
+			r += r2;
 
 		}
 
@@ -212,20 +233,21 @@ export default class SnowFactory extends Factory {
 
 		let r = 0.025;
 
-		var cos1 = Math.cos(minArc);
-		var sin1 = Math.sin(minArc);
+		// premultiply radius
+		var cos1 = radius*Math.cos(minArc);
+		var sin1 = radius*Math.sin(minArc);
 
-		while ( r <= 1 ) {
+		while ( r <= 1.2 ) {
 
-			var dr = r + 0.05 + 0.2*Math.random();
+			var dr = r + 0.1 + 0.4*Math.random();
 
-			var a = randRange( minArc+0.1, (minArc+maxArc)/2 );
-			var rmid = r + 0.2*Math.random();
+			var a = randRange( minArc, maxArc );
+			var rmid = radius * ( r + 0.3*Math.random() );	// premultiply.
 
 			g.beginFill( HOLE_COLOR );
-			g.drawPolygon( [r*radius*cos1, r*radius*sin1,
-						(dr)*radius*cos1, (dr)*radius*sin1,
-						rmid*radius*Math.cos(a), rmid*radius*Math.sin(a)] );
+			g.drawPolygon( [r*cos1, r*sin1,
+						(dr)*cos1, (dr)*sin1,
+						rmid*Math.cos(a), rmid*Math.sin(a)] );
 			g.endFill();
 
 			r = dr;
