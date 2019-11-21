@@ -51134,7 +51134,7 @@ class Game {
 	 * @param {PIXI.Point} [loc=null]
 	 * @returns {GameObject}
 	 */
-	Instantiate( clip=null, loc=null ) {
+	instantiate( clip=null, loc=null ) {
 		return this.engine.Instantiate(clip,loc);
 	}
 
@@ -52384,11 +52384,19 @@ class CanvasDraw {
 
 	}
 
+	getTexture(){
+		return PIXI.BaseTexture.from( this.draw.canvas );
+	}
+
+	/**
+	 *
+	 * @param {number} color
+	 */
 	fill( color ) {
 
 		var ctx = this._canvas.getContext('2d');
 
-		ctx.fillStyle( Object(_colorUtils__WEBPACK_IMPORTED_MODULE_0__["htmlStr"])(color) );
+		ctx.fillStyle = _colorUtils__WEBPACK_IMPORTED_MODULE_0__["default"].htmlStr(color);
 		ctx.fillRect( 0, 0, this.width, this.height );
 
 	}
@@ -104638,6 +104646,55 @@ class Flake {
 
 /***/ }),
 
+/***/ "./src/components/sky.js":
+/*!*******************************!*\
+  !*** ./src/components/sky.js ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Sky; });
+/* harmony import */ var gibbon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gibbon.js */ "../gibbon/index.js");
+/* harmony import */ var gibbon_js_utils_canvasDraw__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! gibbon.js/utils/canvasDraw */ "../gibbon/utils/canvasDraw.js");
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
+
+
+
+
+/**
+ * @const {number} TEX_SIZE - sky texture size.
+ */
+const TEX_SIZE = 200;
+
+class Sky extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+
+	get time() { return this._time; }
+	set time(v) { this._time = v;}
+
+	init(){
+
+		this.view = this.game.screen;
+
+		//PIXI.RenderTexture.create( TEX_SIZE, TEX_SIZE );
+		this.draw = new gibbon_js_utils_canvasDraw__WEBPACK_IMPORTED_MODULE_1__["default"]( TEX_SIZE, TEX_SIZE );
+		this.draw.fill( 0x444444 );
+
+		let s = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"].from( this.draw.canvas);
+		s.width = this.view.width;
+		s.height = this.view.height;
+
+		this.clip.addChild(s);
+
+		//this.clip.texture = this.texture;
+
+	}
+
+}
+
+/***/ }),
+
 /***/ "./src/create/snowFactory.js":
 /*!***********************************!*\
   !*** ./src/create/snowFactory.js ***!
@@ -105143,6 +105200,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./groups/snowGroup */ "./src/groups/snowGroup.js");
 /* harmony import */ var _groups_starGroup__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./groups/starGroup */ "./src/groups/starGroup.js");
 /* harmony import */ var _components_backSnow__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/backSnow */ "./src/components/backSnow.js");
+/* harmony import */ var _components_sky__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/sky */ "./src/components/sky.js");
+
 
 
 
@@ -105186,6 +105245,8 @@ class SnowGame extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 
 		super.init();
 
+		this.initSky();
+
 		this.wind = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]();
 		this.mainObj = new gibbon_js__WEBPACK_IMPORTED_MODULE_0__["GameObject"]( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Container"]() );
 		this.addObject( this.mainObj );
@@ -105197,6 +105258,17 @@ class SnowGame extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 
 		this.emitter.on( 'snow-clicked', this.snowClicked, this );
+
+	}
+
+	initSky(){
+
+		let s = new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Container"]();
+		this.backgroundLayer.addChild( s );
+
+		this.sky = this.instantiate( s );
+		this.sky.add( _components_sky__WEBPACK_IMPORTED_MODULE_6__["default"] );
+
 
 	}
 

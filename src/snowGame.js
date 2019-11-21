@@ -5,6 +5,7 @@ import {Point} from 'pixi.js';
 import SnowGroup from "./groups/snowGroup";
 import StarGroup from "./groups/starGroup";
 import BackSnow from "./components/backSnow";
+import Sky from "./components/sky";
 
 export default class SnowGame extends Game {
 
@@ -41,6 +42,8 @@ export default class SnowGame extends Game {
 
 		super.init();
 
+		this.initSky();
+
 		this.wind = new Point();
 		this.mainObj = new GameObject( new PIXI.Container() );
 		this.addObject( this.mainObj );
@@ -52,6 +55,17 @@ export default class SnowGame extends Game {
 		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 
 		this.emitter.on( 'snow-clicked', this.snowClicked, this );
+
+	}
+
+	initSky(){
+
+		let s = new PIXI.Container();
+		this.backgroundLayer.addChild( s );
+
+		this.sky = this.instantiate( s );
+		this.sky.add( Sky );
+
 
 	}
 

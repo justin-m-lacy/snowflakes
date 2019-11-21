@@ -14,9 +14,19 @@ export default class Sky extends Component {
 
 	init(){
 
-		this.texture = PIXI.RenderTexture.create( TEX_SIZE, TEX_SIZE );
-		this.canvas = new CanvasDraw( TEX_SIZE, TEX_SIZE );
-		this.canvas.fill( '444444');
+		this.view = this.game.screen;
+
+		//PIXI.RenderTexture.create( TEX_SIZE, TEX_SIZE );
+		this.draw = new CanvasDraw( TEX_SIZE, TEX_SIZE );
+		this.draw.fill( 0x444444 );
+
+		let s = PIXI.Sprite.from( this.draw.canvas);
+		s.width = this.view.width;
+		s.height = this.view.height;
+
+		this.clip.addChild(s);
+
+		//this.clip.texture = this.texture;
 
 	}
 
