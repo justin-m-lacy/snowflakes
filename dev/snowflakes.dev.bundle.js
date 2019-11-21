@@ -104996,7 +104996,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		c.addChild(this.maskArc );
 		c.addChild(g);
 
-		this.branch( g, new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](0,0), arc/2, (0.5 + 0.5*Math.random() )*r );
+		this.branch( g, new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](0,0), arc/2, r );
 
 
 
@@ -105010,15 +105010,17 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		var p1 = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( p0.x + maxR*Math.cos(angle), p0.y + maxR*Math.sin(angle) );
 
-		g.lineStyle( (0.05 + 0.2*Math.random())*maxR, FLAKE_COLOR );
+		g.lineStyle( (0.1 + 0.1*Math.random())*MAX_RADIUS, FLAKE_COLOR );
 		g.lineTo( p1.x, p1.y );
 
-		if ( maxR <= 4 ) return;
+		if ( maxR <= 2 ) return;
 
-		angle += 10 + randRange( 20, 40 );
+		angle = 30 + 30*Math.random();
 		if ( Math.random() < 0.5 ) angle = -angle;
 
-		this.branch( g, interPt( p0, p1, 0.2 + 0.8*Math.random() ), angle, 0.5*maxR );
+		this.branch( g, interPt( p0, p1, 0.2 + 0.8*Math.random() ), angle, (0.3 + 0.4*Math.random())*maxR );
+		//this.branch( g, interPt( p0, p1, 0.2 + 0.8*Math.random() ), -angle, (0.2 + 0.8*Math.random())*maxR );
+		//this.branch( g, interPt( p0, p1, 0.2 + 0.8*Math.random() ), -angle, 0.5*maxR );
 
 
 	}
