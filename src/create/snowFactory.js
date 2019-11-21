@@ -14,13 +14,13 @@ import * as PIXI from 'pixi.js';
 const HOLE_COLOR = 0xFF0000;
 
 const MIN_RADIUS = 50;
-const MAX_RADIUS = 100;
+const MAX_RADIUS = 80;
 
 
 /**
  * @property {number} FLAKE_SIZE - base flake size.
  */
-export const FLAKE_SIZE = 25;
+export const FLAKE_RADIUS = 20;
 export const TEX_SIZE = 100;
 
 /**
@@ -65,7 +65,7 @@ export default class SnowFactory extends Factory {
 		sprite.texture = tex;
 		sprite.pivot = new Point( r, r);
 
-		sprite.scale = new Point( FLAKE_SIZE/r, FLAKE_SIZE/r );
+		sprite.scale = new Point( FLAKE_RADIUS/r, FLAKE_RADIUS/r );
 
 	//	sprite.addChild(g);
 
@@ -163,7 +163,7 @@ export default class SnowFactory extends Factory {
 
 		const clip = new PIXI.Container();
 
-		let gap = Math.random() < 0.2 ? 0 : randRange( MIN_GAP, MAX_GAP );
+		let gap = Math.random() < 0.1 ? 0 : randRange( MIN_GAP, MAX_GAP );
 		let minArc = gap*maxArc;
 		maxArc -= minArc;
 

@@ -104552,11 +104552,17 @@ module.exports = function(module) {
 /*!************************************!*\
   !*** ./src/components/backSnow.js ***!
   \************************************/
-/*! exports provided: default */
+/*! exports provided: MIN_SIZE, MIN_Z, MAX_Z, FOCUS, MIN_ALPHA, MAX_ALPHA, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MIN_SIZE", function() { return MIN_SIZE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MIN_Z", function() { return MIN_Z; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAX_Z", function() { return MAX_Z; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FOCUS", function() { return FOCUS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MIN_ALPHA", function() { return MIN_ALPHA; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAX_ALPHA", function() { return MAX_ALPHA; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BackSnow; });
 /* harmony import */ var gibbon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gibbon.js */ "../gibbon/index.js");
 /* harmony import */ var _flake__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./flake */ "./src/components/flake.js");
@@ -104575,14 +104581,17 @@ const MAX_G = 0.7;
 const FLAKE_COUNT = 64;
 
 const MIN_SIZE = 6;
-const MAX_Z = 12;
+const MIN_Z = 1;
+const MAX_Z = 5;
 
+const FOCUS = 20;
 
 const MIN_ALPHA = 0.4;
 const MAX_ALPHA = 0.9;
 
-const MAX_V = 1;
 
+const MAX_V = 1;
+const MAX_VZ = 0.01;
 
 /**
  * Background snow.
@@ -104637,16 +104646,24 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 		for( let i = a.length-1; i >= 0; i-- ) {
 
 			var f = a[i];
-			var p = f.clip.position;
+			var p = f.position;
 
-			if ( !bounds.contains( p.x, p.y ) ) {
+			if ( f.z < MIN_Z ) f.vz = Math.abs(f.vz);
+
+			if ( f.z > MAX_Z+2 || !bounds.contains( p.x, p.y ) ) {
 
 				this.randomize(f);
 
 			} else {
 
+				f.z += f.vz*delta;
+				f.vz += (-0.0001 + 0.0002*Math.random())*delta;
+
 				p.set( p.x + (f.velocity.x + wind.x )*delta/f.z,
 						p.y + (f.velocity.y + wind.y)*delta/f.z )
+
+
+				f.update();
 			}
 
 		}
@@ -104655,11 +104672,14 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 	randomize(f) {
 
-		f.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 		f.z = randRange(1,MAX_Z);
+		f.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
+		f.vz = randRange(-MAX_VZ, MAX_VZ );
 
-		let s = ( _create_snowFactory__WEBPACK_IMPORTED_MODULE_3__["FLAKE_SIZE"] - ( _create_snowFactory__WEBPACK_IMPORTED_MODULE_3__["FLAKE_SIZE"] - MIN_SIZE)*f.z/MAX_Z )/_create_snowFactory__WEBPACK_IMPORTED_MODULE_3__["TEX_SIZE"];
+		// update scale and alpha.
+		f.update();
 
+		let s = ( _create_snowFactory__WEBPACK_IMPORTED_MODULE_3__["FLAKE_RADIUS"] - ( _create_snowFactory__WEBPACK_IMPORTED_MODULE_3__["FLAKE_RADIUS"] - MIN_SIZE)*f.z/MAX_Z )/_create_snowFactory__WEBPACK_IMPORTED_MODULE_3__["TEX_SIZE"];
 		f.clip.scale.set(s,s);
 		f.clip.alpha = MIN_ALPHA + ( MAX_ALPHA - MIN_ALPHA )/f.z;
 
@@ -104697,6 +104717,9 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Flake; });
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
+/* harmony import */ var _create_snowFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../create/snowFactory */ "./src/create/snowFactory.js");
+/* harmony import */ var _backSnow__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./backSnow */ "./src/components/backSnow.js");
+
 
 
 /**
@@ -104716,15 +104739,31 @@ class Flake {
 	get velocity(){return this._vel;}
 	set velocity(v){this._vel = v;}
 
-	get position(){ return this.clip.position}
+	get position(){ return this._position}
 
 	constructor( clip ){
 
 		this.clip = clip;
 		this.velocity = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]();
 
+		this._position = this.clip.position;
+		//this._position =new Point();
+
+		this.proj = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Matrix"](1,0,0,1);
+
 	}
 
+	/**
+	 * Update scale and alpha based on z.
+	 */
+	update(){
+
+		let s = ( _create_snowFactory__WEBPACK_IMPORTED_MODULE_1__["FLAKE_RADIUS"] - ( _create_snowFactory__WEBPACK_IMPORTED_MODULE_1__["FLAKE_RADIUS"] - _backSnow__WEBPACK_IMPORTED_MODULE_2__["MIN_SIZE"])*this.z/_backSnow__WEBPACK_IMPORTED_MODULE_2__["MAX_Z"] )/_create_snowFactory__WEBPACK_IMPORTED_MODULE_1__["TEX_SIZE"];
+		this.clip.scale.set(s,s);
+		this.clip.alpha = _backSnow__WEBPACK_IMPORTED_MODULE_2__["MIN_ALPHA"] + ( _backSnow__WEBPACK_IMPORTED_MODULE_2__["MAX_ALPHA"] - _backSnow__WEBPACK_IMPORTED_MODULE_2__["MIN_ALPHA"] )/this.z;
+
+		//this.clip.position.set( this.position.x/this.z, this.position.y/this.z);
+	}
 
 }
 
@@ -104788,12 +104827,12 @@ class Sky extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 /*!***********************************!*\
   !*** ./src/create/snowFactory.js ***!
   \***********************************/
-/*! exports provided: FLAKE_SIZE, TEX_SIZE, default */
+/*! exports provided: FLAKE_RADIUS, TEX_SIZE, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FLAKE_SIZE", function() { return FLAKE_SIZE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FLAKE_RADIUS", function() { return FLAKE_RADIUS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TEX_SIZE", function() { return TEX_SIZE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SnowFactory; });
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
@@ -104814,13 +104853,13 @@ const { move, setReflect, reflection } = _gibbon__WEBPACK_IMPORTED_MODULE_1__["d
 const HOLE_COLOR = 0xFF0000;
 
 const MIN_RADIUS = 50;
-const MAX_RADIUS = 100;
+const MAX_RADIUS = 80;
 
 
 /**
  * @property {number} FLAKE_SIZE - base flake size.
  */
-const FLAKE_SIZE = 25;
+const FLAKE_RADIUS = 20;
 const TEX_SIZE = 100;
 
 /**
@@ -104865,7 +104904,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		sprite.texture = tex;
 		sprite.pivot = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( r, r);
 
-		sprite.scale = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( FLAKE_SIZE/r, FLAKE_SIZE/r );
+		sprite.scale = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( FLAKE_RADIUS/r, FLAKE_RADIUS/r );
 
 	//	sprite.addChild(g);
 
@@ -104963,7 +105002,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		const clip = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Container"]();
 
-		let gap = Math.random() < 0.2 ? 0 : randRange( MIN_GAP, MAX_GAP );
+		let gap = Math.random() < 0.1 ? 0 : randRange( MIN_GAP, MAX_GAP );
 		let minArc = gap*maxArc;
 		maxArc -= minArc;
 
@@ -105053,11 +105092,15 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 /*!*********************************!*\
   !*** ./src/groups/snowGroup.js ***!
   \*********************************/
-/*! exports provided: default */
+/*! exports provided: FOCUS, F_INV, projAt, setProj, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FOCUS", function() { return FOCUS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "F_INV", function() { return F_INV; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "projAt", function() { return projAt; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setProj", function() { return setProj; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SnowGroup; });
 /* harmony import */ var gibbon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gibbon.js */ "../gibbon/index.js");
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
@@ -105067,6 +105110,20 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const { randInt, randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
+
+const FOCUS = 40;
+const F_INV = 1/FOCUS;
+
+/**
+ * Projection factor at distance z.
+ * @param {number} z
+ */
+const projAt = (z)=>1/( F_INV*z + 1 );
+
+const setProj = ( mat,z )=>{
+	mat.a = mat.c = 1/(F_INV*z+1);
+	return mat;
+}
 
 class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE_2__["default"] {
 
@@ -105105,6 +105162,7 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 
 		let mv = g.add( gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Mover"]);
 		mv.set( randRange(-1,1), randRange(-1,1) );
+		mv.vz = randRange(-0.001,0.001);
 
 		this.add(g);
 
@@ -105120,6 +105178,9 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 		for( let i = this.objects.length-1; i>=0; i-- ) {
 
 			var f = this.objects[i];
+
+
+
 			f.translate( vx, vy );
 
 		}

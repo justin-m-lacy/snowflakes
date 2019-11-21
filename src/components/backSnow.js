@@ -1,7 +1,7 @@
 import Gibbon, { Game, GameObject, Mover, Rand, Component } from "gibbon.js";
 import Flake from "./flake";
 import { Point } from "pixi.js";
-import { SNOW_SCALE, FLAKE_SIZE, TEX_SIZE } from "../create/snowFactory";
+import { SNOW_SCALE, FLAKE_RADIUS, TEX_SIZE } from "../create/snowFactory";
 
 const { randInt, randRange } = Rand;
 
@@ -10,15 +10,18 @@ const MIN_G = 0.3;
 const MAX_G = 0.7;
 const FLAKE_COUNT = 64;
 
-const MIN_SIZE = 6;
-const MAX_Z = 12;
+export const MIN_SIZE = 6;
+export const MIN_Z = 1;
+export const MAX_Z = 5;
 
+export const FOCUS = 20;
 
 const MIN_ALPHA = 0.4;
 const MAX_ALPHA = 0.9;
+export { MIN_ALPHA, MAX_ALPHA };
 
 const MAX_V = 1;
-
+const MAX_VZ = 0.01;
 
 /**
  * Background snow.
@@ -73,16 +76,24 @@ export default class BackSnow extends Component {
 		for( let i = a.length-1; i >= 0; i-- ) {
 
 			var f = a[i];
-			var p = f.clip.position;
+			var p = f.position;
 
-			if ( !bounds.contains( p.x, p.y ) ) {
+			if ( f.z < MIN_Z ) f.vz = Math.abs(f.vz);
+
+			if ( f.z > MAX_Z+2 || !bounds.contains( p.x, p.y ) ) {
 
 				this.randomize(f);
 
 			} else {
 
+				f.z += f.vz*delta;
+				f.vz += (-0.0001 + 0.0002*Math.random())*delta;
+
 				p.set( p.x + (f.velocity.x + wind.x )*delta/f.z,
 						p.y + (f.velocity.y + wind.y)*delta/f.z )
+
+
+				f.update();
 			}
 
 		}
@@ -91,11 +102,14 @@ export default class BackSnow extends Component {
 
 	randomize(f) {
 
-		f.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 		f.z = randRange(1,MAX_Z);
+		f.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
+		f.vz = randRange(-MAX_VZ, MAX_VZ );
 
-		let s = ( FLAKE_SIZE - ( FLAKE_SIZE - MIN_SIZE)*f.z/MAX_Z )/TEX_SIZE;
+		// update scale and alpha.
+		f.update();
 
+		let s = ( FLAKE_RADIUS - ( FLAKE_RADIUS - MIN_SIZE)*f.z/MAX_Z )/TEX_SIZE;
 		f.clip.scale.set(s,s);
 		f.clip.alpha = MIN_ALPHA + ( MAX_ALPHA - MIN_ALPHA )/f.z;
 
