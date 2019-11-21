@@ -1,9 +1,10 @@
-import Gibbon, { Game } from "../../gibbon";
+import Gibbon, { Game, GameObject } from "gibbon.js";
 import SnowFactory from "./create/snowFactory";
 import * as PIXI from 'pixi.js';
 import {Point} from 'pixi.js';
 import SnowGroup from "./groups/snowGroup";
 import StarGroup from "./groups/starGroup";
+import BackSnow from "./components/backSnow";
 
 export default class SnowGame extends Game {
 
@@ -12,6 +13,13 @@ export default class SnowGame extends Game {
 	 */
 	get flakes() {return this._flakes; }
 	set flakes(v) { this._flakes =v;}
+
+	/**
+	 * @property {Point} wind
+	 */
+	get wind(){
+		return this._wind; }
+	set wind(v) { this._wind = v}
 
 	/**
 	 * Construction done in init() to allow Game to be a shared export
@@ -32,6 +40,14 @@ export default class SnowGame extends Game {
 	init() {
 
 		super.init();
+
+		this.wind = new Point();
+		this.mainObj = new GameObject( new PIXI.Container() );
+		this.addObject( this.mainObj );
+
+		this.mainObj.add( BackSnow );
+
+		this.objectLayer.addChild( this.mainObj.clip );
 
 		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 

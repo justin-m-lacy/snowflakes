@@ -23,12 +23,15 @@ const MIN_GAP = 0.15;
 const MAX_GAP = 0.3;
 
 const MIN_SEGS = 6;
-const MAX_SEGS = 12;
+const MAX_SEGS = 8;
 
+/**
+ * Minimum/maximum cuts to make in flake arc.
+ */
 const MIN_CUTS = 8;
 const MAX_CUTS = 16;
 
-const SNOW_SCALE = 0.25;
+export const SNOW_SCALE = 0.25;
 
 export default class SnowFactory extends Factory {
 

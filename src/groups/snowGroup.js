@@ -7,12 +7,6 @@ const { randInt, randRange } = Rand;
 export default class SnowGroup extends BoundsDestroy {
 
 	/**
-	 * @property {Point} wind
-	 */
-	get wind(){return this._wind;}
-	set wind(v){this._wind=v;}
-
-	/**
 	 *
 	 * @param {Game} game
 	 */
@@ -22,9 +16,12 @@ export default class SnowGroup extends BoundsDestroy {
 
 		this.factory = game.factory;
 
-		this.wind = new Point( randRange(-2, 2), randRange(0.2, 0.7 ) );
+		/**
+		 * @property {Point} wind
+	 	*/
+		this.wind = game.wind;
 
-		this.bounds = game.screen;
+		this.bounds = game.screen.clone().pad(64);
 
 		this.count = 0;
 
@@ -52,8 +49,8 @@ export default class SnowGroup extends BoundsDestroy {
 
 	update( delta ){
 
-		let vx = delta*this._wind.x;
-		let vy = delta*this._wind.y;
+		let vx = delta*this.wind.x/4;
+		let vy = delta*this.wind.y/4;
 
 		for( let i = this.objects.length-1; i>=0; i-- ) {
 
