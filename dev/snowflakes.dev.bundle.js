@@ -517,6 +517,74 @@ class SpriteTiler extends _src_component__WEBPACK_IMPORTED_MODULE_0__["default"]
 
 /***/ }),
 
+/***/ "../gibbon/data/gradient.js":
+/*!**********************************!*\
+  !*** ../gibbon/data/gradient.js ***!
+  \**********************************/
+/*! exports provided: Gradient */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Gradient", function() { return Gradient; });
+/* harmony import */ var _utils_colorUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/colorUtils */ "../gibbon/utils/colorUtils.js");
+
+
+class Gradient {
+
+	/**
+	 * @property {number[]} colors
+	 */
+	get colors() { return this._colors; }
+	set colors(v) { this._colors =v;}
+
+	/**
+	 * @property {number[]} stops - percent stops of each color.
+	 * first step should start at 0, last should be 1.
+	 */
+	get stops(){return this._stops;}
+	set stops(v){this._stops=v;}
+
+	constructor( colors, stops ){
+
+		this.colors = colors;
+		this.stops = stops;
+
+		if ( this.colors.length !== this.stops.length ) console.warn('invalid gradient');
+	}
+
+	/**
+	 * Add the Gradient color steps to the CanvasGradient.
+	 * @param {CanvasGradient} grad
+	 */
+	addStops( grad ) {
+
+		for( let i = 0; i < this._stops.length; i++ ){
+
+			grad.addColorStop( this._stops[i], Object(_utils_colorUtils__WEBPACK_IMPORTED_MODULE_0__["htmlStr"])(this._colors[i]) );
+
+		}
+
+	}
+
+	/**
+	 * Ensure steps range from 0 to 1.
+	 */
+	normalize(){
+
+		let a = this.steps;
+		let tot = 0;
+		for( let i = a.length-1; i >=0; i--){
+			tot += a[i];
+		}
+
+		if ( tot === 1 ) return;
+	}
+
+}
+
+/***/ }),
+
 /***/ "../gibbon/index.js":
 /*!**************************!*\
   !*** ../gibbon/index.js ***!
@@ -52371,10 +52439,15 @@ class CanvasDraw {
 	get width(){return this._width;}
 	get height(){return this._height;}
 
+	getTexture(){
+		return PIXI.BaseTexture.from( this.draw.canvas );
+	}
+
 	constructor( width, height ){
 
 
 		this._canvas = document.createElement('canvas' );
+		this.ctx = this._canvas.getContext('2d');
 
 		this._width = width;
 		this._height = height;
@@ -52384,9 +52457,21 @@ class CanvasDraw {
 
 	}
 
-	getTexture(){
-		return PIXI.BaseTexture.from( this.draw.canvas );
+	/**
+	 * @param {Point} p0
+	 * @param {Point} p1
+	 * @param {Gradient} gradient
+	 */
+	gradFill( p0, p1, gradient ){
+
+		var grad = this.ctx.createLinearGradient( p0.x, p0.y, p1.x, p1.y);
+		gradient.addStops(grad);
+
+		this.ctx.fillStyle = grad;
+		this.ctx.fillRect( 0, 0, this._width, this._height );
+
 	}
+
 
 	/**
 	 *
@@ -52394,10 +52479,8 @@ class CanvasDraw {
 	 */
 	fill( color ) {
 
-		var ctx = this._canvas.getContext('2d');
-
-		ctx.fillStyle = _colorUtils__WEBPACK_IMPORTED_MODULE_0__["default"].htmlStr(color);
-		ctx.fillRect( 0, 0, this.width, this.height );
+		this.ctx.fillStyle = Object(_colorUtils__WEBPACK_IMPORTED_MODULE_0__["htmlStr"])(color);
+		this.ctx.fillRect( 0, 0, this.width, this.height );
 
 	}
 
@@ -52409,22 +52492,20 @@ class CanvasDraw {
 /*!*************************************!*\
   !*** ../gibbon/utils/colorUtils.js ***!
   \*************************************/
-/*! exports provided: default */
+/*! exports provided: rgbStr, htmlStr */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ({
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "rgbStr", function() { return rgbStr; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "htmlStr", function() { return htmlStr; });
+const rgbStr =(color)=>{
+	return color.toString(16).padStart(6,'0');
+};
 
-	rgbStr:(color)=>{
-		return color.toString(16).padStart(6,'0');
-	},
-
-	htmlStr:(color)=>{
-		return '#'+color.toString(16).padStart(6,'0');
-	}
-
-});
+const htmlStr =(color)=>{
+	return '#'+color.toString(16).padStart(6,'0');
+};
 
 /***/ }),
 
@@ -52674,11 +52755,14 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _colorUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./colorUtils */ "../gibbon/utils/colorUtils.js");
 /* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! .. */ "../gibbon/index.js");
+/* harmony import */ var _data_gradient__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../data/gradient */ "../gibbon/data/gradient.js");
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	Color:_colorUtils__WEBPACK_IMPORTED_MODULE_0__["default"],
+	Gradient: _data_gradient__WEBPACK_IMPORTED_MODULE_2__["Gradient"],
+	Color:_colorUtils__WEBPACK_IMPORTED_MODULE_0__,
 	Geom:___WEBPACK_IMPORTED_MODULE_1__["Geom"],
 	Rand:___WEBPACK_IMPORTED_MODULE_1__["Rand"]
 });
@@ -104659,6 +104743,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var gibbon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gibbon.js */ "../gibbon/index.js");
 /* harmony import */ var gibbon_js_utils_canvasDraw__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! gibbon.js/utils/canvasDraw */ "../gibbon/utils/canvasDraw.js");
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
+/* harmony import */ var gibbon_js_data_gradient__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! gibbon.js/data/gradient */ "../gibbon/data/gradient.js");
+
 
 
 
@@ -104675,17 +104761,20 @@ class Sky extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 	init(){
 
+		this.skyGradient = new gibbon_js_data_gradient__WEBPACK_IMPORTED_MODULE_3__["Gradient"]( [0x000077,0x1100cc,0xaa1181 ], [0,0.5,1] );
+
 		this.view = this.game.screen;
 
 		//PIXI.RenderTexture.create( TEX_SIZE, TEX_SIZE );
 		this.draw = new gibbon_js_utils_canvasDraw__WEBPACK_IMPORTED_MODULE_1__["default"]( TEX_SIZE, TEX_SIZE );
-		this.draw.fill( 0x444444 );
+		this.draw.gradFill( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](0,0), new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]( 0, TEX_SIZE ), this.skyGradient );
 
 		let s = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"].from( this.draw.canvas);
 		s.width = this.view.width;
 		s.height = this.view.height;
 
 		this.clip.addChild(s);
+
 
 		//this.clip.texture = this.texture;
 
