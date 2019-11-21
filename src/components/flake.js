@@ -26,8 +26,8 @@ export default class Flake {
 		this.clip = clip;
 		this.velocity = new Point();
 
-		//this._position = this.clip.position;
-		this._position =new Point();
+		this._position = this.clip.position;
+		//this._position =new Point();
 
 		this.proj = new Matrix(1,0,0,1);
 
@@ -39,8 +39,6 @@ export default class Flake {
 	update(){
 
 		let k = projAt(this.z);
-		this.proj.a = this.proj.d = k;
-		this.proj.apply( this.position, this.clip.position );
 
 		k *= FLAKE_RADIUS/MAX_RADIUS;
 		this.clip.scale.set( k, k );

@@ -1,7 +1,7 @@
 import Gibbon, { Game, GameObject, Mover, Rand, Component } from "gibbon.js";
 import Flake from "./flake";
 import { Point } from "pixi.js";
-import { SNOW_SCALE, FLAKE_RADIUS, TEX_SIZE } from "../create/snowFactory";
+import { projAt } from "../groups/snowGroup";
 
 const { randInt, randRange } = Rand;
 
@@ -14,12 +14,12 @@ export const MIN_SIZE = 6;
 export const MIN_Z = 10;
 export const MAX_Z = 200;
 
-const MIN_ALPHA = 0.4;
-const MAX_ALPHA = 0.9;
+const MIN_ALPHA = 0.7;
+const MAX_ALPHA = 1;
 export { MIN_ALPHA, MAX_ALPHA };
 
 const MAX_V = 0.2;
-const MAX_VZ = 0.01;
+const MAX_VZ = 0.001;
 
 /**
  * Background snow.
@@ -52,12 +52,13 @@ export default class BackSnow extends Component {
 
 		for( let i = FLAKE_COUNT; i >= 0; i-- ) {
 
-			var s = factory.createFlake( new Point( Math.random()*bounds.width, Math.random()*bounds.height ) );
+			var s = factory.createFlake( new Point() );
 			clip.addChild(s);
 
 			var f = new Flake(s);
 			this.randomize(f);
-			f.position.set( randRange(-bounds.width/2,bounds.width/2), randRange(-bounds.height/2,bounds.height/2) );
+			f.position.set(Math.random()*bounds.width, Math.random()*bounds.height);
+			//f.position.set( randRange(-bounds.width/2,bounds.width/2), randRange(-bounds.height/2,bounds.height/2) );
 
 			this.flakes.push( f );
 
@@ -89,9 +90,9 @@ export default class BackSnow extends Component {
 				//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
 
 
-
-				p.set( p.x + (f.velocity.x + wind.x ),
-						p.y + (f.velocity.y + wind.y) )
+				var k = projAt( f.z);
+				p.set( p.x + (f.velocity.x + wind.x )*k,
+						p.y + (f.velocity.y + wind.y)*k )
 
 
 				f.update();
@@ -101,6 +102,10 @@ export default class BackSnow extends Component {
 
 	}
 
+	/**
+	 *
+	 * @param {Flake} f
+	 */
 	randomize(f) {
 
 		f.z = randRange(1,MAX_Z);
@@ -109,10 +114,6 @@ export default class BackSnow extends Component {
 
 		// update scale and alpha.
 		f.update();
-
-		let s = ( FLAKE_RADIUS - ( FLAKE_RADIUS - MIN_SIZE)*f.z/MAX_Z )/TEX_SIZE;
-		f.clip.scale.set(s,s);
-		f.clip.alpha = MIN_ALPHA + ( MAX_ALPHA - MIN_ALPHA )/f.z;
 
 		if ( Math.random() < 0.5 ){
 			f.position.set( this.bounds.left + Math.random()*this.bounds.width, this.bounds.y+1 );
