@@ -2,7 +2,7 @@ import { Graphics, DEG_TO_RAD, Polygon, Point } from "pixi.js";
 import Gibbon, { Factory, Geom } from "../../../gibbon";
 
 const { randInt, randRange} = Gibbon.Rand;
-const { move, setReflect, reflection } = Gibbon.Geom;
+const { move, setReflect, reflection, interPt } = Gibbon.Geom;
 
 import * as PIXI from 'pixi.js';
 
@@ -12,6 +12,8 @@ import * as PIXI from 'pixi.js';
  * Should be easier to draw regular colors and transform on copy.
  */
 const HOLE_COLOR = 0xFF0000;
+
+const FLAKE_COLOR = 0xffffff;
 
 const MIN_RADIUS = 50;
 export const MAX_RADIUS = 80;
@@ -55,7 +57,7 @@ export default class SnowFactory extends Factory {
 
 		//this.drawTex = PIXI.RenderTexture.create()
 		//this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
-		//this.maskArc = this.baseArc.clone();
+		this.maskArc = this.makeArc( 0, 2*Math.PI/MAX_SEGS, MAX_RADIUS );
 
 	}
 
@@ -69,7 +71,7 @@ export default class SnowFactory extends Factory {
 		sprite.position.set( loc.x, loc.y );
 
 		let r = MAX_RADIUS;
-		const tex = this.flakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
+		const tex = this.makeFlakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
 		sprite.pivot = new Point( r, r);
 
@@ -81,14 +83,18 @@ export default class SnowFactory extends Factory {
 
 	}
 
-	flakeTex( r=100, segs=16 ){
+		/**
+	 * @param {*} r
+	 * @param {*} segs
+	 */
+	makeFlakeTex( r, segs ){
 
 		if ( (segs % 2) !== 0 ) segs++;
 
-		let arc=DEG_TO_RAD*(360/segs)
+		let arc=2*Math.PI/segs;
 		let tex = PIXI.RenderTexture.create( 2*r, 2*r );
 
-		let g = this.makeSnowArc( r, arc );
+		let g = this.drawArc( r, arc );
 
 		let mat = new PIXI.Matrix();
 		mat.translate(r,r);
@@ -114,13 +120,71 @@ export default class SnowFactory extends Factory {
 
 	}
 
+	drawArc( r, arc ){
+
+		const c = new PIXI.Container();
+		let g = new Graphics();
+		g.mask = this.maskArc;
+
+		c.addChild(this.maskArc );
+		c.addChild(g);
+
+		this.branch( g, new Point(0,0), arc/2, (0.5 + 0.5*Math.random() )*r );
+
+
+
+		return c;
+
+	}
+
+	branch( g, p0, angle, maxR ) {
+
+		g.moveTo( p0.x, p0.y );
+
+		var p1 = new Point( p0.x + maxR*Math.cos(angle), p0.y + maxR*Math.sin(angle) );
+
+		g.lineStyle( (0.05 + 0.2*Math.random())*maxR, FLAKE_COLOR );
+		g.lineTo( p1.x, p1.y );
+
+		if ( maxR <= 4 ) return;
+
+		angle += 10 + randRange( 20, 40 );
+		if ( Math.random() < 0.5 ) angle = -angle;
+
+		this.branch( g, interPt( p0, p1, 0.2 + 0.8*Math.random() ), angle, 0.5*maxR );
+
+
+	}
+
 	/**
-	 * Create the base snowflake subarc.
+	 *
+	 * @param {*} g
+	 * @param {*} p0
+	 * @param {*} p1
+	 * @param {number} rem - radius remaining.
+	 */
+	drawBranch( g, p0, p1, rem ) {
+
+		g.lineStyle( 0.1*rem, FLAKE_COLOR );
+		g.lineTo(p1.x, p1.y);
+
+		if ( rem <= 0 ) return;
+
+		var dx = p1.x - p0.x;
+		var dy = p1.y - p0.y;
+
+		const p2 = interPt( p0, p1, 0.4 + 0.6*Math.random() );
+
+
+	}
+
+	/**
+	 * Form arc by cutout methods.
 	 * @param {number} fill
 	 * @param {number} alpha
 	 * @returns {PIXI.DisplayObject}
 	 */
-	makeSnowArc( radius=100, maxArc=360/16, fill=0xffffff ) {
+	cutoutArc( radius=100, maxArc=360/16, fill=0xffffff ) {
 
 		const clip = new PIXI.Container();
 
@@ -132,9 +196,6 @@ export default class SnowFactory extends Factory {
 
 		const cut = new Graphics();
 		cut.blendMode = PIXI.BLEND_MODES.ERASE;
-		//const mask = base.clone();
-		//cut.mask = mask;
-
 
 		//this.randArcCuts( cut, minArc, maxArc, radius );
 		this.randArcCuts( cut, minArc, maxArc, radius );
@@ -143,12 +204,15 @@ export default class SnowFactory extends Factory {
 		//this.cutArc(cut, maxArc, minArc, radius );
 
 		/*
+		//const mask = base.clone();
+		//cut.mask = mask;
 		let cuts = randInt( MIN_CUTS, MAX_CUTS );
 		for( let i = 0; i < cuts; i++ ) {
 			this.cutPoly(cut, radius, minArc, maxArc);
-		}*/
-
+		}
 		//clip.addChild( mask );
+		*/
+
 		clip.addChild( base );
 		clip.addChild(cut);
 

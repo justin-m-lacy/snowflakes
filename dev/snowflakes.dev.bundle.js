@@ -637,8 +637,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "LoadGroup", function() { return _src_loadGroup__WEBPACK_IMPORTED_MODULE_13__["default"]; });
 
 /* harmony import */ var _utils_geom__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./utils/geom */ "../gibbon/utils/geom.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Geom", function() { return _utils_geom__WEBPACK_IMPORTED_MODULE_14__["default"]; });
-
+/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Geom", function() { return _utils_geom__WEBPACK_IMPORTED_MODULE_14__; });
 /* harmony import */ var _utils_rand__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./utils/rand */ "../gibbon/utils/rand.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Rand", function() { return _utils_rand__WEBPACK_IMPORTED_MODULE_15__["default"]; });
 
@@ -671,7 +670,7 @@ const Gibbon = {
 	Components: _components_components__WEBPACK_IMPORTED_MODULE_2__["default"],
 	Systems: _systems_systems__WEBPACK_IMPORTED_MODULE_3__["default"],
 	Utils: _utils_utils__WEBPACK_IMPORTED_MODULE_4__["default"],
-	Geom: _utils_geom__WEBPACK_IMPORTED_MODULE_14__["default"],
+	Geom: _utils_geom__WEBPACK_IMPORTED_MODULE_14__,
 	Engine: _src_engine__WEBPACK_IMPORTED_MODULE_0__["default"],
 	System: _src_system__WEBPACK_IMPORTED_MODULE_12__["default"],
 	Game: _src_game__WEBPACK_IMPORTED_MODULE_10__["default"],
@@ -52516,19 +52515,31 @@ const htmlStr =(color)=>{
 /*!*******************************!*\
   !*** ../gibbon/utils/geom.js ***!
   \*******************************/
-/*! exports provided: default */
+/*! exports provided: getLength, dist, getTravelPt, interPt, getMidPt, getCenter, setReflect, reflection, norm, cross, move, translate, rotate */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLength", function() { return getLength; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dist", function() { return dist; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTravelPt", function() { return getTravelPt; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "interPt", function() { return interPt; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMidPt", function() { return getMidPt; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCenter", function() { return getCenter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setReflect", function() { return setReflect; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reflection", function() { return reflection; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "norm", function() { return norm; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cross", function() { return cross; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "move", function() { return move; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "translate", function() { return translate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "rotate", function() { return rotate; });
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "../gibbon/node_modules/pixi.js/lib/pixi.es.js");
 
 
-/* harmony default export */ __webpack_exports__["default"] = ({
 
-	getLength:(p)=> {
+const getLength=(p)=> {
 		return Math.sqrt(p.x*p.x +p.y*p.y);
-	},
+}
 
 	/**
 	 * Returns the distance between two points.
@@ -52536,10 +52547,10 @@ __webpack_require__.r(__webpack_exports__);
 	 * @param {*} p2
 	 * @returns {number}
 	 */
-	dist:( p1, p2) => {
+	const dist=( p1, p2) => {
 		let dx = p2.x - p1.x, dy = p2.y - p1.y;
 		return Math.sqrt(dx*dx + dy*dy);
-	},
+	}
 
 	/**
 	 * Get the point located by travelling along a sequence of points
@@ -52548,7 +52559,7 @@ __webpack_require__.r(__webpack_exports__);
 	 * @param {number} dist
 	 * @returns {Point}
 	 */
-	getTravelPt:( points, dist ) => {
+	const getTravelPt=( points, dist ) => {
 
 		let count = points.length;
 		let curPt, prevPt = points[0];
@@ -52568,7 +52579,7 @@ __webpack_require__.r(__webpack_exports__);
 				// distance pt comes before curPt.
 
 				d = (dist - curDist ) / d;	// percent between points.
-				return new Point(
+				return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](
 					p1.x + d*dx,
 					p1.y + d*dy
 				);
@@ -52582,7 +52593,17 @@ __webpack_require__.r(__webpack_exports__);
 
 		// point not found.
 		return points[count-1];
-	},
+	}
+
+	/**
+	 * Return an interpolated point.
+	 * @param {Point} p0
+	 * @param {Point} p1
+	 * @param {number} t
+	 */
+	const interPt=(p0, p1, t)=>{
+		return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( (1-t)*p0.x + t*p1.x, (1-t)*p0.y+p1.y );
+	}
 
 	/**
 	 * Return a point falling a given distance between two points.
@@ -52590,34 +52611,34 @@ __webpack_require__.r(__webpack_exports__);
 	 * @param {Point} p2
 	 * @param {number} len - length between p2 and p1.
 	 */
-	getMidPt:( p1, p2, len ) => {
+	const getMidPt=( p1, p2, len ) => {
 
 		let dx = p2.x - p1.x;
 		let dy = p2.y - p1.y;
 
 		let d = Math.sqrt(dx*dx + dy*dy);
-		if ( d === 0 ) return new Point();
+		if ( d === 0 ) return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]();
 
 		d = len / d;	// convert from distance to percent.
 
-		return new Point(
+		return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](
 			p1.x + dx*d,
 			p1.y + dy*d
 		)
 
-	},
+	}
 
 	/**
 	 *
 	 * @param {Point[]} points
 	 * @returns {Point} Center point of all points.
 	 */
-	getCenter:(points) => {
+	const getCenter=(points) => {
 
 		if ( points.type === pixi_js__WEBPACK_IMPORTED_MODULE_0__["SHAPES"].POLY ) points = points.points;
 
 		let len = points.length;
-		if ( len === 0 ) return new Point();
+		if ( len === 0 ) return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]();
 
 		let p = points[0];
 		let x = p.x, y = p.y;
@@ -52632,43 +52653,43 @@ __webpack_require__.r(__webpack_exports__);
 		x /= len;
 		y /= len;
 
-		return new Point(x,y);
+		return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](x,y);
 
-	},
+	}
 
 	/**
 	 * sets the values of mat to a reflection across normal axis a,b
 	 * without altering tx,ty.
 	 * @returns {Matrix}
 	 */
-	setReflect:(mat,a,b)=>{
+	const setReflect=(mat,a,b)=>{
 		mat.set(  1-2*b*b, 2*a*b, 2*a*b, 1-2*a*a, mat.tx, mat.ty);
-	},
+	}
 
 	/**
 	 * @returns {PIXI.Matrix} - reflection matrix across the normal a,b.
 	 */
-	reflection:(a,b)=>{
+	const reflection=(a,b)=>{
 		return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Matrix"]( 1-2*b*b, 2*a*b, 2*a*b, 1-2*a*a );
-	},
+	}
 
 	/**
 	 * @returns {PIXI.Point} point normal to p.
 	 */
-	norm:(p)=>{ return new Point(p.y, -p.x)},
+	const norm=(p)=>{ return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](p.y, -p.x)}
 
 	/**
 	 * @returns {number} - magnitude of the cross product p1xp2
 	 * left hand rule; normals point screen upwards.
 	 */
-	cross:(p1, p2)=>{ return p1.x*p2.y - p1.y*p2.x; },
+	const cross=(p1, p2)=>{ return p1.x*p2.y - p1.y*p2.x; }
 
 	/**
 	 * move() is separate from translate() because of how PIXI
 	 * handles Polygon point storage.
 	 * @property {PIXI.Polygon} poly - polygon to translate.
 	 */
-	move:(poly,tx,ty)=>{
+	const move=(poly,tx,ty)=>{
 
 		let points = poly.points;
 
@@ -52679,12 +52700,12 @@ __webpack_require__.r(__webpack_exports__);
 
 		}
 
-	},
+	}
 
 	/**
 	 * @property {Point[]} points
 	 */
-	translate:(points, tx, ty )=>{
+	const translate=(points, tx, ty )=>{
 
 		for( let i = points.length-1; i>=0; i-- ) {
 
@@ -52693,12 +52714,12 @@ __webpack_require__.r(__webpack_exports__);
 
 		}
 
-	},
+	}
 
 	/**
 	 * @property {Point[]} points
 	 */
-	rotate:(points, theta )=>{
+	const rotate=(points, theta )=>{
 
 		let cos = Math.cos(theta);
 		let sin = Math.sin(theta);
@@ -52719,8 +52740,6 @@ __webpack_require__.r(__webpack_exports__);
 		}
 
 	}
-
-});
 
 /***/ }),
 
@@ -104850,7 +104869,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const { randInt, randRange} = _gibbon__WEBPACK_IMPORTED_MODULE_1__["default"].Rand;
-const { move, setReflect, reflection } = _gibbon__WEBPACK_IMPORTED_MODULE_1__["default"].Geom;
+const { move, setReflect, reflection, interPt } = _gibbon__WEBPACK_IMPORTED_MODULE_1__["default"].Geom;
 
 
 
@@ -104860,6 +104879,8 @@ const { move, setReflect, reflection } = _gibbon__WEBPACK_IMPORTED_MODULE_1__["d
  * Should be easier to draw regular colors and transform on copy.
  */
 const HOLE_COLOR = 0xFF0000;
+
+const FLAKE_COLOR = 0xffffff;
 
 const MIN_RADIUS = 50;
 const MAX_RADIUS = 80;
@@ -104903,7 +104924,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		//this.drawTex = PIXI.RenderTexture.create()
 		//this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
-		//this.maskArc = this.baseArc.clone();
+		this.maskArc = this.makeArc( 0, 2*Math.PI/MAX_SEGS, MAX_RADIUS );
 
 	}
 
@@ -104917,7 +104938,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		sprite.position.set( loc.x, loc.y );
 
 		let r = MAX_RADIUS;
-		const tex = this.flakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
+		const tex = this.makeFlakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
 		sprite.pivot = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( r, r);
 
@@ -104929,14 +104950,18 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 	}
 
-	flakeTex( r=100, segs=16 ){
+		/**
+	 * @param {*} r
+	 * @param {*} segs
+	 */
+	makeFlakeTex( r, segs ){
 
 		if ( (segs % 2) !== 0 ) segs++;
 
-		let arc=pixi_js__WEBPACK_IMPORTED_MODULE_0__["DEG_TO_RAD"]*(360/segs)
+		let arc=2*Math.PI/segs;
 		let tex = pixi_js__WEBPACK_IMPORTED_MODULE_0__["RenderTexture"].create( 2*r, 2*r );
 
-		let g = this.makeSnowArc( r, arc );
+		let g = this.drawArc( r, arc );
 
 		let mat = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Matrix"]();
 		mat.translate(r,r);
@@ -104962,13 +104987,71 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 	}
 
+	drawArc( r, arc ){
+
+		const c = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Container"]();
+		let g = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Graphics"]();
+		g.mask = this.maskArc;
+
+		c.addChild(this.maskArc );
+		c.addChild(g);
+
+		this.branch( g, new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"](0,0), arc/2, (0.5 + 0.5*Math.random() )*r );
+
+
+
+		return c;
+
+	}
+
+	branch( g, p0, angle, maxR ) {
+
+		g.moveTo( p0.x, p0.y );
+
+		var p1 = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( p0.x + maxR*Math.cos(angle), p0.y + maxR*Math.sin(angle) );
+
+		g.lineStyle( (0.05 + 0.2*Math.random())*maxR, FLAKE_COLOR );
+		g.lineTo( p1.x, p1.y );
+
+		if ( maxR <= 4 ) return;
+
+		angle += 10 + randRange( 20, 40 );
+		if ( Math.random() < 0.5 ) angle = -angle;
+
+		this.branch( g, interPt( p0, p1, 0.2 + 0.8*Math.random() ), angle, 0.5*maxR );
+
+
+	}
+
 	/**
-	 * Create the base snowflake subarc.
+	 *
+	 * @param {*} g
+	 * @param {*} p0
+	 * @param {*} p1
+	 * @param {number} rem - radius remaining.
+	 */
+	drawBranch( g, p0, p1, rem ) {
+
+		g.lineStyle( 0.1*rem, FLAKE_COLOR );
+		g.lineTo(p1.x, p1.y);
+
+		if ( rem <= 0 ) return;
+
+		var dx = p1.x - p0.x;
+		var dy = p1.y - p0.y;
+
+		const p2 = interPt( p0, p1, 0.4 + 0.6*Math.random() );
+
+
+	}
+
+	/**
+	 * Form arc by cutout methods.
 	 * @param {number} fill
 	 * @param {number} alpha
 	 * @returns {PIXI.DisplayObject}
 	 */
-	makeSnowArc( radius=100, maxArc=360/16, fill=0xffffff ) {
+	cutoutArc( radius=100, maxArc=360/16, fill=0xffffff ) {
 
 		const clip = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Container"]();
 
@@ -104980,9 +105063,6 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		const cut = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Graphics"]();
 		cut.blendMode = pixi_js__WEBPACK_IMPORTED_MODULE_0__["BLEND_MODES"].ERASE;
-		//const mask = base.clone();
-		//cut.mask = mask;
-
 
 		//this.randArcCuts( cut, minArc, maxArc, radius );
 		this.randArcCuts( cut, minArc, maxArc, radius );
@@ -104991,12 +105071,15 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		//this.cutArc(cut, maxArc, minArc, radius );
 
 		/*
+		//const mask = base.clone();
+		//cut.mask = mask;
 		let cuts = randInt( MIN_CUTS, MAX_CUTS );
 		for( let i = 0; i < cuts; i++ ) {
 			this.cutPoly(cut, radius, minArc, maxArc);
-		}*/
-
+		}
 		//clip.addChild( mask );
+		*/
+
 		clip.addChild( base );
 		clip.addChild(cut);
 
