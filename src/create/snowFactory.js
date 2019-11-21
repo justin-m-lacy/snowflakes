@@ -16,6 +16,13 @@ const HOLE_COLOR = 0xFF0000;
 const MIN_RADIUS = 50;
 const MAX_RADIUS = 100;
 
+
+/**
+ * @property {number} FLAKE_SIZE - base flake size.
+ */
+export const FLAKE_SIZE = 25;
+export const TEX_SIZE = 100;
+
 /**
  * Min/max arc gap as percent of arc.
  */
@@ -31,7 +38,6 @@ const MAX_SEGS = 8;
 const MIN_CUTS = 8;
 const MAX_CUTS = 16;
 
-export const SNOW_SCALE = 0.25;
 
 export default class SnowFactory extends Factory {
 
@@ -59,7 +65,7 @@ export default class SnowFactory extends Factory {
 		sprite.texture = tex;
 		sprite.pivot = new Point( r, r);
 
-		sprite.scale = new Point( SNOW_SCALE, SNOW_SCALE );
+		sprite.scale = new Point( FLAKE_SIZE/r, FLAKE_SIZE/r );
 
 	//	sprite.addChild(g);
 

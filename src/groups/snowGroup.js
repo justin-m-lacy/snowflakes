@@ -37,6 +37,7 @@ export default class SnowGroup extends BoundsDestroy {
 
 		let s = this.factory.createFlake(pt);
 		let g = new GameObject(s);
+		g.setDestroyOpts(true,true,true);
 
 		let mv = g.add( Mover);
 		mv.set( randRange(-1,1), randRange(-1,1) );

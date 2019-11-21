@@ -521,7 +521,7 @@ class SpriteTiler extends _src_component__WEBPACK_IMPORTED_MODULE_0__["default"]
 /*!**************************!*\
   !*** ../gibbon/index.js ***!
   \**************************/
-/*! exports provided: Engine, Game, Component, System, Factory, GameObject, Mover, Camera, Library, Group, LoadGroup, Geom, Rand, Components, Systems, default */
+/*! exports provided: Engine, Game, Component, System, Factory, GameObject, Mover, Camera, Library, Group, LoadGroup, Geom, Rand, Components, Systems, Utils, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -538,38 +538,44 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _systems_systems__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./systems/systems */ "../gibbon/systems/systems.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Systems", function() { return _systems_systems__WEBPACK_IMPORTED_MODULE_3__["default"]; });
 
-/* harmony import */ var _src_factory__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./src/factory */ "../gibbon/src/factory.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Factory", function() { return _src_factory__WEBPACK_IMPORTED_MODULE_4__["default"]; });
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/utils */ "../gibbon/utils/utils.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Utils", function() { return _utils_utils__WEBPACK_IMPORTED_MODULE_4__["default"]; });
 
-/* harmony import */ var _src_gameObject__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./src/gameObject */ "../gibbon/src/gameObject.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "GameObject", function() { return _src_gameObject__WEBPACK_IMPORTED_MODULE_5__["default"]; });
+/* harmony import */ var _src_factory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./src/factory */ "../gibbon/src/factory.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Factory", function() { return _src_factory__WEBPACK_IMPORTED_MODULE_5__["default"]; });
 
-/* harmony import */ var _components_mover__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/mover */ "../gibbon/components/mover.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Mover", function() { return _components_mover__WEBPACK_IMPORTED_MODULE_6__["default"]; });
+/* harmony import */ var _src_gameObject__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./src/gameObject */ "../gibbon/src/gameObject.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "GameObject", function() { return _src_gameObject__WEBPACK_IMPORTED_MODULE_6__["default"]; });
 
-/* harmony import */ var _components_camera__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/camera */ "../gibbon/components/camera.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Camera", function() { return _components_camera__WEBPACK_IMPORTED_MODULE_7__["default"]; });
+/* harmony import */ var _components_mover__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/mover */ "../gibbon/components/mover.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Mover", function() { return _components_mover__WEBPACK_IMPORTED_MODULE_7__["default"]; });
 
-/* harmony import */ var _src_library__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./src/library */ "../gibbon/src/library.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Library", function() { return _src_library__WEBPACK_IMPORTED_MODULE_8__["default"]; });
+/* harmony import */ var _components_camera__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/camera */ "../gibbon/components/camera.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Camera", function() { return _components_camera__WEBPACK_IMPORTED_MODULE_8__["default"]; });
 
-/* harmony import */ var _src_game__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./src/game */ "../gibbon/src/game.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Game", function() { return _src_game__WEBPACK_IMPORTED_MODULE_9__["default"]; });
+/* harmony import */ var _src_library__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./src/library */ "../gibbon/src/library.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Library", function() { return _src_library__WEBPACK_IMPORTED_MODULE_9__["default"]; });
 
-/* harmony import */ var _src_group__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./src/group */ "../gibbon/src/group.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Group", function() { return _src_group__WEBPACK_IMPORTED_MODULE_10__["default"]; });
+/* harmony import */ var _src_game__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./src/game */ "../gibbon/src/game.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Game", function() { return _src_game__WEBPACK_IMPORTED_MODULE_10__["default"]; });
 
-/* harmony import */ var _src_system__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./src/system */ "../gibbon/src/system.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "System", function() { return _src_system__WEBPACK_IMPORTED_MODULE_11__["default"]; });
+/* harmony import */ var _src_group__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./src/group */ "../gibbon/src/group.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Group", function() { return _src_group__WEBPACK_IMPORTED_MODULE_11__["default"]; });
 
-/* harmony import */ var _src_loadGroup__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./src/loadGroup */ "../gibbon/src/loadGroup.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "LoadGroup", function() { return _src_loadGroup__WEBPACK_IMPORTED_MODULE_12__["default"]; });
+/* harmony import */ var _src_system__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./src/system */ "../gibbon/src/system.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "System", function() { return _src_system__WEBPACK_IMPORTED_MODULE_12__["default"]; });
 
-/* harmony import */ var _utils_geom__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./utils/geom */ "../gibbon/utils/geom.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Geom", function() { return _utils_geom__WEBPACK_IMPORTED_MODULE_13__["default"]; });
+/* harmony import */ var _src_loadGroup__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./src/loadGroup */ "../gibbon/src/loadGroup.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "LoadGroup", function() { return _src_loadGroup__WEBPACK_IMPORTED_MODULE_13__["default"]; });
 
-/* harmony import */ var _utils_rand__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./utils/rand */ "../gibbon/utils/rand.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Rand", function() { return _utils_rand__WEBPACK_IMPORTED_MODULE_14__["default"]; });
+/* harmony import */ var _utils_geom__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./utils/geom */ "../gibbon/utils/geom.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Geom", function() { return _utils_geom__WEBPACK_IMPORTED_MODULE_14__["default"]; });
+
+/* harmony import */ var _utils_rand__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./utils/rand */ "../gibbon/utils/rand.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Rand", function() { return _utils_rand__WEBPACK_IMPORTED_MODULE_15__["default"]; });
+
+/* harmony import */ var _utils_canvasDraw__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./utils/canvasDraw */ "../gibbon/utils/canvasDraw.js");
+
 
 
 
@@ -593,21 +599,23 @@ __webpack_require__.r(__webpack_exports__);
 
 const Gibbon = {
 
+	CanvasDraw: _utils_canvasDraw__WEBPACK_IMPORTED_MODULE_16__["default"],
 	Components: _components_components__WEBPACK_IMPORTED_MODULE_2__["default"],
 	Systems: _systems_systems__WEBPACK_IMPORTED_MODULE_3__["default"],
-	Geom: _utils_geom__WEBPACK_IMPORTED_MODULE_13__["default"],
+	Utils: _utils_utils__WEBPACK_IMPORTED_MODULE_4__["default"],
+	Geom: _utils_geom__WEBPACK_IMPORTED_MODULE_14__["default"],
 	Engine: _src_engine__WEBPACK_IMPORTED_MODULE_0__["default"],
-	System: _src_system__WEBPACK_IMPORTED_MODULE_11__["default"],
-	Game: _src_game__WEBPACK_IMPORTED_MODULE_9__["default"],
-	Group: _src_group__WEBPACK_IMPORTED_MODULE_10__["default"],
-	LoadGroup: _src_loadGroup__WEBPACK_IMPORTED_MODULE_12__["default"],
+	System: _src_system__WEBPACK_IMPORTED_MODULE_12__["default"],
+	Game: _src_game__WEBPACK_IMPORTED_MODULE_10__["default"],
+	Group: _src_group__WEBPACK_IMPORTED_MODULE_11__["default"],
+	LoadGroup: _src_loadGroup__WEBPACK_IMPORTED_MODULE_13__["default"],
 	Component: _src_component__WEBPACK_IMPORTED_MODULE_1__["default"],
-	GameObject: _src_gameObject__WEBPACK_IMPORTED_MODULE_5__["default"],
-	Factory: _src_factory__WEBPACK_IMPORTED_MODULE_4__["default"],
-	Library: _src_library__WEBPACK_IMPORTED_MODULE_8__["default"],
-	Camera: _components_camera__WEBPACK_IMPORTED_MODULE_7__["default"],
-	Mover: _components_mover__WEBPACK_IMPORTED_MODULE_6__["default"],
-	Rand: _utils_rand__WEBPACK_IMPORTED_MODULE_14__["default"]
+	GameObject: _src_gameObject__WEBPACK_IMPORTED_MODULE_6__["default"],
+	Factory: _src_factory__WEBPACK_IMPORTED_MODULE_5__["default"],
+	Library: _src_library__WEBPACK_IMPORTED_MODULE_9__["default"],
+	Camera: _components_camera__WEBPACK_IMPORTED_MODULE_8__["default"],
+	Mover: _components_mover__WEBPACK_IMPORTED_MODULE_7__["default"],
+	Rand: _utils_rand__WEBPACK_IMPORTED_MODULE_15__["default"]
 
 }
 /* harmony default export */ __webpack_exports__["default"] = (Gibbon);
@@ -52343,6 +52351,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "../gibbon/utils/canvasDraw.js":
+/*!*************************************!*\
+  !*** ../gibbon/utils/canvasDraw.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return CanvasDraw; });
+/* harmony import */ var _colorUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./colorUtils */ "../gibbon/utils/colorUtils.js");
+
+
+class CanvasDraw {
+
+	get canvas(){return this._canvas; }
+
+	get width(){return this._width;}
+	get height(){return this._height;}
+
+	constructor( width, height ){
+
+
+		this._canvas = document.createElement('canvas' );
+
+		this._width = width;
+		this._height = height;
+
+		this._canvas.width = width;
+		this._canvas.height = height;
+
+	}
+
+	fill( color ) {
+
+		var ctx = this._canvas.getContext('2d');
+
+		ctx.fillStyle( Object(_colorUtils__WEBPACK_IMPORTED_MODULE_0__["htmlStr"])(color) );
+		ctx.fillRect( 0, 0, this.width, this.height );
+
+	}
+
+}
+
+/***/ }),
+
+/***/ "../gibbon/utils/colorUtils.js":
+/*!*************************************!*\
+  !*** ../gibbon/utils/colorUtils.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+	rgbStr:(color)=>{
+		return color.toString(16).padStart(6,'0');
+	},
+
+	htmlStr:(color)=>{
+		return '#'+color.toString(16).padStart(6,'0');
+	}
+
+});
+
+/***/ }),
+
 /***/ "../gibbon/utils/geom.js":
 /*!*******************************!*\
   !*** ../gibbon/utils/geom.js ***!
@@ -52574,6 +52651,28 @@ __webpack_require__.r(__webpack_exports__);
 
 	randRange:(min,max)=>{ return min + ( Math.random()*(max-min)) }
 
+});
+
+/***/ }),
+
+/***/ "../gibbon/utils/utils.js":
+/*!********************************!*\
+  !*** ../gibbon/utils/utils.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _colorUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./colorUtils */ "../gibbon/utils/colorUtils.js");
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! .. */ "../gibbon/index.js");
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	Color:_colorUtils__WEBPACK_IMPORTED_MODULE_0__["default"],
+	Geom:___WEBPACK_IMPORTED_MODULE_1__["Geom"],
+	Rand:___WEBPACK_IMPORTED_MODULE_1__["Rand"]
 });
 
 /***/ }),
@@ -104370,6 +104469,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var gibbon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gibbon.js */ "../gibbon/index.js");
 /* harmony import */ var _flake__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./flake */ "./src/components/flake.js");
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
+/* harmony import */ var _create_snowFactory__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../create/snowFactory */ "./src/create/snowFactory.js");
+
 
 
 
@@ -104380,6 +104481,16 @@ const MAX_WIND = 2;
 const MIN_G = 0.3;
 const MAX_G = 0.7;
 const FLAKE_COUNT = 64;
+
+const MIN_SIZE = 6;
+const MAX_Z = 12;
+
+
+const MIN_ALPHA = 0.4;
+const MAX_ALPHA = 0.9;
+
+const MAX_V = 1;
+
 
 /**
  * Background snow.
@@ -104415,7 +104526,11 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 			var s = factory.createFlake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]( Math.random()*bounds.width, Math.random()*bounds.height ) );
 			clip.addChild(s);
 
-			this.flakes.push( new _flake__WEBPACK_IMPORTED_MODULE_1__["default"](s) );
+			var f = new _flake__WEBPACK_IMPORTED_MODULE_1__["default"](s);
+			this.randomize(f);
+			s.position.set( bounds.x + Math.random()*bounds.width, bounds.y+Math.random()*bounds.height );
+
+			this.flakes.push( f );
 
 		}
 
@@ -104434,7 +104549,7 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 			if ( !bounds.contains( p.x, p.y ) ) {
 
-				p.set( Math.random()*bounds.width, bounds.y );
+				this.randomize(f);
 
 			} else {
 
@@ -104444,6 +104559,35 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 		}
 
+	}
+
+	randomize(f) {
+
+		f.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
+		f.z = randRange(1,MAX_Z);
+
+		let s = ( _create_snowFactory__WEBPACK_IMPORTED_MODULE_3__["FLAKE_SIZE"] - ( _create_snowFactory__WEBPACK_IMPORTED_MODULE_3__["FLAKE_SIZE"] - MIN_SIZE)*f.z/MAX_Z )/_create_snowFactory__WEBPACK_IMPORTED_MODULE_3__["TEX_SIZE"];
+
+		f.clip.scale.set(s,s);
+		f.clip.alpha = MIN_ALPHA + ( MAX_ALPHA - MIN_ALPHA )/f.z;
+
+		if ( Math.random() < 0.5 ){
+			f.position.set( this.bounds.left + Math.random()*this.bounds.width, this.bounds.y+1 );
+		} else if ( this.wind.x + f.velocity.x >= 0 ) {
+			f.position.set( this.bounds.left+1, this.bounds.y + Math.random()*this.bounds.height );
+		} else {
+			f.position.set( this.bounds.right-1, this.bounds.y + Math.random()*this.bounds.height );
+		}
+
+	}
+
+	placeTop(f){
+
+		f.position.set( Math.random()*bounds.width, bounds.y );
+
+	}
+
+	placeSide(f){
 	}
 
 }
@@ -104460,24 +104604,12 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Flake; });
-/* harmony import */ var gibbon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gibbon.js */ "../gibbon/index.js");
-/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
-/* harmony import */ var _create_snowFactory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../create/snowFactory */ "./src/create/snowFactory.js");
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
 
 
-
-const { randInt, randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
-
-const MAX_Z = 8;
-
-const MIN_SCALE = 0.8;
-const MAX_SCALE = 1;
-
-const MIN_ALPHA = 0.4;
-const MAX_ALPHA = 0.9;
-
-const MAX_V = 1;
-
+/**
+ * Container for holding flake/clip/velocity information.
+ */
 class Flake {
 
 	/**
@@ -104492,29 +104624,14 @@ class Flake {
 	get velocity(){return this._vel;}
 	set velocity(v){this._vel = v;}
 
+	get position(){ return this.clip.position}
+
 	constructor( clip ){
 
 		this.clip = clip;
-		this.velocity = new pixi_js__WEBPACK_IMPORTED_MODULE_1__["Point"]();
-
-		this.randomize();
+		this.velocity = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]();
 
 	}
-
-	randomize(){
-
-		this.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
-		this.z = randRange(1,MAX_Z);
-
-		this.velocity.x;
-		this.velocity.y;
-
-		let s = (_create_snowFactory__WEBPACK_IMPORTED_MODULE_2__["SNOW_SCALE"]/this.z)*( MIN_SCALE + ( MAX_SCALE - MIN_SCALE ) );
-		this.clip.scale.set(s,s);
-		this.clip.alpha = MIN_ALPHA + ( MAX_ALPHA - MIN_ALPHA )/this.z;
-
-	}
-
 
 
 }
@@ -104525,12 +104642,13 @@ class Flake {
 /*!***********************************!*\
   !*** ./src/create/snowFactory.js ***!
   \***********************************/
-/*! exports provided: SNOW_SCALE, default */
+/*! exports provided: FLAKE_SIZE, TEX_SIZE, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SNOW_SCALE", function() { return SNOW_SCALE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FLAKE_SIZE", function() { return FLAKE_SIZE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TEX_SIZE", function() { return TEX_SIZE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SnowFactory; });
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
 /* harmony import */ var _gibbon__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../gibbon */ "../gibbon/index.js");
@@ -104552,6 +104670,13 @@ const HOLE_COLOR = 0xFF0000;
 const MIN_RADIUS = 50;
 const MAX_RADIUS = 100;
 
+
+/**
+ * @property {number} FLAKE_SIZE - base flake size.
+ */
+const FLAKE_SIZE = 25;
+const TEX_SIZE = 100;
+
 /**
  * Min/max arc gap as percent of arc.
  */
@@ -104567,7 +104692,6 @@ const MAX_SEGS = 8;
 const MIN_CUTS = 8;
 const MAX_CUTS = 16;
 
-const SNOW_SCALE = 0.25;
 
 class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
@@ -104595,7 +104719,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		sprite.texture = tex;
 		sprite.pivot = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( r, r);
 
-		sprite.scale = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( SNOW_SCALE, SNOW_SCALE );
+		sprite.scale = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( FLAKE_SIZE/r, FLAKE_SIZE/r );
 
 	//	sprite.addChild(g);
 
@@ -104831,6 +104955,7 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 
 		let s = this.factory.createFlake(pt);
 		let g = new gibbon_js__WEBPACK_IMPORTED_MODULE_0__["GameObject"](s);
+		g.setDestroyOpts(true,true,true);
 
 		let mv = g.add( gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Mover"]);
 		mv.set( randRange(-1,1), randRange(-1,1) );
