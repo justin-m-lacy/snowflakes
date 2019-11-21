@@ -11,10 +11,10 @@ export const F_INV = 1/FOCUS;
  * Projection factor at distance z.
  * @param {number} z
  */
-export const projAt = (z)=>1/( F_INV*z + 1 );
+export const projAt = (z)=>FOCUS/( z + FOCUS );
 
 export const setProj = ( mat,z )=>{
-	mat.a = mat.c = 1/(F_INV*z+1);
+	mat.a = mat.d = 1/(F_INV*z+1);
 	return mat;
 }
 

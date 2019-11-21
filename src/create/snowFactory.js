@@ -14,14 +14,13 @@ import * as PIXI from 'pixi.js';
 const HOLE_COLOR = 0xFF0000;
 
 const MIN_RADIUS = 50;
-const MAX_RADIUS = 80;
+export const MAX_RADIUS = 80;
 
 
 /**
  * @property {number} FLAKE_SIZE - base flake size.
  */
 export const FLAKE_RADIUS = 20;
-export const TEX_SIZE = 100;
 
 /**
  * Min/max arc gap as percent of arc.

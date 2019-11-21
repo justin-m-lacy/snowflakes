@@ -1,6 +1,7 @@
 import { Point, Matrix } from "pixi.js";
-import { SNOW_SCALE, FLAKE_RADIUS, TEX_SIZE } from "../create/snowFactory";
+import { SNOW_SCALE, FLAKE_RADIUS, MAX_RADIUS } from "../create/snowFactory";
 import { MAX_ALPHA, MIN_SIZE, MAX_Z, MIN_ALPHA } from "./backSnow";
+import { projAt } from "../groups/snowGroup";
 /**
  * Container for holding flake/clip/velocity information.
  */
@@ -25,8 +26,8 @@ export default class Flake {
 		this.clip = clip;
 		this.velocity = new Point();
 
-		this._position = this.clip.position;
-		//this._position =new Point();
+		//this._position = this.clip.position;
+		this._position =new Point();
 
 		this.proj = new Matrix(1,0,0,1);
 
@@ -37,8 +38,12 @@ export default class Flake {
 	 */
 	update(){
 
-		let s = ( FLAKE_RADIUS - ( FLAKE_RADIUS - MIN_SIZE)*this.z/MAX_Z )/TEX_SIZE;
-		this.clip.scale.set(s,s);
+		let k = projAt(this.z);
+		this.proj.a = this.proj.d = k;
+		this.proj.apply( this.position, this.clip.position );
+
+		k *= FLAKE_RADIUS/MAX_RADIUS;
+		this.clip.scale.set( k, k );
 		this.clip.alpha = MIN_ALPHA + ( MAX_ALPHA - MIN_ALPHA )/this.z;
 
 		//this.clip.position.set( this.position.x/this.z, this.position.y/this.z);

@@ -11,16 +11,14 @@ const MAX_G = 0.7;
 const FLAKE_COUNT = 64;
 
 export const MIN_SIZE = 6;
-export const MIN_Z = 1;
-export const MAX_Z = 5;
-
-export const FOCUS = 20;
+export const MIN_Z = 10;
+export const MAX_Z = 200;
 
 const MIN_ALPHA = 0.4;
 const MAX_ALPHA = 0.9;
 export { MIN_ALPHA, MAX_ALPHA };
 
-const MAX_V = 1;
+const MAX_V = 0.2;
 const MAX_VZ = 0.01;
 
 /**
@@ -59,7 +57,7 @@ export default class BackSnow extends Component {
 
 			var f = new Flake(s);
 			this.randomize(f);
-			s.position.set( bounds.x + Math.random()*bounds.width, bounds.y+Math.random()*bounds.height );
+			f.position.set( randRange(-bounds.width/2,bounds.width/2), randRange(-bounds.height/2,bounds.height/2) );
 
 			this.flakes.push( f );
 
@@ -76,21 +74,24 @@ export default class BackSnow extends Component {
 		for( let i = a.length-1; i >= 0; i-- ) {
 
 			var f = a[i];
-			var p = f.position;
+			var p = f.clip.position;
 
 			if ( f.z < MIN_Z ) f.vz = Math.abs(f.vz);
 
-			if ( f.z > MAX_Z+2 || !bounds.contains( p.x, p.y ) ) {
+			if ( !bounds.contains( p.x, p.y ) ) {
 
 				this.randomize(f);
 
 			} else {
 
-				f.z += f.vz*delta;
-				f.vz += (-0.0001 + 0.0002*Math.random())*delta;
+				p = f.position;
+				f.z += f.vz;
+				//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
 
-				p.set( p.x + (f.velocity.x + wind.x )*delta/f.z,
-						p.y + (f.velocity.y + wind.y)*delta/f.z )
+
+
+				p.set( p.x + (f.velocity.x + wind.x ),
+						p.y + (f.velocity.y + wind.y) )
 
 
 				f.update();
