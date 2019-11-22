@@ -104606,11 +104606,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const { randInt, randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
+const { randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
 
 const FLAKE_COUNT = 512;
 
-const MAX_WIND = 3;
+const MAX_WIND = 2.4;
 const MIN_G = 0.4;
 const MAX_G = 0.8;
 
@@ -105060,11 +105060,14 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		g.moveTo( p0.x, p0.y );
 
-		var subR = ( 0.1 + 0.1*Math.random() )*maxR;
+		var subR = ( 0.12 + 0.12*Math.random() )*maxR;
+		/*if ( subR <= 8 ) { subR = maxR; }*/
+
 		var p1 = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
 
 		g.lineStyle( (0.02 + 0.05*Math.random())*DRAW_RADIUS, FLAKE_COLOR );
 		this.drawShape(g, p1, subR );
+
 		if ( subR <= 8 ) return;
 
 		var a2 = parity* ( angle + ( 32 + 32*Math.random()*pixi_js__WEBPACK_IMPORTED_MODULE_0__["DEG_TO_RAD"] ) );
@@ -105534,10 +105537,10 @@ __webpack_require__.r(__webpack_exports__);
 const { randInt, randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
 
 const STAR_COLOR = 0xffffff;
-const STAR_ALPHA = 0.9;
+const STAR_ALPHA = 0.8;
 
 const MIN_RADIUS = 3;
-const MAX_RADIUS = 4;
+const MAX_RADIUS = 3;
 
 class StarGroup extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["System"] {
 
@@ -105557,7 +105560,7 @@ class StarGroup extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["System"] {
 		g.position.set( Math.random()*screen.width, Math.random()*screen.height );
 
 		gsap__WEBPACK_IMPORTED_MODULE_2__["gsap"].to( g, randRange(1,3),
-			{alpha:1, yoyo:true, repeat:1,
+			{alpha:1, yoyo:true, repeat:1, repeatDelay:randRange(2,4),
 					onCompleteParams:[g], onComplete:(g)=>this.killStar(g) } );
 
 		this.clip.addChild(g);

@@ -3,11 +3,11 @@ import Flake from "./flake";
 import { Point } from "pixi.js";
 import { projAt, MAX_OMEGA } from "../groups/snowGroup";
 
-const { randInt, randRange } = Rand;
+const { randRange } = Rand;
 
 const FLAKE_COUNT = 512;
 
-const MAX_WIND = 3;
+const MAX_WIND = 2.4;
 const MIN_G = 0.4;
 const MAX_G = 0.8;
 

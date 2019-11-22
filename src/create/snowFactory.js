@@ -168,11 +168,14 @@ export default class SnowFactory extends Factory {
 
 		g.moveTo( p0.x, p0.y );
 
-		var subR = ( 0.1 + 0.1*Math.random() )*maxR;
+		var subR = ( 0.12 + 0.12*Math.random() )*maxR;
+		/*if ( subR <= 8 ) { subR = maxR; }*/
+
 		var p1 = new Point( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
 
 		g.lineStyle( (0.02 + 0.05*Math.random())*DRAW_RADIUS, FLAKE_COLOR );
 		this.drawShape(g, p1, subR );
+
 		if ( subR <= 8 ) return;
 
 		var a2 = parity* ( angle + ( 32 + 32*Math.random()*DEG_TO_RAD ) );
