@@ -22,7 +22,7 @@ export const MAX_RADIUS = 80;
 /**
  * @property {number} FLAKE_SIZE - base flake size.
  */
-export const FLAKE_RADIUS = 32;
+export const FLAKE_RADIUS = 26;
 
 /**
  * Min/max arc gap as percent of arc.
@@ -127,7 +127,11 @@ export default class SnowFactory extends Factory {
 		let g = new Graphics();
 		g.mask = this.maskArc;
 
-		this.branch( g, new Point(0,0), arc/2, r, Math.random() < 0.5 ? -1 : 1 );
+		let p = new Point();
+
+		this.drawSolid(g, p, (0.02+0.05*Math.random())*r );
+
+		this.branch( g, p, arc/2, 1.4*r, Math.random() < 0.5 ? -1 : 1 );
 		//this.arcItems(g, r, arc );
 
 		c.addChild(this.maskArc );
@@ -142,55 +146,78 @@ export default class SnowFactory extends Factory {
 
 		g.moveTo( p0.x, p0.y );
 
-		var subR = ( 0.2 + 0.2*Math.random() )*maxR;
+		var subR = ( 0.1 + 0.1*Math.random() )*maxR;
 		var p1 = new Point( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
 
-		g.lineStyle( (0.02 + 0.1*Math.random())*MAX_RADIUS, FLAKE_COLOR );
+		g.lineStyle( (0.02 + 0.05*Math.random())*MAX_RADIUS, FLAKE_COLOR );
 
-		this.drawShape(g, p1, 0.5*subR );
 
-		//g.lineTo( p1.x, p1.y );
+		this.drawShape(g, p1, subR );
 		if ( subR <= 8 ) return;
 
-		var a2 = angle + ( 20 + 20*Math.random()*DEG_TO_RAD );
+		var a2 = angle + ( 32 + 32*Math.random()*DEG_TO_RAD );
 		if ( parity < 0 ) a2 = -a2;
+		//if ( Math.random()<0.5) a2 = -a2;
 
 		let t = 0.4 + 0.8*Math.random();
 		//this.branch( g, interPt( p0, p1, t ), angle, (1-t)*maxR );
-		this.branch( g, interPt( p0, p1, t ), a2, maxR -subR, Math.random() < 0.5 ? -1 : 1  );
-		//this.branch( g, interPt( p0, p1, t ), -a2, maxR - subR );
+		this.branch( g, interPt( p0, p1, t ), a2, maxR -subR, parity  );
+		//this.branch( g, interPt( p0, p1, 0.4 + 0.8*Math.random() ), -a2, maxR - subR );
 
-		if ( maxR - subR > 4 ) {
+		if ( maxR - subR > 8 ) {
 			this.branch(g, p1, angle, maxR-subR, -parity );
 		}
 
 
 	}
 
-	drawShape( g, p, size ) {
+	drawSolid( g, p, size ) {
 
-		//g.lineTo(p.x,p.y);
-		//return;
+		g.beginFill(FLAKE_COLOR);
 
 		var n = Math.random();
-		if ( n < 0.5 ) {
+		if ( n < 0.2 ) {
 
-			g.drawShape( new PIXI.Ellipse(p.x,p.y,size, size ) );
+			g.drawShape( new PIXI.Ellipse(p.x,p.y, (0.5 + Math.random())*size, (0.5 + Math.random())*size ) );
 
-		} else if ( n < 0.15 ) {
+		} else if ( n < 0.4 ) {
 
-			g.drawShape( new PIXI.RoundedRectangle(p.x,p.y, size, 1.5*size, Math.random()*size/4 ) );
+			g.drawShape( new PIXI.RoundedRectangle(p.x,p.y,
+				(0.5 + Math.random())*size, (0.5 + Math.random())*size, Math.random()*size/8 ) );
+
+		} else if ( n < 0.7 ) {
+
+			g.drawStar( p.x, p.y, MAX_SEGS, size, size/2 );
+		} else {
+
+			g.drawRect( new PIXI.Rectangle( p.x, p.y, (0.5 + Math.random())*size, (0.5 + Math.random())*size ) );
+		}
+		g.endFill();
+
+	}
+
+	drawShape( g, p, size ) {
+
+		//if ( size < 4 ) size = 4;
+		var n = Math.random();
+		if ( n < 0.05 ) {
+
+			g.drawShape( new PIXI.Ellipse(p.x,p.y, (0.5 +0.3* Math.random())*size,(0.5 + 0.3*Math.random())*size ) );
+
+		} else if ( n < 0.17 ) {
+
+			g.drawShape( new PIXI.RoundedRectangle(p.x,p.y, (0.5 +1* Math.random())*size, (0.5 +1*Math.random())*size, Math.random()*size/8 ) );
+
+		} else if ( n < 0.21 ) {
+
+			g.drawCircle( p.x, p.y, (0.7+0.3*Math.random())*size );
 
 		} else if ( n < 0.25 ) {
 
-			g.drawCircle( p.x, p.y, size );
+			g.drawRect( new PIXI.Rectangle( p.x, p.y, (0.7 +1* Math.random())*size,(0.7 + 1*Math.random())*size ) );
+		}else {
+			g.lineTo( p.x, p.y );
 
-		} else if ( n < 0.35 ) {
-
-			g.drawRect( new PIXI.Rectangle( p.x, p.y, size, size ) );
-		} else {
-
-			g.lineTo(p.x,p.y);
 		}
 
 	}

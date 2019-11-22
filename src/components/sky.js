@@ -15,7 +15,7 @@ export default class Sky extends Component {
 
 	init(){
 
-		this.skyGradient = new Gradient( [0x000077,0x1100cc,0xaa1181 ], [0,0.5,1] );
+		this.skyGradient = new Gradient( [0x000044,0x110088,0x771181 ], [0.2,0.8,1] );
 
 		this.view = this.game.screen;
 
