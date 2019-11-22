@@ -17,7 +17,7 @@ const HOLE_COLOR = 0xFF0000;
 const FLAKE_COLOR = 0xffffff;
 
 const MIN_RADIUS = 50;
-export const MAX_RADIUS = 80;
+export const MAX_RADIUS = 64;
 
 
 /**
@@ -56,16 +56,6 @@ export default class SnowFactory extends Factory {
 
 		super(game);
 
-		// use for drawing base texture before making scaled version.
-		//this.drawTex = PIXI.RenderTexture.create( 2*MAX_RADIUS, 2*MAX_RADIUS );
-		//this.drawSprite = new PIXI.Sprite();
-		//this.drawSprite.texture = this.drawTex;
-
-		// transformation from draw texture to sprite texture.
-		//this.drawMat = new PIXI.Matrix();
-		//this.drawMat.a = this.drawMat.d = (2*FLAKE_RADIUS)/(2*MAX_RADIUS);
-
-		//this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
 		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, MAX_RADIUS );
 
 	}
@@ -77,15 +67,6 @@ export default class SnowFactory extends Factory {
 
 		const sprite = new PIXI.Sprite();
 		sprite.interactive = false;
-
-		/*const spriteTex = PIXI.RenderTexture.create(
-
-				2*FLAKE_RADIUS,
-				2*FLAKE_RADIUS
-
-		);
-		this.renderer.render( this.drawSprite, spriteTex, false, this.drawMat );
-		*/
 
 		if (!loc) loc = new Point();
 		sprite.position.set( loc.x, loc.y );
