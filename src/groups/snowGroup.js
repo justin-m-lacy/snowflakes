@@ -57,6 +57,8 @@ export default class SnowGroup extends BoundsDestroy {
 		this.add(g);
 		this.count++;
 
+		this.game.emitter.emit('snow-count', this.count );
+
 	}
 
 }

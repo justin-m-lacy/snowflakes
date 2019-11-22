@@ -550,7 +550,6 @@ class Gradient {
 		this.colors = colors;
 		this.stops = stops;
 
-		if ( this.colors.length !== this.stops.length ) console.warn('invalid gradient');
 	}
 
 	/**
@@ -52449,7 +52448,7 @@ class CanvasDraw {
 
 
 		this._canvas = document.createElement('canvas' );
-		this.ctx = this._canvas.getContext('2d');
+		//this.ctx = this._canvas.getContext('2d');
 
 		this._width = width;
 		this._height = height;
@@ -52466,11 +52465,12 @@ class CanvasDraw {
 	 */
 	gradFill( p0, p1, gradient ){
 
-		var grad = this.ctx.createLinearGradient( p0.x, p0.y, p1.x, p1.y);
+		var ctx = this._canvas.getContext('2d');
+		var grad = ctx.createLinearGradient( p0.x, p0.y, p1.x, p1.y);
 		gradient.addStops(grad);
 
-		this.ctx.fillStyle = grad;
-		this.ctx.fillRect( 0, 0, this._width, this._height );
+		ctx.fillStyle = grad;
+		ctx.fillRect( 0, 0, this._width, this._height );
 
 	}
 
@@ -52494,20 +52494,50 @@ class CanvasDraw {
 /*!*************************************!*\
   !*** ../gibbon/utils/colorUtils.js ***!
   \*************************************/
-/*! exports provided: rgbStr, htmlStr */
+/*! exports provided: rgbStr, htmlStr, lerpColor */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "rgbStr", function() { return rgbStr; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "htmlStr", function() { return htmlStr; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lerpColor", function() { return lerpColor; });
+/**
+ * Returns a color string in the form of 'RRGGBB'
+ * @param {number} color
+ * @returns {string}
+ */
 const rgbStr =(color)=>{
 	return color.toString(16).padStart(6,'0');
 };
 
+/**
+ * Returns a color string in the form of '#RRGGBB'
+ * @param {number} color
+ * @returns {string}
+ */
 const htmlStr =(color)=>{
 	return '#'+color.toString(16).padStart(6,'0');
 };
+
+/**
+ * Interpolates two numeric colors into a third
+ * color.
+ * @param {number} col1
+ * @param {number} col2
+ * @param {number} t
+ * @returns {number}
+ */
+const lerpColor = (col1, col2, t) =>{
+
+	let s = 1 - t;
+	let r = Math.floor( s*(col1>>16) + t*(col2>>16) );
+	let g = Math.floor(s*( (0xff00&col1)>>8 ) + t*( (0xff00&col2)>>8));
+	let b = Math.floor( s*(0xff&col1) + t*( (0xff&col2)) );
+
+	return (r<<16) + (g<<8) + b;
+
+}
 
 /***/ }),
 
@@ -104833,6 +104863,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var gibbon_js_utils_canvasDraw__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! gibbon.js/utils/canvasDraw */ "../gibbon/utils/canvasDraw.js");
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
 /* harmony import */ var gibbon_js_data_gradient__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! gibbon.js/data/gradient */ "../gibbon/data/gradient.js");
+/* harmony import */ var gibbon_js_utils_colorUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! gibbon.js/utils/colorUtils */ "../gibbon/utils/colorUtils.js");
+
 
 
 
@@ -104843,29 +104875,97 @@ __webpack_require__.r(__webpack_exports__);
  */
 const TEX_SIZE = 200;
 
+/**
+ * @const {object.<number,number[]>} skyColors - colors at different
+ * snow counts.
+ */
+var SkyColors = [
+
+	{ at:0, colors:[0x1308d2,0x4040da, 0xff6200 ], stops:[0.2,0.75,1] },
+	{ at:15, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
+	{ at:20, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:40, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:5000, colors:[0x020024,0x131378,0x4c00ff ], stops:[0.2,0.75,1] },
+
+]
+
 class Sky extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 	get time() { return this._time; }
 	set time(v) { this._time = v;}
 
+	setSky(ind) {
+
+		let info = SkyColors[ind];
+		// slice in case future reset.
+		this.skyGradient.colors = info.colors.slice(0);
+		this.skyGradient.stops = info.stops;
+
+		this.index = ind;
+		if ( ind === SkyColors.length-1 ) {
+			this.game.emitter.removeListener( 'snow-count', this.onCount, this );
+		}
+
+		this.redrawSky();
+
+	}
+
 	init(){
 
-		this.skyGradient = new gibbon_js_data_gradient__WEBPACK_IMPORTED_MODULE_3__["Gradient"]( [0x000044,0x110088,0x771181 ], [0.2,0.8,1] );
-
 		this.view = this.game.screen;
-
-		//PIXI.RenderTexture.create( TEX_SIZE, TEX_SIZE );
 		this.draw = new gibbon_js_utils_canvasDraw__WEBPACK_IMPORTED_MODULE_1__["default"]( TEX_SIZE, TEX_SIZE );
-		this.draw.gradFill( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](0,0), new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]( 0, TEX_SIZE ), this.skyGradient );
 
 		let s = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"].from( this.draw.canvas);
 		s.width = this.view.width;
 		s.height = this.view.height;
+		this.sky = s;
+
+		this.skyGradient = new gibbon_js_data_gradient__WEBPACK_IMPORTED_MODULE_3__["Gradient"]();
+		this.setSky(0);
+
+		// count when sky last updated.
+		this.lastCount = 0;
 
 		this.clip.addChild(s);
 
+		console.log('INIT SKY');
+		this.game.emitter.on('snow-count', this.onCount, this );
 
 		//this.clip.texture = this.texture;
+
+	}
+
+	redrawSky(){
+		this.draw.gradFill( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](0,0), new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]( 0, TEX_SIZE ), this.skyGradient );
+		this.sky.texture.update();
+	}
+
+	onCount( count ) {
+
+		if ( count - this.lastCount < 4 ) return;
+		this.lastCount = count;
+
+		var nxt = SkyColors[this.index+1];
+		if ( count >= nxt.at ) {
+			this.setSky( this.index+1);
+			return;
+		}
+
+		var prev = SkyColors[this.index];
+
+		var curColors = this.skyGradient.colors;
+		var prevColors = prev.colors;
+		var nextColors = nxt.colors;
+
+		let pct = ( count - prev.at ) / (nxt.at - prev.at);
+		if ( pct < 0 || pct >1 ) console.log('INVALID PCT: ' + pct + ' prev.at: ' + prev.at + '  nxt.at: ' + nxt.at + ' count: '+ count );
+
+		for( let i = curColors.length-1; i>=0; i-- ) {
+			curColors[i] = Object(gibbon_js_utils_colorUtils__WEBPACK_IMPORTED_MODULE_4__["lerpColor"])( prevColors[i], nextColors[i], pct );
+			console.log( Object(gibbon_js_utils_colorUtils__WEBPACK_IMPORTED_MODULE_4__["htmlStr"])( curColors[i]) );
+		}
+
+		this.redrawSky();
 
 	}
 
@@ -105513,6 +105613,8 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 
 		this.add(g);
 		this.count++;
+
+		this.game.emitter.emit('snow-count', this.count );
 
 	}
 
