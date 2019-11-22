@@ -1,22 +1,23 @@
 import Gibbon, { Game, GameObject, Mover, Rand, Component } from "gibbon.js";
 import Flake from "./flake";
 import { Point } from "pixi.js";
-import { projAt } from "../groups/snowGroup";
+import { projAt, MAX_OMEGA } from "../groups/snowGroup";
 
 const { randInt, randRange } = Rand;
 
-const MAX_WIND = 2;
-const MIN_G = 0.3;
-const MAX_G = 0.7;
-const FLAKE_COUNT = 64;
+const FLAKE_COUNT = 512;
+
+const MAX_WIND = 3;
+const MIN_G = 0.4;
+const MAX_G = 0.8;
+
 
 export const MIN_SIZE = 6;
 export const MIN_Z = 10;
 export const MAX_Z = 200;
 
-const MIN_ALPHA = 0.7;
-const MAX_ALPHA = 1;
-export { MIN_ALPHA, MAX_ALPHA };
+export const MIN_ALPHA = 0.7;
+export const MAX_ALPHA = 1;
 
 const MAX_V = 0.2;
 const MAX_VZ = 0.001;
@@ -40,7 +41,9 @@ export default class BackSnow extends Component {
 		 */
 		this.factory = this.game.factory;
 
+		console.time('CREATE FLAKES');
 		this.fillView();
+		console.timeEnd('CREATE FLAKES');
 
 	}
 
@@ -89,7 +92,7 @@ export default class BackSnow extends Component {
 				f.z += f.vz;
 				//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
 
-
+				f.clip.rotation += f.omega;
 				var k = projAt( f.z);
 				p.set( p.x + (f.velocity.x + wind.x )*k,
 						p.y + (f.velocity.y + wind.y)*k )
@@ -111,6 +114,8 @@ export default class BackSnow extends Component {
 		f.z = randRange(1,MAX_Z);
 		f.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 		f.vz = randRange(-MAX_VZ, MAX_VZ );
+
+		f.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
 
 		// update scale and alpha.
 		f.update();

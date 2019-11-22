@@ -29,6 +29,8 @@ export default class Flake {
 		this._position = this.clip.position;
 		//this._position =new Point();
 
+		this.omega = 0;
+
 		this.proj = new Matrix(1,0,0,1);
 
 	}

@@ -7,6 +7,8 @@ const { randInt, randRange } = Rand;
 export const FOCUS = 40;
 export const F_INV = 1/FOCUS;
 
+export const MAX_OMEGA = Math.PI/800;
+
 /**
  * Projection factor at distance z.
  * @param {number} z
@@ -57,6 +59,7 @@ export default class SnowGroup extends BoundsDestroy {
 		mv.set( randRange(-1,1), randRange(-1,1) );
 		mv.vz = randRange(-0.001,0.001);
 
+		mv.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
 		this.add(g);
 
 		this.count++;
@@ -71,9 +74,6 @@ export default class SnowGroup extends BoundsDestroy {
 		for( let i = this.objects.length-1; i>=0; i-- ) {
 
 			var f = this.objects[i];
-
-
-
 			f.translate( vx, vy );
 
 		}

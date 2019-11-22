@@ -52515,7 +52515,7 @@ const htmlStr =(color)=>{
 /*!*******************************!*\
   !*** ../gibbon/utils/geom.js ***!
   \*******************************/
-/*! exports provided: getLength, dist, getTravelPt, interPt, getMidPt, getCenter, setReflect, reflection, norm, cross, move, translate, rotate */
+/*! exports provided: getLength, dist, getTravelPt, lerpPt, setLerp, getMidPt, getCenter, setReflect, reflection, norm, cross, move, translate, rotate */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -52523,7 +52523,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLength", function() { return getLength; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dist", function() { return dist; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTravelPt", function() { return getTravelPt; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "interPt", function() { return interPt; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lerpPt", function() { return lerpPt; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setLerp", function() { return setLerp; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMidPt", function() { return getMidPt; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCenter", function() { return getCenter; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setReflect", function() { return setReflect; });
@@ -52596,13 +52597,24 @@ const getLength=(p)=> {
 	}
 
 	/**
-	 * Return an interpolated point.
+	 * Return interpolated point.
 	 * @param {Point} p0
 	 * @param {Point} p1
 	 * @param {number} t
 	 */
-	const interPt=(p0, p1, t)=>{
+	const lerpPt=(p0, p1, t)=>{
 		return new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( (1-t)*p0.x + t*p1.x, (1-t)*p0.y+p1.y );
+	}
+
+	/**
+	 * Set p0 to the linear interpolation of p0 and p1.
+	 * @param {Point} p0
+	 * @param {Point} p1
+	 * @param {number} t
+	 * @returns {Point} returns p0.
+	 */
+	const setLerp = ( p0, p1, t )=>{
+		p0.set( (1-t)*p0.x + t*p1.x, (1-t)*p0.y+p1.y );
 	}
 
 	/**
@@ -104596,10 +104608,12 @@ __webpack_require__.r(__webpack_exports__);
 
 const { randInt, randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
 
-const MAX_WIND = 2;
-const MIN_G = 0.3;
-const MAX_G = 0.7;
-const FLAKE_COUNT = 64;
+const FLAKE_COUNT = 512;
+
+const MAX_WIND = 3;
+const MIN_G = 0.4;
+const MAX_G = 0.8;
+
 
 const MIN_SIZE = 6;
 const MIN_Z = 10;
@@ -104607,7 +104621,6 @@ const MAX_Z = 200;
 
 const MIN_ALPHA = 0.7;
 const MAX_ALPHA = 1;
-
 
 const MAX_V = 0.2;
 const MAX_VZ = 0.001;
@@ -104631,7 +104644,9 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 		 */
 		this.factory = this.game.factory;
 
+		console.time('CREATE FLAKES');
 		this.fillView();
+		console.timeEnd('CREATE FLAKES');
 
 	}
 
@@ -104680,7 +104695,7 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 				f.z += f.vz;
 				//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
 
-
+				f.clip.rotation += f.omega;
 				var k = Object(_groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["projAt"])( f.z);
 				p.set( p.x + (f.velocity.x + wind.x )*k,
 						p.y + (f.velocity.y + wind.y)*k )
@@ -104702,6 +104717,8 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 		f.z = randRange(1,MAX_Z);
 		f.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 		f.vz = randRange(-MAX_VZ, MAX_VZ );
+
+		f.omega = randRange( -_groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["MAX_OMEGA"], _groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["MAX_OMEGA"] );
 
 		// update scale and alpha.
 		f.update();
@@ -104773,6 +104790,8 @@ class Flake {
 
 		this._position = this.clip.position;
 		//this._position =new Point();
+
+		this.omega = 0;
 
 		this.proj = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Matrix"](1,0,0,1);
 
@@ -104865,11 +104884,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SnowFactory; });
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
 /* harmony import */ var _gibbon__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../gibbon */ "../gibbon/index.js");
+/* harmony import */ var gibbon_js_utils_geom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! gibbon.js/utils/geom */ "../gibbon/utils/geom.js");
 
 
 
 const { randInt, randRange} = _gibbon__WEBPACK_IMPORTED_MODULE_1__["default"].Rand;
-const { move, setReflect, reflection, interPt } = _gibbon__WEBPACK_IMPORTED_MODULE_1__["default"].Geom;
+const { move, setReflect, reflection, lerpPt: interPt } = _gibbon__WEBPACK_IMPORTED_MODULE_1__["default"].Geom;
+
 
 
 
@@ -104922,7 +104943,15 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		super(game);
 
-		//this.drawTex = PIXI.RenderTexture.create()
+		// use for drawing base texture before making scaled version.
+		//this.drawTex = PIXI.RenderTexture.create( 2*MAX_RADIUS, 2*MAX_RADIUS );
+		//this.drawSprite = new PIXI.Sprite();
+		//this.drawSprite.texture = this.drawTex;
+
+		// transformation from draw texture to sprite texture.
+		//this.drawMat = new PIXI.Matrix();
+		//this.drawMat.a = this.drawMat.d = (2*FLAKE_RADIUS)/(2*MAX_RADIUS);
+
 		//this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
 		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, MAX_RADIUS );
 
@@ -104930,22 +104959,29 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 	createFlake( loc ){
 
+		let r = MAX_RADIUS;
+		const tex = this.makeFlakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
+
 		const sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Sprite"]();
-		sprite.interactive = true;
-		//sprite.buttonMode = true;
+		sprite.interactive = false;
+
+		/*const spriteTex = PIXI.RenderTexture.create(
+
+				2*FLAKE_RADIUS,
+				2*FLAKE_RADIUS
+
+		);
+		this.renderer.render( this.drawSprite, spriteTex, false, this.drawMat );
+		*/
 
 		if (!loc) loc = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]();
 		sprite.position.set( loc.x, loc.y );
 
-		let r = MAX_RADIUS;
-		const tex = this.makeFlakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
-		sprite.pivot = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( r, r);
+		sprite.pivot = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( r, r );
 		sprite.rotation = Math.PI*Math.random();
 
-		sprite.scale = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( FLAKE_RADIUS/r, FLAKE_RADIUS/r );
-
-	//	sprite.addChild(g);
+		sprite.scale = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( FLAKE_RADIUS/r,FLAKE_RADIUS/r );
 
 		return sprite;
 
@@ -104968,7 +105004,11 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		mat.translate(r,r);
 
 		var theta = 0;
-		for( let i = 0; i < segs; i++ ) {
+		this.renderer.render(g,tex,true, mat);
+
+		for( let i = 1; i < segs; i++ ) {
+
+			theta += arc;
 
 			if ( i%2 === 0){
 				g.rotation = theta;
@@ -104980,7 +105020,6 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 			}
 
 			this.renderer.render( g, tex, false, mat );
-			theta += arc;
 
 		}
 
@@ -105017,18 +105056,14 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		var p1 = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
 
 		g.lineStyle( (0.02 + 0.05*Math.random())*MAX_RADIUS, FLAKE_COLOR );
-
-
 		this.drawShape(g, p1, subR );
 		if ( subR <= 8 ) return;
 
-		var a2 = angle + ( 32 + 32*Math.random()*pixi_js__WEBPACK_IMPORTED_MODULE_0__["DEG_TO_RAD"] );
-		if ( parity < 0 ) a2 = -a2;
+		var a2 = parity* ( angle + ( 32 + 32*Math.random()*pixi_js__WEBPACK_IMPORTED_MODULE_0__["DEG_TO_RAD"] ) );
 		//if ( Math.random()<0.5) a2 = -a2;
 
-		let t = 0.4 + 0.8*Math.random();
-		//this.branch( g, interPt( p0, p1, t ), angle, (1-t)*maxR );
-		this.branch( g, interPt( p0, p1, t ), a2, maxR -subR, parity  );
+		Object(gibbon_js_utils_geom__WEBPACK_IMPORTED_MODULE_2__["setLerp"])( p0, p1, 0.4 + 0.8*Math.random() );
+		this.branch( g, p0, a2, maxR -subR, parity  );
 		//this.branch( g, interPt( p0, p1, 0.4 + 0.8*Math.random() ), -a2, maxR - subR );
 
 		if ( maxR - subR > 8 ) {
@@ -105392,13 +105427,14 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 /*!*********************************!*\
   !*** ./src/groups/snowGroup.js ***!
   \*********************************/
-/*! exports provided: FOCUS, F_INV, projAt, setProj, default */
+/*! exports provided: FOCUS, F_INV, MAX_OMEGA, projAt, setProj, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FOCUS", function() { return FOCUS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "F_INV", function() { return F_INV; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAX_OMEGA", function() { return MAX_OMEGA; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "projAt", function() { return projAt; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setProj", function() { return setProj; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SnowGroup; });
@@ -105413,6 +105449,8 @@ const { randInt, randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
 
 const FOCUS = 40;
 const F_INV = 1/FOCUS;
+
+const MAX_OMEGA = Math.PI/800;
 
 /**
  * Projection factor at distance z.
@@ -105464,6 +105502,7 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 		mv.set( randRange(-1,1), randRange(-1,1) );
 		mv.vz = randRange(-0.001,0.001);
 
+		mv.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
 		this.add(g);
 
 		this.count++;
@@ -105478,9 +105517,6 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 		for( let i = this.objects.length-1; i>=0; i-- ) {
 
 			var f = this.objects[i];
-
-
-
 			f.translate( vx, vy );
 
 		}

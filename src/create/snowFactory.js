@@ -2,9 +2,10 @@ import { Graphics, DEG_TO_RAD, Polygon, Point } from "pixi.js";
 import Gibbon, { Factory, Geom } from "../../../gibbon";
 
 const { randInt, randRange} = Gibbon.Rand;
-const { move, setReflect, reflection, interPt } = Gibbon.Geom;
+const { move, setReflect, reflection, lerpPt: interPt } = Gibbon.Geom;
 
 import * as PIXI from 'pixi.js';
+import { setLerp } from "gibbon.js/utils/geom";
 
 
 /**
@@ -55,7 +56,15 @@ export default class SnowFactory extends Factory {
 
 		super(game);
 
-		//this.drawTex = PIXI.RenderTexture.create()
+		// use for drawing base texture before making scaled version.
+		//this.drawTex = PIXI.RenderTexture.create( 2*MAX_RADIUS, 2*MAX_RADIUS );
+		//this.drawSprite = new PIXI.Sprite();
+		//this.drawSprite.texture = this.drawTex;
+
+		// transformation from draw texture to sprite texture.
+		//this.drawMat = new PIXI.Matrix();
+		//this.drawMat.a = this.drawMat.d = (2*FLAKE_RADIUS)/(2*MAX_RADIUS);
+
 		//this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
 		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, MAX_RADIUS );
 
@@ -63,22 +72,29 @@ export default class SnowFactory extends Factory {
 
 	createFlake( loc ){
 
+		let r = MAX_RADIUS;
+		const tex = this.makeFlakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
+
 		const sprite = new PIXI.Sprite();
-		sprite.interactive = true;
-		//sprite.buttonMode = true;
+		sprite.interactive = false;
+
+		/*const spriteTex = PIXI.RenderTexture.create(
+
+				2*FLAKE_RADIUS,
+				2*FLAKE_RADIUS
+
+		);
+		this.renderer.render( this.drawSprite, spriteTex, false, this.drawMat );
+		*/
 
 		if (!loc) loc = new Point();
 		sprite.position.set( loc.x, loc.y );
 
-		let r = MAX_RADIUS;
-		const tex = this.makeFlakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
-		sprite.pivot = new Point( r, r);
+		sprite.pivot = new Point( r, r );
 		sprite.rotation = Math.PI*Math.random();
 
-		sprite.scale = new Point( FLAKE_RADIUS/r, FLAKE_RADIUS/r );
-
-	//	sprite.addChild(g);
+		sprite.scale = new Point( FLAKE_RADIUS/r,FLAKE_RADIUS/r );
 
 		return sprite;
 
@@ -101,7 +117,11 @@ export default class SnowFactory extends Factory {
 		mat.translate(r,r);
 
 		var theta = 0;
-		for( let i = 0; i < segs; i++ ) {
+		this.renderer.render(g,tex,true, mat);
+
+		for( let i = 1; i < segs; i++ ) {
+
+			theta += arc;
 
 			if ( i%2 === 0){
 				g.rotation = theta;
@@ -113,7 +133,6 @@ export default class SnowFactory extends Factory {
 			}
 
 			this.renderer.render( g, tex, false, mat );
-			theta += arc;
 
 		}
 
@@ -150,18 +169,14 @@ export default class SnowFactory extends Factory {
 		var p1 = new Point( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
 
 		g.lineStyle( (0.02 + 0.05*Math.random())*MAX_RADIUS, FLAKE_COLOR );
-
-
 		this.drawShape(g, p1, subR );
 		if ( subR <= 8 ) return;
 
-		var a2 = angle + ( 32 + 32*Math.random()*DEG_TO_RAD );
-		if ( parity < 0 ) a2 = -a2;
+		var a2 = parity* ( angle + ( 32 + 32*Math.random()*DEG_TO_RAD ) );
 		//if ( Math.random()<0.5) a2 = -a2;
 
-		let t = 0.4 + 0.8*Math.random();
-		//this.branch( g, interPt( p0, p1, t ), angle, (1-t)*maxR );
-		this.branch( g, interPt( p0, p1, t ), a2, maxR -subR, parity  );
+		setLerp( p0, p1, 0.4 + 0.8*Math.random() );
+		this.branch( g, p0, a2, maxR -subR, parity  );
 		//this.branch( g, interPt( p0, p1, 0.4 + 0.8*Math.random() ), -a2, maxR - subR );
 
 		if ( maxR - subR > 8 ) {
