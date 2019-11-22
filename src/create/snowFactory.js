@@ -22,7 +22,7 @@ export const MAX_RADIUS = 80;
 /**
  * @property {number} FLAKE_SIZE - base flake size.
  */
-export const FLAKE_RADIUS = 20;
+export const FLAKE_RADIUS = 32;
 
 /**
  * Min/max arc gap as percent of arc.
@@ -57,7 +57,7 @@ export default class SnowFactory extends Factory {
 
 		//this.drawTex = PIXI.RenderTexture.create()
 		//this.baseArc = this.makeArc( 2*Math.PI/MAX_SEGS );
-		this.maskArc = this.makeArc( 0, 2*Math.PI/MAX_SEGS, MAX_RADIUS );
+		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, MAX_RADIUS );
 
 	}
 
@@ -74,6 +74,7 @@ export default class SnowFactory extends Factory {
 		const tex = this.makeFlakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
 		sprite.texture = tex;
 		sprite.pivot = new Point( r, r);
+		sprite.rotation = Math.PI*Math.random();
 
 		sprite.scale = new Point( FLAKE_RADIUS/r, FLAKE_RADIUS/r );
 
@@ -102,17 +103,17 @@ export default class SnowFactory extends Factory {
 		var theta = 0;
 		for( let i = 0; i < segs; i++ ) {
 
-			if ( i%2 === 1){
-				g.scale = new Point(1,-1);
-				g.rotation = -theta - arc;
-			} else {
+			if ( i%2 === 0){
 				g.rotation = theta;
 				g.scale = new Point(1,1);
+			} else {
+				g.scale = new Point(1,-1);
+				g.rotation = -(theta + arc);
+
 			}
 
-			theta += arc;
-
 			this.renderer.render( g, tex, false, mat );
+			theta += arc;
 
 		}
 
@@ -126,35 +127,69 @@ export default class SnowFactory extends Factory {
 		let g = new Graphics();
 		g.mask = this.maskArc;
 
+		this.branch( g, new Point(0,0), arc/2, r, Math.random() < 0.5 ? -1 : 1 );
+		//this.arcItems(g, r, arc );
+
 		c.addChild(this.maskArc );
 		c.addChild(g);
-
-		this.branch( g, new Point(0,0), arc/2, r );
-
 
 
 		return c;
 
 	}
 
-	branch( g, p0, angle, maxR ) {
+	branch( g, p0, angle, maxR, parity=0 ) {
 
 		g.moveTo( p0.x, p0.y );
 
-		var p1 = new Point( p0.x + maxR*Math.cos(angle), p0.y + maxR*Math.sin(angle) );
+		var subR = ( 0.2 + 0.2*Math.random() )*maxR;
+		var p1 = new Point( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
 
-		g.lineStyle( (0.1 + 0.1*Math.random())*MAX_RADIUS, FLAKE_COLOR );
-		g.lineTo( p1.x, p1.y );
+		g.lineStyle( (0.02 + 0.1*Math.random())*MAX_RADIUS, FLAKE_COLOR );
 
-		if ( maxR <= 2 ) return;
+		this.drawShape(g, p1, subR/2 );
 
-		angle = 30 + 30*Math.random();
-		if ( Math.random() < 0.5 ) angle = -angle;
+		//g.lineTo( p1.x, p1.y );
+		if ( subR <= 8 ) return;
 
-		this.branch( g, interPt( p0, p1, 0.2 + 0.8*Math.random() ), angle, (0.3 + 0.4*Math.random())*maxR );
-		//this.branch( g, interPt( p0, p1, 0.2 + 0.8*Math.random() ), -angle, (0.2 + 0.8*Math.random())*maxR );
-		//this.branch( g, interPt( p0, p1, 0.2 + 0.8*Math.random() ), -angle, 0.5*maxR );
+		var a2 = angle + ( 20 + 20*Math.random()*DEG_TO_RAD );
+		if ( parity < 0 ) a2 = -a2;
 
+		let t = 0.4 + 0.8*Math.random();
+		//this.branch( g, interPt( p0, p1, t ), angle, (1-t)*maxR );
+		this.branch( g, interPt( p0, p1, t ), a2, maxR -subR, Math.random() < 0.5 ? -1 : 1  );
+		//this.branch( g, interPt( p0, p1, t ), -a2, maxR - subR );
+
+		if ( maxR - subR > 4 ) {
+			this.branch(g, p1, angle, maxR-subR, -parity );
+		}
+
+
+	}
+
+	drawShape( g, p, size ) {
+		g.lineTo(p.x,p.y);
+		return;
+		var n = Math.random();
+		if ( n < 0.2 ) {
+
+			g.drawShape( new PIXI.Ellipse(p.x,p.y,size, size ) );
+
+		} else if ( n < 0.4 ) {
+
+			g.drawShape( new PIXI.RoundedRectangle(p.x,p.y, size, 1.5*size, Math.random()*size/4 ) );
+
+		} else if ( n < 0.5 ) {
+
+			g.drawCircle( p.x, p.y, size );
+
+		} else if ( n < 0.6 ) {
+
+			g.drawRect( new PIXI.Rectangle( p.x, p.y, size, size ) );
+		} else {
+
+			g.lineTo(p.x,p.y);
+		}
 
 	}
 
@@ -180,6 +215,47 @@ export default class SnowFactory extends Factory {
 
 	}
 
+		/**
+	 * Result: flakes look overly circular.
+	 * @param {*} g
+	 * @param {*} radius
+	 * @param {*} arc
+	 */
+	arcItems( g, radius, arc ) {
+
+		let r = 0;
+
+		var p = new Point(0,0);
+
+		do {
+
+			var a = arc/2;
+			var s = 1 + r*arc;
+			var len = s;
+
+			g.moveTo(r*Math.cos(arc/2), r*Math.sin(arc/2) );
+
+			do {
+
+				g.lineStyle( 0.02 + 0.1*Math.random()*radius, FLAKE_COLOR );
+
+				var size = 1 + Math.random()*0.8*len;
+
+				p.set( r*Math.cos(a), r*Math.sin(a) );
+
+				this.drawShape(g,p,size);
+
+				a += 0.2*arc;
+				s -= 0.2*radius;
+
+			} while ( s >= 0 );
+
+			r += 0.01 + (0.5 + 0.5*Math.random() )*len;
+
+		} while ( r < radius );
+
+	}
+
 	/**
 	 * Form arc by cutout methods.
 	 * @param {number} fill
@@ -194,7 +270,7 @@ export default class SnowFactory extends Factory {
 		let minArc = gap*maxArc;
 		maxArc -= minArc;
 
-		const base = this.makeArc( minArc, maxArc, radius, fill );
+		const base = this.fillArc( minArc, maxArc, radius, fill );
 
 		const cut = new Graphics();
 		cut.blendMode = PIXI.BLEND_MODES.ERASE;
@@ -205,16 +281,6 @@ export default class SnowFactory extends Factory {
 		//this.cutArc(cut, minArc, maxArc, radius );
 		//this.cutArc(cut, maxArc, minArc, radius );
 
-		/*
-		//const mask = base.clone();
-		//cut.mask = mask;
-		let cuts = randInt( MIN_CUTS, MAX_CUTS );
-		for( let i = 0; i < cuts; i++ ) {
-			this.cutPoly(cut, radius, minArc, maxArc);
-		}
-		//clip.addChild( mask );
-		*/
-
 		clip.addChild( base );
 		clip.addChild(cut);
 
@@ -222,7 +288,14 @@ export default class SnowFactory extends Factory {
 
 	}
 
-	makeArc( minArc, arc, radius=100, fill=0xffffff ){
+	/**
+	 * Fill an arc of a circle.
+	 * @param {*} minArc
+	 * @param {*} arc
+	 * @param {*} radius
+	 * @param {*} fill
+	 */
+	fillArc( minArc, arc, radius=100, fill=0xffffff ){
 
 		const g = new Graphics();
 		g.interactive = false;
