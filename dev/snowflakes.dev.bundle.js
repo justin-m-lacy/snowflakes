@@ -104638,7 +104638,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const { randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
 
-const FLAKE_COUNT = 128;
+const FLAKE_COUNT = 512;
 
 const MAX_WIND = 2.7;
 const MIN_G = 0.4;
@@ -104685,22 +104685,25 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 		let factory = this.factory;
 		let bounds = this.bounds;
 		let clip = this.clip;
+		clip.visible = false;
 
 		for( let i = FLAKE_COUNT; i >= 0; i-- ) {
 
-			var g = factory.makeSnowflake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]() );
+			var g = factory.makeSnowflake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]( Math.random()*bounds.width, Math.random()*bounds.height) );
 
-			clip.addChild(g.clip);
 			this.game.addObject(g);
 
 			var f = g.get(_flake__WEBPACK_IMPORTED_MODULE_1__["default"]);
-			this.randomize(f);
-			f.position.set(Math.random()*bounds.width, Math.random()*bounds.height);
+			f.setZ( randRange(MIN_Z,MAX_Z) );
 			//f.position.set( randRange(-bounds.width/2,bounds.width/2), randRange(-bounds.height/2,bounds.height/2) );
 
+			clip.addChild(g.clip);
 			this.flakes.push( f );
 
+
 		}
+		clip.visible = true;
+
 
 	}
 
@@ -104816,6 +104819,12 @@ class Flake extends gibbon_js__WEBPACK_IMPORTED_MODULE_4__["Component"] {
 
 	}
 
+	setZ(z) {
+		this.z = z;
+		this.k = Object(_groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["projAt"])(z);
+		this.rescale();
+	}
+
 	update(){
 
 		this.z += this.vz;
@@ -104882,9 +104891,9 @@ const TEX_SIZE = 200;
 var SkyColors = [
 
 	{ at:0, colors:[0x1308d2,0x4040da, 0xff6200 ], stops:[0.2,0.75,1] },
-	{ at:15, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
-	{ at:20, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
-	{ at:40, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:100, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
+	{ at:300, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:1000, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
 	{ at:5000, colors:[0x020024,0x131378,0x4c00ff ], stops:[0.2,0.75,1] },
 
 ]
@@ -104962,7 +104971,7 @@ class Sky extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 		for( let i = curColors.length-1; i>=0; i-- ) {
 			curColors[i] = Object(gibbon_js_utils_colorUtils__WEBPACK_IMPORTED_MODULE_4__["lerpColor"])( prevColors[i], nextColors[i], pct );
-			console.log( Object(gibbon_js_utils_colorUtils__WEBPACK_IMPORTED_MODULE_4__["htmlStr"])( curColors[i]) );
+			//console.log( htmlStr( curColors[i]) );
 		}
 
 		this.redrawSky();

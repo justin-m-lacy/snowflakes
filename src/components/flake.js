@@ -49,6 +49,12 @@ export default class Flake extends Component {
 
 	}
 
+	setZ(z) {
+		this.z = z;
+		this.k = projAt(z);
+		this.rescale();
+	}
+
 	update(){
 
 		this.z += this.vz;

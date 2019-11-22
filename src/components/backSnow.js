@@ -5,7 +5,7 @@ import { projAt, MAX_OMEGA } from "../groups/snowGroup";
 
 const { randRange } = Rand;
 
-const FLAKE_COUNT = 128;
+const FLAKE_COUNT = 512;
 
 const MAX_WIND = 2.7;
 const MIN_G = 0.4;
@@ -52,22 +52,25 @@ export default class BackSnow extends Component {
 		let factory = this.factory;
 		let bounds = this.bounds;
 		let clip = this.clip;
+		clip.visible = false;
 
 		for( let i = FLAKE_COUNT; i >= 0; i-- ) {
 
-			var g = factory.makeSnowflake( new Point() );
+			var g = factory.makeSnowflake( new Point( Math.random()*bounds.width, Math.random()*bounds.height) );
 
-			clip.addChild(g.clip);
 			this.game.addObject(g);
 
 			var f = g.get(Flake);
-			this.randomize(f);
-			f.position.set(Math.random()*bounds.width, Math.random()*bounds.height);
+			f.setZ( randRange(MIN_Z,MAX_Z) );
 			//f.position.set( randRange(-bounds.width/2,bounds.width/2), randRange(-bounds.height/2,bounds.height/2) );
 
+			clip.addChild(g.clip);
 			this.flakes.push( f );
 
+
 		}
+		clip.visible = true;
+
 
 	}
 

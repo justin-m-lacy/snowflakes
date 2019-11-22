@@ -16,9 +16,9 @@ const TEX_SIZE = 200;
 var SkyColors = [
 
 	{ at:0, colors:[0x1308d2,0x4040da, 0xff6200 ], stops:[0.2,0.75,1] },
-	{ at:15, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
-	{ at:20, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
-	{ at:40, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:100, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
+	{ at:300, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:1000, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
 	{ at:5000, colors:[0x020024,0x131378,0x4c00ff ], stops:[0.2,0.75,1] },
 
 ]
@@ -96,7 +96,7 @@ export default class Sky extends Component {
 
 		for( let i = curColors.length-1; i>=0; i-- ) {
 			curColors[i] = lerpColor( prevColors[i], nextColors[i], pct );
-			console.log( htmlStr( curColors[i]) );
+			//console.log( htmlStr( curColors[i]) );
 		}
 
 		this.redrawSky();
