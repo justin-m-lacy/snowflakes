@@ -8,6 +8,20 @@ import { Gradient } from "gibbon.js/data/gradient";
  */
 const TEX_SIZE = 200;
 
+/**
+ * @const {object.<number,number[]>} skyColors - colors at different
+ * snow counts.
+ */
+const skyColors = {
+
+	0:new Gradient( [0x1308d2,0x4040da, 0xff6200 ], [0,0.55,1] ),
+	100:new Gradient( [0x17109a,0x2020a6,0xba0e0e ], [0,0.55,1]  ),
+	500:new Gradient( [0x000044,0x110088,0x771181 ], [0.2,0.8,1] ),
+	1000:new Gradient( [0x000044,0x110088,0x771181 ], [0.2,0.8,1] ),
+	5000:new Gradient( [0x020024,0x131378,0x4c00ff ], [0,0.45,1] ),
+
+}
+
 export default class Sky extends Component {
 
 	get time() { return this._time; }
@@ -15,7 +29,7 @@ export default class Sky extends Component {
 
 	init(){
 
-		this.skyGradient = new Gradient( [0x000044,0x110088,0x771181 ], [0.2,0.8,1] );
+		this.skyGradient = skyColors[0];
 
 		this.view = this.game.screen;
 

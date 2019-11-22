@@ -5,9 +5,9 @@ import { projAt, MAX_OMEGA } from "../groups/snowGroup";
 
 const { randRange } = Rand;
 
-const FLAKE_COUNT = 512;
+const FLAKE_COUNT = 128;
 
-const MAX_WIND = 2.4;
+const MAX_WIND = 2.7;
 const MIN_G = 0.4;
 const MAX_G = 0.8;
 
@@ -103,7 +103,7 @@ export default class BackSnow extends Component {
 
 		f.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
 
-		if ( Math.random() < 0.5 ){
+		if ( Math.random() < 0.4 ){
 			f.position.set( this.bounds.left + Math.random()*this.bounds.width, this.bounds.y+1 );
 		} else if ( this.wind.x + f.velocity.x >= 0 ) {
 			f.position.set( this.bounds.left+1, this.bounds.y + Math.random()*this.bounds.height );

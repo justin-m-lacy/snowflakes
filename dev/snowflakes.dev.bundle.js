@@ -104608,9 +104608,9 @@ __webpack_require__.r(__webpack_exports__);
 
 const { randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
 
-const FLAKE_COUNT = 512;
+const FLAKE_COUNT = 128;
 
-const MAX_WIND = 2.4;
+const MAX_WIND = 2.7;
 const MIN_G = 0.4;
 const MAX_G = 0.8;
 
@@ -104706,7 +104706,7 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 		f.omega = randRange( -_groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["MAX_OMEGA"], _groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["MAX_OMEGA"] );
 
-		if ( Math.random() < 0.5 ){
+		if ( Math.random() < 0.4 ){
 			f.position.set( this.bounds.left + Math.random()*this.bounds.width, this.bounds.y+1 );
 		} else if ( this.wind.x + f.velocity.x >= 0 ) {
 			f.position.set( this.bounds.left+1, this.bounds.y + Math.random()*this.bounds.height );
@@ -105041,6 +105041,9 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		let g = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Graphics"]();
 		g.mask = this.maskArc;
 
+		let s = randRange(0.7,1);
+		this.maskArc.scale.set( s,s )
+
 		let p = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]();
 
 		this.drawSolid(g, p, (0.02+0.05*Math.random())*r );
@@ -105060,7 +105063,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		g.moveTo( p0.x, p0.y );
 
-		var subR = ( 0.12 + 0.12*Math.random() )*maxR;
+		var subR = ( 0.12 + 0.09*Math.random() )*maxR;
 		/*if ( subR <= 8 ) { subR = maxR; }*/
 
 		var p1 = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
@@ -105074,7 +105077,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		//if ( Math.random()<0.5) a2 = -a2;
 
 		Object(gibbon_js_utils_geom__WEBPACK_IMPORTED_MODULE_2__["setLerp"])( p0, p1, 0.4 + 0.8*Math.random() );
-		this.branch( g, p0, a2, maxR -subR, parity  );
+		this.branch( g, p0, a2, (0.8+0.2*Math.random())*(maxR -subR), parity  );
 		//this.branch( g, interPt( p0, p1, 0.4 + 0.8*Math.random() ), -a2, maxR - subR );
 
 		if ( maxR - subR > 8 ) {

@@ -149,6 +149,9 @@ export default class SnowFactory extends Factory {
 		let g = new Graphics();
 		g.mask = this.maskArc;
 
+		let s = randRange(0.7,1);
+		this.maskArc.scale.set( s,s )
+
 		let p = new Point();
 
 		this.drawSolid(g, p, (0.02+0.05*Math.random())*r );
@@ -168,7 +171,7 @@ export default class SnowFactory extends Factory {
 
 		g.moveTo( p0.x, p0.y );
 
-		var subR = ( 0.12 + 0.12*Math.random() )*maxR;
+		var subR = ( 0.12 + 0.09*Math.random() )*maxR;
 		/*if ( subR <= 8 ) { subR = maxR; }*/
 
 		var p1 = new Point( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
@@ -182,7 +185,7 @@ export default class SnowFactory extends Factory {
 		//if ( Math.random()<0.5) a2 = -a2;
 
 		setLerp( p0, p1, 0.4 + 0.8*Math.random() );
-		this.branch( g, p0, a2, maxR -subR, parity  );
+		this.branch( g, p0, a2, (0.8+0.2*Math.random())*(maxR -subR), parity  );
 		//this.branch( g, interPt( p0, p1, 0.4 + 0.8*Math.random() ), -a2, maxR - subR );
 
 		if ( maxR - subR > 8 ) {
