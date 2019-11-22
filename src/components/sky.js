@@ -2,6 +2,7 @@ import { Component } from "gibbon.js";
 import CanvasDraw from "gibbon.js/utils/canvasDraw";
 import * as PIXI from 'pixi.js';
 import { Gradient } from "gibbon.js/data/gradient";
+import { lerpColor } from "gibbon.js/utils/colorUtils";
 
 /**
  * @const {number} TEX_SIZE - sky texture size.
@@ -74,7 +75,10 @@ export default class Sky extends Component {
 		const curColors = this.skyGradient.colors;
 		const nextColors = nxt.colors;
 
+		let pct = ( count - prev.at ) / (nxt.at - prev.at);
+
 		for( let i = curColors.length-1; i>=0; i-- ) {
+			curColors[i] = lerpColor( curColors[i], nextColors[i], pct );
 		}
 
 
