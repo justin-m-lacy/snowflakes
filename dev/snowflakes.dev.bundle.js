@@ -105014,7 +105014,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		g.lineStyle( (0.02 + 0.1*Math.random())*MAX_RADIUS, FLAKE_COLOR );
 
-		this.drawShape(g, p1, subR/2 );
+		this.drawShape(g, p1, 0.5*subR );
 
 		//g.lineTo( p1.x, p1.y );
 		if ( subR <= 8 ) return;
@@ -105035,22 +105035,24 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 	}
 
 	drawShape( g, p, size ) {
-		g.lineTo(p.x,p.y);
-		return;
+
+		//g.lineTo(p.x,p.y);
+		//return;
+
 		var n = Math.random();
-		if ( n < 0.2 ) {
+		if ( n < 0.5 ) {
 
 			g.drawShape( new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Ellipse"](p.x,p.y,size, size ) );
 
-		} else if ( n < 0.4 ) {
+		} else if ( n < 0.15 ) {
 
 			g.drawShape( new pixi_js__WEBPACK_IMPORTED_MODULE_0__["RoundedRectangle"](p.x,p.y, size, 1.5*size, Math.random()*size/4 ) );
 
-		} else if ( n < 0.5 ) {
+		} else if ( n < 0.25 ) {
 
 			g.drawCircle( p.x, p.y, size );
 
-		} else if ( n < 0.6 ) {
+		} else if ( n < 0.35 ) {
 
 			g.drawRect( new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Rectangle"]( p.x, p.y, size, size ) );
 		} else {
