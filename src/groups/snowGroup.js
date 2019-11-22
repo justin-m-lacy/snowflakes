@@ -1,10 +1,11 @@
-import Gibbon, { Game, Group, GameObject, Mover, Rand } from "gibbon.js";
+import Gibbon, { Game, Group, GameObject, Rand } from "gibbon.js";
 import { Point, Container, System } from "pixi.js";
 import BoundsDestroy from "gibbon.js/systems/boundsDestroy";
+import Flake from "../components/flake";
 
 const { randInt, randRange } = Rand;
 
-export const FOCUS = 40;
+export const FOCUS = 64;
 export const F_INV = 1/FOCUS;
 
 export const MAX_OMEGA = Math.PI/800;
@@ -15,10 +16,10 @@ export const MAX_OMEGA = Math.PI/800;
  */
 export const projAt = (z)=>FOCUS/( z + FOCUS );
 
-export const setProj = ( mat,z )=>{
+/*export const setProj = ( mat,z )=>{
 	mat.a = mat.d = 1/(F_INV*z+1);
 	return mat;
-}
+}*/
 
 export default class SnowGroup extends BoundsDestroy {
 
@@ -51,34 +52,11 @@ export default class SnowGroup extends BoundsDestroy {
 	 */
 	createFlake( pt ){
 
-		let s = this.factory.createFlake(pt);
-		let g = new GameObject(s);
-		g.setDestroyOpts(true,true,true);
+		let g = this.factory.makeSnowflake(pt);
 
-		let mv = g.add( Mover);
-		mv.set( randRange(-1,1), randRange(-1,1) );
-		mv.vz = randRange(-0.001,0.001);
-
-		mv.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
 		this.add(g);
-
 		this.count++;
 
-	}
-
-	update( delta ){
-
-		let vx = delta*this.wind.x/4;
-		let vy = delta*this.wind.y/4;
-
-		for( let i = this.objects.length-1; i>=0; i-- ) {
-
-			var f = this.objects[i];
-			f.translate( vx, vy );
-
-		}
-
-		super.update(delta);
 	}
 
 }

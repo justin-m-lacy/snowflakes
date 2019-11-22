@@ -1,11 +1,18 @@
-import { Point, Matrix } from "pixi.js";
-import { SNOW_SCALE, FLAKE_RADIUS, MAX_RADIUS } from "../create/snowFactory";
-import { MAX_ALPHA, MIN_SIZE, MAX_Z, MIN_ALPHA } from "./backSnow";
-import { projAt } from "../groups/snowGroup";
+import { Point } from "pixi.js";
+import { BASE_SCALE } from "../create/snowFactory";
+import { MAX_ALPHA, MIN_ALPHA } from "./backSnow";
+import { projAt, MAX_OMEGA } from "../groups/snowGroup";
+import { Component, Rand } from "gibbon.js";
+
+const { randInt, randRange } = Rand;
+
+const MAX_V = 0.2;
+const MAX_VZ = 0.01;
+
 /**
  * Container for holding flake/clip/velocity information.
  */
-export default class Flake {
+export default class Flake extends Component {
 
 	/**
 	 * @property {DisplayObject} clip
@@ -21,30 +28,52 @@ export default class Flake {
 
 	get position(){ return this._position}
 
-	constructor( clip ){
+	/**
+	 * @property {number} proj - current projection constant based on z.
+	 */
+	get proj(){return this.k; }
 
-		this.clip = clip;
-		this.velocity = new Point();
+	init(){
+
+		this.velocity = new Point( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 
 		this._position = this.clip.position;
 		//this._position =new Point();
 
-		this.omega = 0;
+		this.wind = this.game.wind;
 
-		this.proj = new Matrix(1,0,0,1);
+		this.z = 0;
+		this.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
+		this.vz = randRange(-MAX_VZ, MAX_VZ );
+		this.k = projAt(this.z);
+
+	}
+
+	update(){
+
+		this.z += this.vz;
+		if ( this.z < 0 ) {
+			this.z = 0;
+			this.vz = Math.abs(this.vz);
+		}
+		//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
+
+		this.clip.rotation += this.omega;
+		this.k = projAt( this.z);
+		this._position.set( this._position.x + (this.velocity.x+this.wind.x )*this.k,
+		this._position.y + (this.velocity.y + this.wind.y )*this.k )
+
+		this.rescale();
 
 	}
 
 	/**
 	 * Update scale and alpha based on z.
 	 */
-	update(){
+	rescale(){
 
-		let k = projAt(this.z);
-
-		k *= FLAKE_RADIUS/MAX_RADIUS;
-		this.clip.scale.set( k, k );
-		this.clip.alpha = MIN_ALPHA + ( MAX_ALPHA - MIN_ALPHA )/this.z;
+		this.clip.scale.set( this.k*BASE_SCALE, this.k*BASE_SCALE );
+		this.clip.alpha = MIN_ALPHA + ( MAX_ALPHA - MIN_ALPHA )*this.k;
 
 		//this.clip.position.set( this.position.x/this.z, this.position.y/this.z);
 	}

@@ -1,11 +1,12 @@
 import { Graphics, DEG_TO_RAD, Polygon, Point } from "pixi.js";
-import Gibbon, { Factory, Geom } from "../../../gibbon";
+import Gibbon, { Factory, Geom, GameObject } from "../../../gibbon";
 
 const { randInt, randRange} = Gibbon.Rand;
 const { move, setReflect, reflection, lerpPt: interPt } = Gibbon.Geom;
 
 import * as PIXI from 'pixi.js';
 import { setLerp } from "gibbon.js/utils/geom";
+import Flake from "../components/flake";
 
 
 /**
@@ -16,14 +17,19 @@ const HOLE_COLOR = 0xFF0000;
 
 const FLAKE_COLOR = 0xffffff;
 
-const MIN_RADIUS = 50;
-export const MAX_RADIUS = 64;
+const DRAW_RADIUS = 64;
 
 
 /**
  * @property {number} FLAKE_SIZE - base flake size.
  */
-export const FLAKE_RADIUS = 26;
+export const FLAKE_RADIUS = 28;
+
+/**
+ * @const {number} BASE_SCALE - base scale of snowflake sprite
+ * before any depth scaling is applied.
+ */
+export const BASE_SCALE = FLAKE_RADIUS/DRAW_RADIUS;
 
 /**
  * Min/max arc gap as percent of arc.
@@ -56,13 +62,29 @@ export default class SnowFactory extends Factory {
 
 		super(game);
 
-		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, MAX_RADIUS );
+		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, DRAW_RADIUS );
+
+	}
+
+	/**
+	 * @param {Point} pt
+	 * @returns {GameObject}
+	 */
+	makeSnowflake( pt ){
+
+		let s = this.createFlake(pt);
+		let g = new GameObject(s);
+		g.setDestroyOpts(true,true,true);
+
+		g.add( Flake);
+
+		return g;
 
 	}
 
 	createFlake( loc ){
 
-		let r = MAX_RADIUS;
+		let r = DRAW_RADIUS;
 		const tex = this.makeFlakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
 
 		const sprite = new PIXI.Sprite();
@@ -149,7 +171,7 @@ export default class SnowFactory extends Factory {
 		var subR = ( 0.1 + 0.1*Math.random() )*maxR;
 		var p1 = new Point( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
 
-		g.lineStyle( (0.02 + 0.05*Math.random())*MAX_RADIUS, FLAKE_COLOR );
+		g.lineStyle( (0.02 + 0.05*Math.random())*DRAW_RADIUS, FLAKE_COLOR );
 		this.drawShape(g, p1, subR );
 		if ( subR <= 8 ) return;
 

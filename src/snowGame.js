@@ -88,8 +88,6 @@ export default class SnowGame extends Game {
 		this.stars = new StarGroup(this);
 		this.backgroundLayer.addChild( this.stars.clip );
 
-		this.flakes.createFlake( new PIXI.Point(100,100));
-
 		this.start();
 
 	}

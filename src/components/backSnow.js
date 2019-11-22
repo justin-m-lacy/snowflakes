@@ -13,10 +13,10 @@ const MAX_G = 0.8;
 
 
 export const MIN_SIZE = 6;
-export const MIN_Z = 10;
+export const MIN_Z = 32;
 export const MAX_Z = 200;
 
-export const MIN_ALPHA = 0.7;
+export const MIN_ALPHA = 0.2;
 export const MAX_ALPHA = 1;
 
 const MAX_V = 0.2;
@@ -55,10 +55,12 @@ export default class BackSnow extends Component {
 
 		for( let i = FLAKE_COUNT; i >= 0; i-- ) {
 
-			var s = factory.createFlake( new Point() );
-			clip.addChild(s);
+			var g = factory.makeSnowflake( new Point() );
 
-			var f = new Flake(s);
+			clip.addChild(g.clip);
+			this.game.addObject(g);
+
+			var f = g.get(Flake);
 			this.randomize(f);
 			f.position.set(Math.random()*bounds.width, Math.random()*bounds.height);
 			//f.position.set( randRange(-bounds.width/2,bounds.width/2), randRange(-bounds.height/2,bounds.height/2) );
@@ -69,36 +71,20 @@ export default class BackSnow extends Component {
 
 	}
 
-	update(delta){
+	update(){
 
 		let bounds = this.bounds;
-		let wind = this.wind;
 		let a = this.flakes;
 
 		for( let i = a.length-1; i >= 0; i-- ) {
 
 			var f = a[i];
-			var p = f.clip.position;
+			var p = f.position;
 
 			if ( f.z < MIN_Z ) f.vz = Math.abs(f.vz);
 
 			if ( !bounds.contains( p.x, p.y ) ) {
-
 				this.randomize(f);
-
-			} else {
-
-				p = f.position;
-				f.z += f.vz;
-				//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
-
-				f.clip.rotation += f.omega;
-				var k = projAt( f.z);
-				p.set( p.x + (f.velocity.x + wind.x )*k,
-						p.y + (f.velocity.y + wind.y)*k )
-
-
-				f.update();
 			}
 
 		}
@@ -111,14 +97,11 @@ export default class BackSnow extends Component {
 	 */
 	randomize(f) {
 
-		f.z = randRange(1,MAX_Z);
+		f.z = randRange(MIN_Z,MAX_Z);
 		f.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 		f.vz = randRange(-MAX_VZ, MAX_VZ );
 
 		f.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
-
-		// update scale and alpha.
-		f.update();
 
 		if ( Math.random() < 0.5 ){
 			f.position.set( this.bounds.left + Math.random()*this.bounds.width, this.bounds.y+1 );
@@ -128,15 +111,6 @@ export default class BackSnow extends Component {
 			f.position.set( this.bounds.right-1, this.bounds.y + Math.random()*this.bounds.height );
 		}
 
-	}
-
-	placeTop(f){
-
-		f.position.set( Math.random()*bounds.width, bounds.y );
-
-	}
-
-	placeSide(f){
 	}
 
 }

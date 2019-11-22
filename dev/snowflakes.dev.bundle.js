@@ -104616,10 +104616,10 @@ const MAX_G = 0.8;
 
 
 const MIN_SIZE = 6;
-const MIN_Z = 10;
+const MIN_Z = 32;
 const MAX_Z = 200;
 
-const MIN_ALPHA = 0.7;
+const MIN_ALPHA = 0.2;
 const MAX_ALPHA = 1;
 
 const MAX_V = 0.2;
@@ -104658,10 +104658,12 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 		for( let i = FLAKE_COUNT; i >= 0; i-- ) {
 
-			var s = factory.createFlake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]() );
-			clip.addChild(s);
+			var g = factory.makeSnowflake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]() );
 
-			var f = new _flake__WEBPACK_IMPORTED_MODULE_1__["default"](s);
+			clip.addChild(g.clip);
+			this.game.addObject(g);
+
+			var f = g.get(_flake__WEBPACK_IMPORTED_MODULE_1__["default"]);
 			this.randomize(f);
 			f.position.set(Math.random()*bounds.width, Math.random()*bounds.height);
 			//f.position.set( randRange(-bounds.width/2,bounds.width/2), randRange(-bounds.height/2,bounds.height/2) );
@@ -104672,36 +104674,20 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 	}
 
-	update(delta){
+	update(){
 
 		let bounds = this.bounds;
-		let wind = this.wind;
 		let a = this.flakes;
 
 		for( let i = a.length-1; i >= 0; i-- ) {
 
 			var f = a[i];
-			var p = f.clip.position;
+			var p = f.position;
 
 			if ( f.z < MIN_Z ) f.vz = Math.abs(f.vz);
 
 			if ( !bounds.contains( p.x, p.y ) ) {
-
 				this.randomize(f);
-
-			} else {
-
-				p = f.position;
-				f.z += f.vz;
-				//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
-
-				f.clip.rotation += f.omega;
-				var k = Object(_groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["projAt"])( f.z);
-				p.set( p.x + (f.velocity.x + wind.x )*k,
-						p.y + (f.velocity.y + wind.y)*k )
-
-
-				f.update();
 			}
 
 		}
@@ -104714,14 +104700,11 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 	 */
 	randomize(f) {
 
-		f.z = randRange(1,MAX_Z);
+		f.z = randRange(MIN_Z,MAX_Z);
 		f.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 		f.vz = randRange(-MAX_VZ, MAX_VZ );
 
 		f.omega = randRange( -_groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["MAX_OMEGA"], _groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["MAX_OMEGA"] );
-
-		// update scale and alpha.
-		f.update();
 
 		if ( Math.random() < 0.5 ){
 			f.position.set( this.bounds.left + Math.random()*this.bounds.width, this.bounds.y+1 );
@@ -104731,15 +104714,6 @@ class BackSnow extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 			f.position.set( this.bounds.right-1, this.bounds.y + Math.random()*this.bounds.height );
 		}
 
-	}
-
-	placeTop(f){
-
-		f.position.set( Math.random()*bounds.width, bounds.y );
-
-	}
-
-	placeSide(f){
 	}
 
 }
@@ -104760,14 +104734,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _create_snowFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../create/snowFactory */ "./src/create/snowFactory.js");
 /* harmony import */ var _backSnow__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./backSnow */ "./src/components/backSnow.js");
 /* harmony import */ var _groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../groups/snowGroup */ "./src/groups/snowGroup.js");
+/* harmony import */ var gibbon_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! gibbon.js */ "../gibbon/index.js");
 
 
 
+
+
+
+const { randInt, randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_4__["Rand"];
+
+const MAX_V = 0.2;
+const MAX_VZ = 0.01;
 
 /**
  * Container for holding flake/clip/velocity information.
  */
-class Flake {
+class Flake extends gibbon_js__WEBPACK_IMPORTED_MODULE_4__["Component"] {
 
 	/**
 	 * @property {DisplayObject} clip
@@ -104783,30 +104765,52 @@ class Flake {
 
 	get position(){ return this._position}
 
-	constructor( clip ){
+	/**
+	 * @property {number} proj - current projection constant based on z.
+	 */
+	get proj(){return this.k; }
 
-		this.clip = clip;
-		this.velocity = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]();
+	init(){
+
+		this.velocity = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 
 		this._position = this.clip.position;
 		//this._position =new Point();
 
-		this.omega = 0;
+		this.wind = this.game.wind;
 
-		this.proj = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Matrix"](1,0,0,1);
+		this.z = 0;
+		this.omega = randRange( -_groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["MAX_OMEGA"], _groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["MAX_OMEGA"] );
+		this.vz = randRange(-MAX_VZ, MAX_VZ );
+		this.k = Object(_groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["projAt"])(this.z);
+
+	}
+
+	update(){
+
+		this.z += this.vz;
+		if ( this.z < 0 ) {
+			this.z = 0;
+			this.vz = Math.abs(this.vz);
+		}
+		//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
+
+		this.clip.rotation += this.omega;
+		this.k = Object(_groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["projAt"])( this.z);
+		this._position.set( this._position.x + (this.velocity.x+this.wind.x )*this.k,
+		this._position.y + (this.velocity.y + this.wind.y )*this.k )
+
+		this.rescale();
 
 	}
 
 	/**
 	 * Update scale and alpha based on z.
 	 */
-	update(){
+	rescale(){
 
-		let k = Object(_groups_snowGroup__WEBPACK_IMPORTED_MODULE_3__["projAt"])(this.z);
-
-		k *= _create_snowFactory__WEBPACK_IMPORTED_MODULE_1__["FLAKE_RADIUS"]/_create_snowFactory__WEBPACK_IMPORTED_MODULE_1__["MAX_RADIUS"];
-		this.clip.scale.set( k, k );
-		this.clip.alpha = _backSnow__WEBPACK_IMPORTED_MODULE_2__["MIN_ALPHA"] + ( _backSnow__WEBPACK_IMPORTED_MODULE_2__["MAX_ALPHA"] - _backSnow__WEBPACK_IMPORTED_MODULE_2__["MIN_ALPHA"] )/this.z;
+		this.clip.scale.set( this.k*_create_snowFactory__WEBPACK_IMPORTED_MODULE_1__["BASE_SCALE"], this.k*_create_snowFactory__WEBPACK_IMPORTED_MODULE_1__["BASE_SCALE"] );
+		this.clip.alpha = _backSnow__WEBPACK_IMPORTED_MODULE_2__["MIN_ALPHA"] + ( _backSnow__WEBPACK_IMPORTED_MODULE_2__["MAX_ALPHA"] - _backSnow__WEBPACK_IMPORTED_MODULE_2__["MIN_ALPHA"] )*this.k;
 
 		//this.clip.position.set( this.position.x/this.z, this.position.y/this.z);
 	}
@@ -104873,23 +104877,25 @@ class Sky extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 /*!***********************************!*\
   !*** ./src/create/snowFactory.js ***!
   \***********************************/
-/*! exports provided: MAX_RADIUS, FLAKE_RADIUS, arcLen, default */
+/*! exports provided: FLAKE_RADIUS, BASE_SCALE, arcLen, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAX_RADIUS", function() { return MAX_RADIUS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FLAKE_RADIUS", function() { return FLAKE_RADIUS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BASE_SCALE", function() { return BASE_SCALE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "arcLen", function() { return arcLen; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SnowFactory; });
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
 /* harmony import */ var _gibbon__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../gibbon */ "../gibbon/index.js");
 /* harmony import */ var gibbon_js_utils_geom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! gibbon.js/utils/geom */ "../gibbon/utils/geom.js");
+/* harmony import */ var _components_flake__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/flake */ "./src/components/flake.js");
 
 
 
 const { randInt, randRange} = _gibbon__WEBPACK_IMPORTED_MODULE_1__["default"].Rand;
 const { move, setReflect, reflection, lerpPt: interPt } = _gibbon__WEBPACK_IMPORTED_MODULE_1__["default"].Geom;
+
 
 
 
@@ -104903,14 +104909,19 @@ const HOLE_COLOR = 0xFF0000;
 
 const FLAKE_COLOR = 0xffffff;
 
-const MIN_RADIUS = 50;
-const MAX_RADIUS = 64;
+const DRAW_RADIUS = 64;
 
 
 /**
  * @property {number} FLAKE_SIZE - base flake size.
  */
-const FLAKE_RADIUS = 26;
+const FLAKE_RADIUS = 28;
+
+/**
+ * @const {number} BASE_SCALE - base scale of snowflake sprite
+ * before any depth scaling is applied.
+ */
+const BASE_SCALE = FLAKE_RADIUS/DRAW_RADIUS;
 
 /**
  * Min/max arc gap as percent of arc.
@@ -104943,13 +104954,29 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 
 		super(game);
 
-		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, MAX_RADIUS );
+		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, DRAW_RADIUS );
+
+	}
+
+	/**
+	 * @param {Point} pt
+	 * @returns {GameObject}
+	 */
+	makeSnowflake( pt ){
+
+		let s = this.createFlake(pt);
+		let g = new _gibbon__WEBPACK_IMPORTED_MODULE_1__["GameObject"](s);
+		g.setDestroyOpts(true,true,true);
+
+		g.add( _components_flake__WEBPACK_IMPORTED_MODULE_3__["default"]);
+
+		return g;
 
 	}
 
 	createFlake( loc ){
 
-		let r = MAX_RADIUS;
+		let r = DRAW_RADIUS;
 		const tex = this.makeFlakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
 
 		const sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Sprite"]();
@@ -105036,7 +105063,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 		var subR = ( 0.1 + 0.1*Math.random() )*maxR;
 		var p1 = new pixi_js__WEBPACK_IMPORTED_MODULE_0__["Point"]( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
 
-		g.lineStyle( (0.02 + 0.05*Math.random())*MAX_RADIUS, FLAKE_COLOR );
+		g.lineStyle( (0.02 + 0.05*Math.random())*DRAW_RADIUS, FLAKE_COLOR );
 		this.drawShape(g, p1, subR );
 		if ( subR <= 8 ) return;
 
@@ -105408,7 +105435,7 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 /*!*********************************!*\
   !*** ./src/groups/snowGroup.js ***!
   \*********************************/
-/*! exports provided: FOCUS, F_INV, MAX_OMEGA, projAt, setProj, default */
+/*! exports provided: FOCUS, F_INV, MAX_OMEGA, projAt, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -105417,18 +105444,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "F_INV", function() { return F_INV; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAX_OMEGA", function() { return MAX_OMEGA; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "projAt", function() { return projAt; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setProj", function() { return setProj; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SnowGroup; });
 /* harmony import */ var gibbon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gibbon.js */ "../gibbon/index.js");
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/pixi.es.js");
 /* harmony import */ var gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! gibbon.js/systems/boundsDestroy */ "../gibbon/systems/boundsDestroy.js");
+/* harmony import */ var _components_flake__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/flake */ "./src/components/flake.js");
+
 
 
 
 
 const { randInt, randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
 
-const FOCUS = 40;
+const FOCUS = 64;
 const F_INV = 1/FOCUS;
 
 const MAX_OMEGA = Math.PI/800;
@@ -105439,10 +105467,10 @@ const MAX_OMEGA = Math.PI/800;
  */
 const projAt = (z)=>FOCUS/( z + FOCUS );
 
-const setProj = ( mat,z )=>{
+/*export const setProj = ( mat,z )=>{
 	mat.a = mat.d = 1/(F_INV*z+1);
 	return mat;
-}
+}*/
 
 class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE_2__["default"] {
 
@@ -105475,34 +105503,11 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 	 */
 	createFlake( pt ){
 
-		let s = this.factory.createFlake(pt);
-		let g = new gibbon_js__WEBPACK_IMPORTED_MODULE_0__["GameObject"](s);
-		g.setDestroyOpts(true,true,true);
+		let g = this.factory.makeSnowflake(pt);
 
-		let mv = g.add( gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Mover"]);
-		mv.set( randRange(-1,1), randRange(-1,1) );
-		mv.vz = randRange(-0.001,0.001);
-
-		mv.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
 		this.add(g);
-
 		this.count++;
 
-	}
-
-	update( delta ){
-
-		let vx = delta*this.wind.x/4;
-		let vy = delta*this.wind.y/4;
-
-		for( let i = this.objects.length-1; i>=0; i-- ) {
-
-			var f = this.objects[i];
-			f.translate( vx, vy );
-
-		}
-
-		super.update(delta);
 	}
 
 }
@@ -105757,8 +105762,6 @@ class SnowGame extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Game"] {
 
 		this.stars = new _groups_starGroup__WEBPACK_IMPORTED_MODULE_4__["default"](this);
 		this.backgroundLayer.addChild( this.stars.clip );
-
-		this.flakes.createFlake( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](100,100));
 
 		this.start();
 
