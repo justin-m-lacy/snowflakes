@@ -9,17 +9,42 @@ const {TimeDestroy} = Components;
 
 const { randInt, randRange } = Rand;
 
-/**
- * Default spawner time.
- */
-var SPAWNER_TIME = 3;
 
-export const SPECIAL_TINT = 0x4455bb;
 
 export const FOCUS = 64;
 export const F_INV = 1/FOCUS;
 
 export const MAX_OMEGA = Math.PI/800;
+
+const SPAWNER_TINT = 0xff11bb;
+/**
+ *  @const {number} SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
+ */
+const SPAWNER_RATE = 0.0001;
+const MAX_SPAWNER_RATE = 0.01;
+/**
+ * @const {number} SPAWNER_TIME - Min. spawner flake effect length, in seconds.
+ */
+const SPAWNER_TIME = 3;
+const MAX_SPAWNER_TIME = 7;
+
+/**
+ * Function that starts at min and exponentially approaches max
+ * but never reaches.
+ * v is the current input value, which should start at 0.
+ * Higher k makes the function approach max faster.
+ * Lower k slows the approach to max.
+ * @param {number} min
+ * @param {number} max
+ * @param {number} v
+ * @param {number} k
+ */
+export const expLerp = ( min, max, v, k=0.1 ) => {
+
+	let t = Math.exp( -k*v );
+	return t*min + (1-t)*max;
+
+}
 
 /**
  * Projection factor at distance z.
@@ -42,6 +67,12 @@ export default class SnowGroup extends BoundsDestroy {
 
 		super(game, new Container() );
 
+		/**
+		 * Default spawner time.
+		 */
+		this.spawnerTime = SPAWNER_TIME;
+		this.spawnerRate = SPAWNER_RATE;
+
 		this.factory = game.factory;
 
 		/**
@@ -61,7 +92,7 @@ export default class SnowGroup extends BoundsDestroy {
 	update(){
 
 		super.update();
-		if ( Math.random() <0.1 ) {
+		if ( Math.random() < this.spawnerRate ) {
 			this.makeAutoFlake();
 		}
 
@@ -69,14 +100,15 @@ export default class SnowGroup extends BoundsDestroy {
 
 	makeAutoFlake() {
 
-		let g = this.factory.makeSnowflake( Rand.inRect( this.bounds ) );
-		let s = g.clip;
-		s.tint = SPECIAL_TINT;
+		let g = this.factory.makeSnowflake(
+			new Point( this.bounds.x -this.wind.x*60 + this.bounds.width*Math.random(), this.bounds.y + Math.random()*this.bounds.height/2 ) );
+		g.clip.tint = SPAWNER_TINT;
+		g.clip.interactive = true;
 
-		let timer = g.add( TimeDestroy );
-		timer.time = SPAWNER_TIME;
+		let f = g.get(Flake);
+		f.z = 100+100*Math.random();
+		f.vz = -0.05-0.1*Math.random();
 
-		s.interactive = true;
 		g.on('click', ()=>this.clickAuto(g), this );
 
 		this.add(g);
@@ -88,7 +120,10 @@ export default class SnowGroup extends BoundsDestroy {
 		let g = new GameObject();
 		g.add( FlakeSpawner );
 		let timer = g.add( TimeDestroy );
-		timer.time = SPAWNER_TIME;
+		timer.time = this.spawnerTime;
+
+		let n = this.stats.spawners++;
+		this.spawnerRate = expLerp( SPAWNER_RATE, MAX_SPAWNER_RATE, n );
 
 
 		this.add(g);

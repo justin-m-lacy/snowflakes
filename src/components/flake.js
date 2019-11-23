@@ -26,6 +26,9 @@ export default class Flake extends Component {
 	get velocity(){return this._vel;}
 	set velocity(v){this._vel = v;}
 
+	get baseScale(){ return this._baseScale; }
+	set baseScale(v) { this._baseScale = v; }
+
 	get position(){ return this._position}
 
 	/**
@@ -60,7 +63,7 @@ export default class Flake extends Component {
 		this.z += this.vz;
 		if ( this.z < 0 ) {
 			this.z = 0;
-			this.vz = Math.abs(this.vz);
+			this.vz = 0.1*Math.abs(this.vz)+MAX_VZ*Math.random();
 		}
 		//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
 

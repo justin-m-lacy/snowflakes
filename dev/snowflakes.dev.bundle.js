@@ -46470,7 +46470,7 @@ module.exports = function parseURI (str, opts) {
 /*!*****************************************************!*\
   !*** ../gibbon/node_modules/pixi.js/lib/pixi.es.js ***!
   \*****************************************************/
-/*! exports provided: accessibility, extract, interaction, prepare, utils, VERSION, filters, useDeprecated, Application, AbstractBatchRenderer, AbstractRenderer, Attribute, BaseRenderTexture, BaseTexture, BatchDrawCall, BatchGeometry, BatchPluginFactory, BatchRenderer, BatchShaderGenerator, BatchTextureArray, Buffer, CubeTexture, Filter, Framebuffer, GLProgram, GLTexture, Geometry, MaskData, ObjectRenderer, Program, Quad, QuadUv, RenderTexture, RenderTexturePool, Renderer, Shader, SpriteMaskFilter, State, System, Texture, TextureMatrix, TextureUvs, UniformGroup, ViewableBuffer, autoDetectRenderer, checkMaxIfStatementsInShader, defaultFilterVertex, defaultVertex, resources, systems, AppLoaderPlugin, Loader, LoaderResource, TextureLoader, ParticleContainer, ParticleRenderer, Spritesheet, SpritesheetLoader, TilingSprite, TilingSpriteRenderer, BitmapFontLoader, BitmapText, Ticker, TickerPlugin, UPDATE_PRIORITY, ALPHA_MODES, BLEND_MODES, DRAW_MODES, ENV, FORMATS, GC_MODES, MASK_TYPES, MIPMAP_MODES, PRECISION, RENDERER_TYPE, SCALE_MODES, TARGETS, TYPES, WRAP_MODES, Bounds, Container, DisplayObject, FillStyle, GRAPHICS_CURVES, Graphics, GraphicsData, GraphicsGeometry, LineStyle, graphicsUtils, Circle, DEG_TO_RAD, Ellipse, Matrix, ObservablePoint, PI_2, Point, Polygon, RAD_TO_DEG, Rectangle, RoundedRectangle, SHAPES, Transform, groupD8, Mesh, MeshBatchUvs, MeshGeometry, MeshMaterial, NineSlicePlane, PlaneGeometry, RopeGeometry, SimpleMesh, SimplePlane, SimpleRope, Runner, Sprite, AnimatedSprite, TEXT_GRADIENT, Text, TextMetrics, TextStyle, isMobile, settings */
+/*! exports provided: accessibility, extract, interaction, prepare, utils, Application, AbstractBatchRenderer, AbstractRenderer, Attribute, BaseRenderTexture, BaseTexture, BatchDrawCall, BatchGeometry, BatchPluginFactory, BatchRenderer, BatchShaderGenerator, BatchTextureArray, Buffer, CubeTexture, Filter, Framebuffer, GLProgram, GLTexture, Geometry, MaskData, ObjectRenderer, Program, Quad, QuadUv, RenderTexture, RenderTexturePool, Renderer, Shader, SpriteMaskFilter, State, System, Texture, TextureMatrix, TextureUvs, UniformGroup, ViewableBuffer, autoDetectRenderer, checkMaxIfStatementsInShader, defaultFilterVertex, defaultVertex, resources, systems, AppLoaderPlugin, Loader, LoaderResource, TextureLoader, ParticleContainer, ParticleRenderer, Spritesheet, SpritesheetLoader, TilingSprite, TilingSpriteRenderer, BitmapFontLoader, BitmapText, Ticker, TickerPlugin, UPDATE_PRIORITY, ALPHA_MODES, BLEND_MODES, DRAW_MODES, ENV, FORMATS, GC_MODES, MASK_TYPES, MIPMAP_MODES, PRECISION, RENDERER_TYPE, SCALE_MODES, TARGETS, TYPES, WRAP_MODES, Bounds, Container, DisplayObject, FillStyle, GRAPHICS_CURVES, Graphics, GraphicsData, GraphicsGeometry, LineStyle, graphicsUtils, Circle, DEG_TO_RAD, Ellipse, Matrix, ObservablePoint, PI_2, Point, Polygon, RAD_TO_DEG, Rectangle, RoundedRectangle, SHAPES, Transform, groupD8, Mesh, MeshBatchUvs, MeshGeometry, MeshMaterial, NineSlicePlane, PlaneGeometry, RopeGeometry, SimpleMesh, SimplePlane, SimpleRope, Runner, Sprite, AnimatedSprite, TEXT_GRADIENT, Text, TextMetrics, TextStyle, isMobile, settings, VERSION, filters, useDeprecated */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -99111,7 +99111,7 @@ module.exports = function parseURI (str, opts) {
 /*!*********************************************!*\
   !*** ./node_modules/pixi.js/lib/pixi.es.js ***!
   \*********************************************/
-/*! exports provided: accessibility, extract, interaction, prepare, utils, VERSION, filters, useDeprecated, Application, AbstractBatchRenderer, AbstractRenderer, Attribute, BaseRenderTexture, BaseTexture, BatchDrawCall, BatchGeometry, BatchPluginFactory, BatchRenderer, BatchShaderGenerator, BatchTextureArray, Buffer, CubeTexture, Filter, Framebuffer, GLProgram, GLTexture, Geometry, MaskData, ObjectRenderer, Program, Quad, QuadUv, RenderTexture, RenderTexturePool, Renderer, Shader, SpriteMaskFilter, State, System, Texture, TextureMatrix, TextureUvs, UniformGroup, ViewableBuffer, autoDetectRenderer, checkMaxIfStatementsInShader, defaultFilterVertex, defaultVertex, resources, systems, AppLoaderPlugin, Loader, LoaderResource, TextureLoader, ParticleContainer, ParticleRenderer, Spritesheet, SpritesheetLoader, TilingSprite, TilingSpriteRenderer, BitmapFontLoader, BitmapText, Ticker, TickerPlugin, UPDATE_PRIORITY, ALPHA_MODES, BLEND_MODES, DRAW_MODES, ENV, FORMATS, GC_MODES, MASK_TYPES, MIPMAP_MODES, PRECISION, RENDERER_TYPE, SCALE_MODES, TARGETS, TYPES, WRAP_MODES, Bounds, Container, DisplayObject, FillStyle, GRAPHICS_CURVES, Graphics, GraphicsData, GraphicsGeometry, LineStyle, graphicsUtils, Circle, DEG_TO_RAD, Ellipse, Matrix, ObservablePoint, PI_2, Point, Polygon, RAD_TO_DEG, Rectangle, RoundedRectangle, SHAPES, Transform, groupD8, Mesh, MeshBatchUvs, MeshGeometry, MeshMaterial, NineSlicePlane, PlaneGeometry, RopeGeometry, SimpleMesh, SimplePlane, SimpleRope, Runner, Sprite, AnimatedSprite, TEXT_GRADIENT, Text, TextMetrics, TextStyle, isMobile, settings */
+/*! exports provided: accessibility, extract, interaction, prepare, utils, Application, AbstractBatchRenderer, AbstractRenderer, Attribute, BaseRenderTexture, BaseTexture, BatchDrawCall, BatchGeometry, BatchPluginFactory, BatchRenderer, BatchShaderGenerator, BatchTextureArray, Buffer, CubeTexture, Filter, Framebuffer, GLProgram, GLTexture, Geometry, MaskData, ObjectRenderer, Program, Quad, QuadUv, RenderTexture, RenderTexturePool, Renderer, Shader, SpriteMaskFilter, State, System, Texture, TextureMatrix, TextureUvs, UniformGroup, ViewableBuffer, autoDetectRenderer, checkMaxIfStatementsInShader, defaultFilterVertex, defaultVertex, resources, systems, AppLoaderPlugin, Loader, LoaderResource, TextureLoader, ParticleContainer, ParticleRenderer, Spritesheet, SpritesheetLoader, TilingSprite, TilingSpriteRenderer, BitmapFontLoader, BitmapText, Ticker, TickerPlugin, UPDATE_PRIORITY, ALPHA_MODES, BLEND_MODES, DRAW_MODES, ENV, FORMATS, GC_MODES, MASK_TYPES, MIPMAP_MODES, PRECISION, RENDERER_TYPE, SCALE_MODES, TARGETS, TYPES, WRAP_MODES, Bounds, Container, DisplayObject, FillStyle, GRAPHICS_CURVES, Graphics, GraphicsData, GraphicsGeometry, LineStyle, graphicsUtils, Circle, DEG_TO_RAD, Ellipse, Matrix, ObservablePoint, PI_2, Point, Polygon, RAD_TO_DEG, Rectangle, RoundedRectangle, SHAPES, Transform, groupD8, Mesh, MeshBatchUvs, MeshGeometry, MeshMaterial, NineSlicePlane, PlaneGeometry, RopeGeometry, SimpleMesh, SimplePlane, SimpleRope, Runner, Sprite, AnimatedSprite, TEXT_GRADIENT, Text, TextMetrics, TextStyle, isMobile, settings, VERSION, filters, useDeprecated */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -105370,6 +105370,9 @@ class Flake extends gibbon_js__WEBPACK_IMPORTED_MODULE_4__["Component"] {
 	get velocity(){return this._vel;}
 	set velocity(v){this._vel = v;}
 
+	get baseScale(){ return this._baseScale; }
+	set baseScale(v) { this._baseScale = v; }
+
 	get position(){ return this._position}
 
 	/**
@@ -105404,7 +105407,7 @@ class Flake extends gibbon_js__WEBPACK_IMPORTED_MODULE_4__["Component"] {
 		this.z += this.vz;
 		if ( this.z < 0 ) {
 			this.z = 0;
-			this.vz = Math.abs(this.vz);
+			this.vz = 0.1*Math.abs(this.vz)+MAX_VZ*Math.random();
 		}
 		//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
 
@@ -105509,10 +105512,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+const TEX_WIDTH = 16;
 /**
- * @const {number} TEX_SIZE - sky texture size.
+ * @const {number} TEX_HEIGHT - sky texture size.
  */
-const TEX_SIZE = 200;
+const TEX_HEIGHT = 400;
 
 /**
  * @const {object.<number,number[]>} skyColors - colors at different
@@ -105521,9 +105526,9 @@ const TEX_SIZE = 200;
 var SkyColors = [
 
 	{ at:0, colors:[0x1308d2,0x4040da, 0xff6200 ], stops:[0.2,0.75,1] },
-	{ at:100, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
-	{ at:300, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
-	{ at:1000, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:250, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
+	{ at:700, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:1500, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
 	{ at:5000, colors:[0x020024,0x131378,0x4c00ff ], stops:[0.2,0.75,1] },
 
 ]
@@ -105552,7 +105557,7 @@ class Sky extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 	init(){
 
 		this.view = this.game.screen;
-		this.draw = new gibbon_js_utils_canvasDraw__WEBPACK_IMPORTED_MODULE_1__["default"]( TEX_SIZE, TEX_SIZE );
+		this.draw = new gibbon_js_utils_canvasDraw__WEBPACK_IMPORTED_MODULE_1__["default"]( TEX_WIDTH, TEX_HEIGHT );
 
 		let s = pixi_js__WEBPACK_IMPORTED_MODULE_2__["Sprite"].from( this.draw.canvas);
 		s.width = this.view.width;
@@ -105575,7 +105580,7 @@ class Sky extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 	}
 
 	redrawSky(){
-		this.draw.gradFill( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](0,0), new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]( 0, TEX_SIZE ), this.skyGradient );
+		this.draw.gradFill( new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"](0,0), new pixi_js__WEBPACK_IMPORTED_MODULE_2__["Point"]( 0, TEX_HEIGHT ), this.skyGradient );
 		this.sky.texture.update();
 	}
 
@@ -105647,10 +105652,17 @@ class Stats extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 	get clicks(){return this._clicks;}
 	set clicks(v){this._clicks=v;}
 
+	/**
+	 * @property {number} spawners - spawners clicked.
+	 */
+	get spawners(){return this._spawners;}
+	set spawners(v) { this._spawners = v; }
+
 	init(){
 
 		this._count = 0;
 		this._clicks = 0;
+		this._spawners = 0;
 
 	}
 
@@ -106172,15 +106184,15 @@ class SnowFactory extends _gibbon__WEBPACK_IMPORTED_MODULE_1__["Factory"] {
 /*!*********************************!*\
   !*** ./src/groups/snowGroup.js ***!
   \*********************************/
-/*! exports provided: SPECIAL_TINT, FOCUS, F_INV, MAX_OMEGA, projAt, default */
+/*! exports provided: FOCUS, F_INV, MAX_OMEGA, expLerp, projAt, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SPECIAL_TINT", function() { return SPECIAL_TINT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FOCUS", function() { return FOCUS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "F_INV", function() { return F_INV; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAX_OMEGA", function() { return MAX_OMEGA; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "expLerp", function() { return expLerp; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "projAt", function() { return projAt; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SnowGroup; });
 /* harmony import */ var gibbon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gibbon.js */ "../gibbon/index.js");
@@ -106199,17 +106211,42 @@ const {TimeDestroy} = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Components"];
 
 const { randInt, randRange } = gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"];
 
-/**
- * Default spawner time.
- */
-var SPAWNER_TIME = 3;
 
-const SPECIAL_TINT = 0x4455bb;
 
 const FOCUS = 64;
 const F_INV = 1/FOCUS;
 
 const MAX_OMEGA = Math.PI/800;
+
+const SPAWNER_TINT = 0xff11bb;
+/**
+ *  @const {number} SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
+ */
+const SPAWNER_RATE = 0.0001;
+const MAX_SPAWNER_RATE = 0.01;
+/**
+ * @const {number} SPAWNER_TIME - Min. spawner flake effect length, in seconds.
+ */
+const SPAWNER_TIME = 3;
+const MAX_SPAWNER_TIME = 7;
+
+/**
+ * Function that starts at min and exponentially approaches max
+ * but never reaches.
+ * v is the current input value, which should start at 0.
+ * Higher k makes the function approach max faster.
+ * Lower k slows the approach to max.
+ * @param {number} min
+ * @param {number} max
+ * @param {number} v
+ * @param {number} k
+ */
+const expLerp = ( min, max, v, k=0.1 ) => {
+
+	let t = Math.exp( -k*v );
+	return t*min + (1-t)*max;
+
+}
 
 /**
  * Projection factor at distance z.
@@ -106232,6 +106269,12 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 
 		super(game, new pixi_js__WEBPACK_IMPORTED_MODULE_1__["Container"]() );
 
+		/**
+		 * Default spawner time.
+		 */
+		this.spawnerTime = SPAWNER_TIME;
+		this.spawnerRate = SPAWNER_RATE;
+
 		this.factory = game.factory;
 
 		/**
@@ -106251,7 +106294,7 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 	update(){
 
 		super.update();
-		if ( Math.random() <0.1 ) {
+		if ( Math.random() < this.spawnerRate ) {
 			this.makeAutoFlake();
 		}
 
@@ -106259,14 +106302,15 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 
 	makeAutoFlake() {
 
-		let g = this.factory.makeSnowflake( gibbon_js__WEBPACK_IMPORTED_MODULE_0__["Rand"].inRect( this.bounds ) );
-		let s = g.clip;
-		s.tint = SPECIAL_TINT;
+		let g = this.factory.makeSnowflake(
+			new pixi_js__WEBPACK_IMPORTED_MODULE_1__["Point"]( this.bounds.x -this.wind.x*60 + this.bounds.width*Math.random(), this.bounds.y + Math.random()*this.bounds.height/2 ) );
+		g.clip.tint = SPAWNER_TINT;
+		g.clip.interactive = true;
 
-		let timer = g.add( TimeDestroy );
-		timer.time = SPAWNER_TIME;
+		let f = g.get(_components_flake__WEBPACK_IMPORTED_MODULE_3__["default"]);
+		f.z = 100+100*Math.random();
+		f.vz = -0.05-0.1*Math.random();
 
-		s.interactive = true;
 		g.on('click', ()=>this.clickAuto(g), this );
 
 		this.add(g);
@@ -106278,7 +106322,10 @@ class SnowGroup extends gibbon_js_systems_boundsDestroy__WEBPACK_IMPORTED_MODULE
 		let g = new gibbon_js__WEBPACK_IMPORTED_MODULE_0__["GameObject"]();
 		g.add( _components_flakeSpawner__WEBPACK_IMPORTED_MODULE_4__["default"] );
 		let timer = g.add( TimeDestroy );
-		timer.time = SPAWNER_TIME;
+		timer.time = this.spawnerTime;
+
+		let n = this.stats.spawners++;
+		this.spawnerRate = expLerp( SPAWNER_RATE, MAX_SPAWNER_RATE, n );
 
 
 		this.add(g);
@@ -106337,7 +106384,7 @@ const STAR_COLOR = 0xffffff;
 const STAR_ALPHA = 0.8;
 
 const MIN_RADIUS = 3;
-const MAX_RADIUS = 3;
+const MAX_RADIUS = 2;
 
 class StarGroup extends gibbon_js__WEBPACK_IMPORTED_MODULE_0__["System"] {
 

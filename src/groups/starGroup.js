@@ -8,7 +8,7 @@ const STAR_COLOR = 0xffffff;
 const STAR_ALPHA = 0.8;
 
 const MIN_RADIUS = 3;
-const MAX_RADIUS = 3;
+const MAX_RADIUS = 2;
 
 export default class StarGroup extends System {
 

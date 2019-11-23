@@ -22,10 +22,17 @@ export default class Stats extends Component {
 	get clicks(){return this._clicks;}
 	set clicks(v){this._clicks=v;}
 
+	/**
+	 * @property {number} spawners - spawners clicked.
+	 */
+	get spawners(){return this._spawners;}
+	set spawners(v) { this._spawners = v; }
+
 	init(){
 
 		this._count = 0;
 		this._clicks = 0;
+		this._spawners = 0;
 
 	}
 
