@@ -37,8 +37,12 @@ export const BASE_SCALE = FLAKE_RADIUS/DRAW_RADIUS;
 const MIN_GAP = 0.08;
 const MAX_GAP = 0.3;
 
-const MIN_SEGS = 6;
-const MAX_SEGS = 6;
+/**
+ * @const {number} MIN_SEGS - each segment is actually
+ * half a snowflake arm.
+ */
+const MIN_SEGS = 12;
+const MAX_SEGS = 12;
 
 /**
  * Minimum/maximum cuts to make in flake arc.
@@ -149,14 +153,14 @@ export default class SnowFactory extends Factory {
 		let g = new Graphics();
 		g.mask = this.maskArc;
 
-		let s = randRange(0.7,1);
-		this.maskArc.scale.set( s,s )
+		//let s = randRange(0.7,1);
+		//this.maskArc.scale.set( s,s )
 
 		let p = new Point();
 
 		this.drawSolid(g, p, (0.02+0.05*Math.random())*r );
 
-		this.branch( g, p, arc/2, 1.4*r, Math.random() < 0.5 ? -1 : 1 );
+		this.branch( g, p, 0, 1.4*r );
 		//this.arcItems(g, r, arc );
 
 		c.addChild(this.maskArc );
@@ -167,7 +171,7 @@ export default class SnowFactory extends Factory {
 
 	}
 
-	branch( g, p0, angle, maxR, parity=0 ) {
+	branch( g, p0, angle, maxR ) {
 
 		g.moveTo( p0.x, p0.y );
 
@@ -181,15 +185,13 @@ export default class SnowFactory extends Factory {
 
 		if ( subR <= 8 ) return;
 
-		var a2 = parity* ( angle + ( 32 + 32*Math.random()*DEG_TO_RAD ) );
-		//if ( Math.random()<0.5) a2 = -a2;
-
 		setLerp( p0, p1, 0.4 + 0.8*Math.random() );
-		this.branch( g, p0, a2, (0.8+0.2*Math.random())*(maxR -subR), parity  );
-		//this.branch( g, interPt( p0, p1, 0.4 + 0.8*Math.random() ), -a2, maxR - subR );
+		this.branch( g, p0,
+			angle + ( Math.random() < 0.5 ? -1 : 1 ) *(33 + 33*Math.random()*DEG_TO_RAD ),
+			(0.8+0.2*Math.random())*(maxR -subR)  );
 
 		if ( maxR - subR > 8 ) {
-			this.branch(g, p1, angle, maxR-subR, -parity );
+			this.branch(g, p1, angle, maxR-subR );
 		}
 
 

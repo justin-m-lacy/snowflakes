@@ -6,6 +6,7 @@ import SnowGroup from "./groups/snowGroup";
 import StarGroup from "./groups/starGroup";
 import BackSnow from "./components/backSnow";
 import Sky from "./components/sky";
+import Stats from "./components/stats";
 
 export default class SnowGame extends Game {
 
@@ -18,9 +19,15 @@ export default class SnowGame extends Game {
 	/**
 	 * @property {Point} wind
 	 */
-	get wind(){
-		return this._wind; }
+	get wind(){ return this._wind; }
 	set wind(v) { this._wind = v}
+
+	/**
+	 * @property {GameObject} root - root object
+	 * for shared values/systems.
+	 */
+	get root(){ return this._root; }
+	set root(v) { this._root = v}
 
 	/**
 	 * Construction done in init() to allow Game to be a shared export
@@ -45,12 +52,11 @@ export default class SnowGame extends Game {
 		this.initSky();
 
 		this.wind = new Point();
-		this.mainObj = new GameObject( new PIXI.Container() );
-		this.addObject( this.mainObj );
+		this.root = new GameObject( new PIXI.Container() );
+		this.addObject( this.root );
 
-		this.mainObj.add( BackSnow );
-
-		this.objectLayer.addChild( this.mainObj.clip );
+		this.root.add( BackSnow );
+		this.root.add( Stats );
 
 		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 

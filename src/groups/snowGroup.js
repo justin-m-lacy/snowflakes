@@ -5,6 +5,8 @@ import Flake from "../components/flake";
 
 const { randInt, randRange } = Rand;
 
+export const SPECIAL_TINT = 0x4455bb;
+
 export const FOCUS = 64;
 export const F_INV = 1/FOCUS;
 
@@ -43,6 +45,15 @@ export default class SnowGroup extends BoundsDestroy {
 		this.count = 0;
 
 		this.start();
+
+	}
+
+	makeAutoFlake() {
+
+		let g = this.factory.makeSnowflake();
+		let s = g.clip;
+
+		s.interactive = true;
 
 	}
 
