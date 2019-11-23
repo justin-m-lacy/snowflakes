@@ -78,6 +78,8 @@ export default class SnowFactory extends Factory {
 		// store spark bitmaps.
 		this.makeSparkTex();
 
+		this.addCreator( 'comet', this.makeComet );
+
 	}
 
 	makeSpark() {
@@ -88,6 +90,7 @@ export default class SnowFactory extends Factory {
 		return s;
 
 	}
+
 
 	/**
 	 * @param {Point} pt
@@ -139,7 +142,8 @@ export default class SnowFactory extends Factory {
 		sprite.position.set( loc.x, loc.y );
 
 		sprite.texture = tex;
-		sprite.pivot = new Point( r, r );
+		sprite.anchor.set(0.5);
+		//sprite.pivot = new Point( r, r );
 		sprite.rotation = Math.PI*Math.random();
 
 		sprite.scale = new Point( FLAKE_RADIUS/r,FLAKE_RADIUS/r );

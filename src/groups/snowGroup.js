@@ -9,11 +9,6 @@ const {TimeDestroy} = Components;
 
 const { randInt, randRange } = Rand;
 
-
-
-export const FOCUS = 64;
-export const F_INV = 1/FOCUS;
-
 export const MAX_OMEGA = Math.PI/800;
 
 const SPAWNER_TINT = 0xff11bb;
@@ -47,17 +42,6 @@ export const expLerp = ( min, max, v, k=0.001 ) => {
 
 }
 
-/**
- * Projection factor at distance z.
- * @param {number} z
- */
-export const projAt = (z)=>FOCUS/( z + FOCUS );
-
-/*export const setProj = ( mat,z )=>{
-	mat.a = mat.d = 1/(F_INV*z+1);
-	return mat;
-}*/
-
 export default class SnowGroup extends BoundsDestroy {
 
 	/**
@@ -81,12 +65,24 @@ export default class SnowGroup extends BoundsDestroy {
 	 	*/
 		this.wind = game.wind;
 
+		this.view = game.screen;
 		this.bounds = game.screen.clone().pad(64);
 
 		this.stats = game.stats;
 		this.count = 0;
 
 		this.start();
+
+	}
+
+	/**
+	 * Get spawn position opposite wind-side, and within 80% of screen top.
+	 * @returns {Point}
+	*/
+	aleePos(){
+
+		return this.wind.x > 0 ? new Point( this.bounds.x, 0.8*Math.random()*this.bounds.height ) :
+			new Point( this.bounds.right, 0.8*Math.random()*this.bounds.height );
 
 	}
 
@@ -99,26 +95,15 @@ export default class SnowGroup extends BoundsDestroy {
 
 	}
 
-	/**
-	 * Get spawn position opposite wind-side.
-	 * @returns {Point}
-	 */
-	aleePos(){
-
-		return this.wind.x > 0 ? new Point() : new Point();
-
-	}
-
 	mkSpawnFlake() {
 
-		let g = this.factory.makeSnowflake(
-			new Point( this.bounds.x -this.wind.x*60 + this.bounds.width*Math.random(), this.bounds.y + Math.random()*this.bounds.height/2 ) );
+		let g = this.factory.makeSnowflake( this.aleePos() );
 		g.clip.tint = SPAWNER_TINT;
 		g.clip.interactive = true;
 
 		let f = g.get(Flake);
-		f.z = 100+100*Math.random();
-		f.vz = -0.1-0.1*Math.random();
+		f.z = 100*Math.random();
+		f.vz = -0.05-0.1*Math.random();
 
 		g.on('click', ()=>this.clickAuto(g), this );
 

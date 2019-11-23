@@ -5,7 +5,7 @@ import { Gradient } from "gibbon.js/data/gradient";
 import { lerpColor, htmlStr } from "gibbon.js/utils/colorUtils";
 
 
-const TEX_WIDTH = 16;
+const TEX_WIDTH = 2;
 /**
  * @const {number} TEX_HEIGHT - sky texture size.
  */
@@ -18,10 +18,13 @@ const TEX_HEIGHT = 400;
 var SkyColors = [
 
 	{ at:0, colors:[0x1308d2,0x4040da, 0xff6200 ], stops:[0.2,0.75,1] },
-	{ at:250, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
-	{ at:700, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
-	{ at:1500, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
-	{ at:5000, colors:[0x020024,0x131378,0x4c00ff ], stops:[0.2,0.75,1] },
+	{ at:100, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
+	{ at:200, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:300, colors:[0x040141,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:400, colors:[0x020024,0x131378,0x4c00ff ], stops:[0.2,0.75,1] },
+	{ at:500, colors:[0x010121,0x0d0f44,0x1a0d7e ], stops:[0.2,0.75,1] },
+	{ at:700, colors:[0x010121,0x070b32,0x03073e ], stops:[0.2,0.75,1] }
+
 
 ]
 
@@ -78,7 +81,7 @@ export default class Sky extends Component {
 
 	onCount( count ) {
 
-		if ( count - this.lastCount < 4 ) return;
+		if ( count - this.lastCount < 3 ) return;
 		this.lastCount = count;
 
 		var nxt = SkyColors[this.index+1];

@@ -62,7 +62,7 @@ export default class SnowGame extends Game {
 
 		super.init();
 
-		this.initSky();
+		this.initBg();
 
 		this.wind = new Point();
 
@@ -75,9 +75,6 @@ export default class SnowGame extends Game {
 		this.flakes = new SnowGroup( this );
 		this.objectLayer.addChild( this.flakes.clip );
 
-		this.stars = new StarGroup(this);
-		this.backgroundLayer.addChild( this.stars.clip );
-
 		this.ui = new UIGroup(this, this.uiLayer );
 		this.addGroup( this.ui );
 
@@ -87,13 +84,22 @@ export default class SnowGame extends Game {
 
 	}
 
-	initSky(){
+	/**
+	 * Initialize game parallax vars.
+	 */
+	initZWorld() {
+	}
+
+	initBg(){
 
 		let s = new PIXI.Container();
 		this.backgroundLayer.addChild( s );
 
 		this.sky = this.instantiate( s );
 		this.sky.add( Sky );
+
+		this.stars = new StarGroup(this);
+		this.backgroundLayer.addChild( this.stars.clip );
 
 	}
 
@@ -123,11 +129,6 @@ export default class SnowGame extends Game {
 		this.stats.clicks++;
 		this.flakes.createFlake(evt.data.global);
 
-	}
-
-
-
-	snowClicked(s) {
 	}
 
 }

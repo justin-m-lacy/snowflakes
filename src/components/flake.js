@@ -14,22 +14,10 @@ const MAX_VZ = 0.01;
  */
 export default class Flake extends Component {
 
-	/**
-	 * @property {DisplayObject} clip
-	 */
-	get clip(){return this._clip;}
-	set clip(v){this._clip = v}
-
 	get color(){return this._color;}
 	set color(v){this._color=v;}
 
-	get velocity(){return this._vel;}
-	set velocity(v){this._vel = v;}
 
-	get baseScale(){ return this._baseScale; }
-	set baseScale(v) { this._baseScale = v; }
-
-	get position(){ return this._position}
 
 	/**
 	 * @property {number} proj - current projection constant based on z.
@@ -40,22 +28,18 @@ export default class Flake extends Component {
 
 		this.velocity = new Point( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 
-		this._position = this.clip.position;
+		// base scaling before effects.
+		this._baseScale = this.clip.scale.x;
+		this._minAlpha = MIN_ALPHA;
+
 		//this._position =new Point();
 
 		this.wind = this.game.wind;
 
-		this.z = 8*Math.random();
+		this.z = 10*Math.random();
 		this.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
 		this.vz = randRange(-MAX_VZ, MAX_VZ );
-		this.k = projAt(this.z);
 
-	}
-
-	setZ(z) {
-		this.z = z;
-		this.k = projAt(z);
-		this.rescale();
 	}
 
 	update(){
@@ -72,19 +56,6 @@ export default class Flake extends Component {
 		this._position.set( this._position.x + (this.velocity.x+this.wind.x )*this.k,
 		this._position.y + (this.velocity.y + this.wind.y )*this.k )
 
-		this.rescale();
-
-	}
-
-	/**
-	 * Update scale and alpha based on z.
-	 */
-	rescale(){
-
-		this.clip.scale.set( this.k*BASE_SCALE, this.k*BASE_SCALE );
-		this.clip.alpha = MIN_ALPHA + ( MAX_ALPHA - MIN_ALPHA )*this.k;
-
-		//this.clip.position.set( this.position.x/this.z, this.position.y/this.z);
 	}
 
 }

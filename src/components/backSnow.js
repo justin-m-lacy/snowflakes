@@ -1,13 +1,15 @@
 import Gibbon, { Game, GameObject, Rand, Component } from "gibbon.js";
 import Flake from "./flake";
 import { Point } from "pixi.js";
-import { projAt, MAX_OMEGA } from "../groups/snowGroup";
+import { MAX_OMEGA } from "../groups/snowGroup";
 
 const { randRange } = Rand;
 
 const FLAKE_COUNT = 128;
 
+const MIN_WIND = 0.25;
 const MAX_WIND = 2.7;
+
 const MIN_G = 0.4;
 const MAX_G = 0.8;
 
