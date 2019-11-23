@@ -22,7 +22,7 @@ const app = new PIXI.Application({
 
 WebFont.load({
 	google: {
-		families: ['Schoolbell']
+		families: ['Snowburst One','Mountains+of+Christmas', 'Delius+Swash+Caps']
 	},
 	active:e=>{
 

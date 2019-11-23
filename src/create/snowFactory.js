@@ -7,18 +7,37 @@ const { move, setReflect, reflection, lerpPt: interPt } = Gibbon.Geom;
 import * as PIXI from 'pixi.js';
 import { setLerp } from "gibbon.js/utils/geom";
 import Flake from "../components/flake";
+import Comet from '../components/comet';
 
 
 /**
- * @const {number} HOLE_COLOR - Pixi holes have a lot of limitations.
- * Should be easier to draw regular colors and transform on copy.
+ * @const {number[]} CometColors - array of colors for comet particles.
  */
-const HOLE_COLOR = 0xFF0000;
+export const CometColors = [ 0xe8e5c1, 0xdeda68, 0xe6e4be, 0xf0e518 ];
+
+/**
+ * @const {number[]} FrostColors - array of colors for comet particles.
+ */
+export const FrostColors = [ 0x4287f5, 0x8bb2f0, 0xa2c4fa, 0xc1c3e8];
+
+/**
+ * @const {number} COMET_COLOR - Color of shooting stars.
+ */
+const COMET_COLOR = 0xe8c21a;
+
+/**
+ * @const {number} COMET_SIZE - base comet radius.
+ */
+const COMET_SIZE = 16;
 
 const FLAKE_COLOR = 0xffffff;
 
 const DRAW_RADIUS = 64;
 
+/**
+ * @property {const} SPARK_SIZE - radius for spark particles.
+ */
+const SPARK_SIZE = 2;
 
 /**
  * @property {number} FLAKE_SIZE - base flake size.
@@ -30,12 +49,6 @@ export const FLAKE_RADIUS = 28;
  * before any depth scaling is applied.
  */
 export const BASE_SCALE = FLAKE_RADIUS/DRAW_RADIUS;
-
-/**
- * Min/max arc gap as percent of arc.
- */
-const MIN_GAP = 0.08;
-const MAX_GAP = 0.3;
 
 /**
  * @const {number} MIN_SEGS - each segment is actually
@@ -61,6 +74,40 @@ export default class SnowFactory extends Factory {
 		super(game);
 
 		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, DRAW_RADIUS );
+
+		// store spark bitmaps.
+		this.makeSparkTex();
+
+	}
+
+	makeSpark() {
+
+		let s = new PIXI.Sprite( this.sparkTex );
+		s.tint = CometColors[ randInt(0, CometColors.length ) ];
+
+		return s;
+
+	}
+
+	/**
+	 * @param {Point} pt
+	 * @returns {GameObject}
+	 */
+	makeComet(pt) {
+
+		let g = new Graphics();
+		g.beginFill( COMET_COLOR );
+		g.drawStar( 0, 0, 5, COMET_SIZE, COMET_SIZE/2 );
+		g.endFill();
+
+		g.cacheAsBitmap=true;
+
+		let obj = new GameObject( g, pt );
+		obj.setDestroyOpts(true,true,true);
+
+		obj.add(Comet);
+
+		return g;
 
 	}
 
@@ -101,9 +148,9 @@ export default class SnowFactory extends Factory {
 
 	}
 
-		/**
-	 * @param {*} r
-	 * @param {*} segs
+	/**
+	 * @param {number} r
+	 * @param {number} segs
 	 */
 	makeFlakeTex( r, segs ){
 
@@ -242,98 +289,17 @@ export default class SnowFactory extends Factory {
 
 	}
 
-	/**
-	 *
-	 * @param {*} g
-	 * @param {*} p0
-	 * @param {*} p1
-	 * @param {number} rem - radius remaining.
-	 */
-	drawBranch( g, p0, p1, rem ) {
+	makeSparkTex() {
 
-		g.lineStyle( 0.1*rem, FLAKE_COLOR );
-		g.lineTo(p1.x, p1.y);
+		let bm = PIXI.RenderTexture.create( { width:2*SPARK_SIZE, height:2*SPARK_SIZE } );
 
-		if ( rem <= 0 ) return;
+		const g = new Graphics();
+		g.beginFill( 0xffffff );
+		g.drawStar( SPARK_SIZE, SPARK_SIZE, 3, SPARK_SIZE, SPARK_SIZE/2 );
+		g.endFill();
 
-		var dx = p1.x - p0.x;
-		var dy = p1.y - p0.y;
-
-		const p2 = interPt( p0, p1, 0.4 + 0.6*Math.random() );
-
-
-	}
-
-		/**
-	 * Result: flakes look overly circular.
-	 * @param {*} g
-	 * @param {*} radius
-	 * @param {*} arc
-	 */
-	arcItems( g, radius, arc ) {
-
-		let r = 0;
-
-		var p = new Point(0,0);
-
-		do {
-
-			var a = arc/2;
-			var s = 1 + r*arc;
-			var len = s;
-
-			g.moveTo(r*Math.cos(arc/2), r*Math.sin(arc/2) );
-
-			do {
-
-				g.lineStyle( 0.02 + 0.1*Math.random()*radius, FLAKE_COLOR );
-
-				var size = 1 + Math.random()*0.8*len;
-
-				p.set( r*Math.cos(a), r*Math.sin(a) );
-
-				this.drawShape(g,p,size);
-
-				a += 0.2*arc;
-				s -= 0.2*radius;
-
-			} while ( s >= 0 );
-
-			r += 0.01 + (0.5 + 0.5*Math.random() )*len;
-
-		} while ( r < radius );
-
-	}
-
-	/**
-	 * Form arc by cutout methods.
-	 * @param {number} fill
-	 * @param {number} alpha
-	 * @returns {PIXI.DisplayObject}
-	 */
-	cutoutArc( radius=100, maxArc=360/16, fill=0xffffff ) {
-
-		const clip = new PIXI.Container();
-
-		let gap = randRange( MIN_GAP, MAX_GAP );
-		let minArc = gap*maxArc;
-		maxArc -= minArc;
-
-		const base = this.fillArc( minArc, maxArc, radius, fill );
-
-		const cut = new Graphics();
-		cut.blendMode = PIXI.BLEND_MODES.ERASE;
-
-		//this.randArcCuts( cut, minArc, maxArc, radius );
-		this.randArcCuts( cut, minArc, maxArc, radius );
-		this.randArcCuts( cut, minArc, maxArc, radius );
-		//this.cutArc(cut, minArc, maxArc, radius );
-		//this.cutArc(cut, maxArc, minArc, radius );
-
-		clip.addChild( base );
-		clip.addChild(cut);
-
-		return clip;
+		this.renderer.render( g, bm );
+		this.sparkTex = bm;
 
 	}
 
@@ -358,133 +324,5 @@ export default class SnowFactory extends Factory {
 		return g;
 
 	}
-
-	/**
-	 * Make cuts anywhere along the interior of an arc.
-	 * @param {*} g
-	 * @param {*} minArc
-	 * @param {*} maxArc
-	 * @param {*} radius
-	 */
-	randArcCuts( g, minArc, maxArc, radius ) {
-
-		let r = 0.01;
-		let halfArc = (maxArc+minArc)/2;
-
-		while ( r <= 1.4 ) {
-
-			var s = r;
-
-			while ( s >= 0 ) {
-
-				var a = randRange( minArc, halfArc );
-				g.moveTo( r*Math.cos(a)*radius, r*Math.sin(a)*radius );
-
-				g.beginFill( HOLE_COLOR );
-
-				a = randRange( halfArc, maxArc);
-				var r2 = r + 0.4*Math.random();
-				g.lineTo( r2*Math.cos(a)*radius, r2*Math.sin(a)*radius );
-
-				a = randRange(minArc, maxArc);
-				r2 = r + 0.2 + 0.2*Math.random();
-				g.lineTo( r2*Math.cos(a)*radius, r2*Math.sin(a)*radius);
-
-				if ( Math.random() < 0.7 ) {
-					a = randRange(minArc, maxArc);
-					r2 = r + 0.05 + 0.2*Math.random();
-					g.lineTo( r2*Math.cos(a)*radius, r2*Math.sin(a)*radius);
-				}
-
-				g.closePath();
-				g.endFill();
-
-				s -= 0.12;
-
-			}
-
-			// next r.
-			r += r2;
-
-		}
-
-	}
-
-	/**
-	 * Make cuts along the edge of an arc.
-	 * @param {Graphics} g
-	 * @param {number} minArc
-	 * @param {number} maxArc
-	 * @param {*} radius
-	 */
-	cutArc( g, minArc, maxArc, radius ) {
-
-		let r = 0.025;
-
-		// premultiply radius
-		var cos1 = radius*Math.cos(minArc);
-		var sin1 = radius*Math.sin(minArc);
-
-		while ( r <= 1.2 ) {
-
-			var dr = r + 0.1 + 0.4*Math.random();
-
-			var a = randRange( minArc, maxArc );
-			var rmid = radius * ( r + 0.3*Math.random() );	// premultiply.
-
-			g.beginFill( HOLE_COLOR );
-			g.drawPolygon( [r*cos1, r*sin1,
-						(dr)*cos1, (dr)*sin1,
-						rmid*Math.cos(a), rmid*Math.sin(a)] );
-			g.endFill();
-
-			r = dr;
-
-		}
-
-	}
-
-	// sprite swap reflect.
-	/*flakeTex( r=100, segs=16 ){
-
-		if ( segs % 2 !== 0 ) segs++;
-
-		let arc=DEG_TO_RAD*(360/segs)
-		let tex1 = PIXI.RenderTexture.create( 2*r, 2*r );
-		let tex2 = PIXI.RenderTexture.create( 2*r, 2*r );
-
-		let s1 = new PIXI.Sprite(tex1);
-		let s2 = new PIXI.Sprite(tex2);
-
-		let gap = Math.random() < 0.5 ? 0 : randRange( MIN_GAP, MAX_GAP );
-		let g = this.makeSnowArc( r, arc*(1-gap) );
-
-		let mat = new PIXI.Matrix();
-		mat.translate(r,r);
-		this.renderer.render(g, tex1, false,mat );
-
-		var s3, tex3;
-		for( let i = 1; i <4; i *=2 ) {
-
-			var a = Math.cos(arc);
-			var b = Math.sin(arc);
-			setReflect(mat, a, b );
-			arc*=2;
-
-			this.renderer.render( s1, tex2, false, mat );
-			tex3 = tex2;
-			s3 = s1;
-
-			s1 = s2;
-			tex2 = tex1;
-
-			s2 = s3;
-			tex1 = tex3;
-
-
-		}
-		return tex1;
-
-	}*/
 
 }

@@ -8,6 +8,7 @@ import BackSnow from "./components/backSnow";
 import Sky from "./components/sky";
 import Stats from "./components/stats";
 import FlakeSpawner from "./components/flakeSpawner";
+import UIGroup from "./groups/uiGroup";
 
 export default class SnowGame extends Game {
 
@@ -16,6 +17,12 @@ export default class SnowGame extends Game {
 	 */
 	get flakes() {return this._flakes; }
 	set flakes(v) { this._flakes =v;}
+
+	/**
+	 * @property {UIGroup} ui
+	 */
+	get ui(){return this._ui};
+	set ui(v){this._ui = v;}
 
 	/**
 	 * @property {Stats} stats
@@ -70,6 +77,9 @@ export default class SnowGame extends Game {
 
 		this.stars = new StarGroup(this);
 		this.backgroundLayer.addChild( this.stars.clip );
+
+		this.ui = new UIGroup(this, this.uiLayer );
+		this.addGroup( this.ui );
 
 		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 

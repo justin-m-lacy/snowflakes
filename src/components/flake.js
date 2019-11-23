@@ -63,7 +63,7 @@ export default class Flake extends Component {
 		this.z += this.vz;
 		if ( this.z < 0 ) {
 			this.z = 0;
-			this.vz = 0.1*Math.abs(this.vz)+MAX_VZ*Math.random();
+			this.vz = 0.1*Math.abs(this.vz);
 		}
 		//f.vz += (-0.0001 + 0.0002*Math.random())*delta;
 

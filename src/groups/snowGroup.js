@@ -20,12 +20,12 @@ const SPAWNER_TINT = 0xff11bb;
 /**
  *  @const {number} SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
  */
-const SPAWNER_RATE = 0.0001;
+const SPAWNER_RATE = 0.001;
 const MAX_SPAWNER_RATE = 0.01;
 /**
  * @const {number} SPAWNER_TIME - Min. spawner flake effect length, in seconds.
  */
-const SPAWNER_TIME = 3;
+const SPAWNER_TIME = 1.5;
 const MAX_SPAWNER_TIME = 7;
 
 /**
@@ -34,12 +34,13 @@ const MAX_SPAWNER_TIME = 7;
  * v is the current input value, which should start at 0.
  * Higher k makes the function approach max faster.
  * Lower k slows the approach to max.
+ * 1/e = 0.367 => 37% min + 63% max
  * @param {number} min
  * @param {number} max
  * @param {number} v
  * @param {number} k
  */
-export const expLerp = ( min, max, v, k=0.1 ) => {
+export const expLerp = ( min, max, v, k=0.001 ) => {
 
 	let t = Math.exp( -k*v );
 	return t*min + (1-t)*max;
@@ -93,12 +94,22 @@ export default class SnowGroup extends BoundsDestroy {
 
 		super.update();
 		if ( Math.random() < this.spawnerRate ) {
-			this.makeAutoFlake();
+			this.mkSpawnFlake();
 		}
 
 	}
 
-	makeAutoFlake() {
+	/**
+	 * Get spawn position opposite wind-side.
+	 * @returns {Point}
+	 */
+	aleePos(){
+
+		return this.wind.x > 0 ? new Point() : new Point();
+
+	}
+
+	mkSpawnFlake() {
 
 		let g = this.factory.makeSnowflake(
 			new Point( this.bounds.x -this.wind.x*60 + this.bounds.width*Math.random(), this.bounds.y + Math.random()*this.bounds.height/2 ) );
@@ -107,7 +118,7 @@ export default class SnowGroup extends BoundsDestroy {
 
 		let f = g.get(Flake);
 		f.z = 100+100*Math.random();
-		f.vz = -0.05-0.1*Math.random();
+		f.vz = -0.1-0.1*Math.random();
 
 		g.on('click', ()=>this.clickAuto(g), this );
 
@@ -123,7 +134,7 @@ export default class SnowGroup extends BoundsDestroy {
 		timer.time = this.spawnerTime;
 
 		let n = this.stats.spawners++;
-		this.spawnerRate = expLerp( SPAWNER_RATE, MAX_SPAWNER_RATE, n );
+		this.spawnerTime = expLerp( SPAWNER_TIME, MAX_SPAWNER_TIME, n );
 
 
 		this.add(g);
@@ -151,7 +162,8 @@ export default class SnowGroup extends BoundsDestroy {
 
 		this.add(g);
 
-		this.stats.count++;
+		let n = this.stats.count++;
+		this.spawnerRate = expLerp( SPAWNER_RATE, MAX_SPAWNER_RATE, n, 0.00001 );
 
 	}
 

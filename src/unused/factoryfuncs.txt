@@ -1,0 +1,222 @@
+	/**
+	 * Form arc by cutout methods.
+	 * @param {number} fill
+	 * @param {number} alpha
+	 * @returns {PIXI.DisplayObject}
+	 */
+	cutoutArc( radius=100, maxArc=360/16, fill=0xffffff ) {
+
+		const clip = new PIXI.Container();
+
+		let gap = randRange( MIN_GAP, MAX_GAP );
+		let minArc = gap*maxArc;
+		maxArc -= minArc;
+
+		const base = this.fillArc( minArc, maxArc, radius, fill );
+
+		const cut = new Graphics();
+		cut.blendMode = PIXI.BLEND_MODES.ERASE;
+
+		//this.randArcCuts( cut, minArc, maxArc, radius );
+		this.randArcCuts( cut, minArc, maxArc, radius );
+		this.randArcCuts( cut, minArc, maxArc, radius );
+		//this.cutArc(cut, minArc, maxArc, radius );
+		//this.cutArc(cut, maxArc, minArc, radius );
+
+		clip.addChild( base );
+		clip.addChild(cut);
+
+		return clip;
+
+	}
+
+/**
+	 *
+	 * @param {*} g
+	 * @param {*} p0
+	 * @param {*} p1
+	 * @param {number} rem - radius remaining.
+	 */
+	drawBranch( g, p0, p1, rem ) {
+
+		g.lineStyle( 0.1*rem, FLAKE_COLOR );
+		g.lineTo(p1.x, p1.y);
+
+		if ( rem <= 0 ) return;
+
+		var dx = p1.x - p0.x;
+		var dy = p1.y - p0.y;
+
+		const p2 = interPt( p0, p1, 0.4 + 0.6*Math.random() );
+
+
+	}
+
+	/**
+	 * Result: flakes look overly circular.
+	 * @param {*} g
+	 * @param {*} radius
+	 * @param {*} arc
+	 */
+	arcItems( g, radius, arc ) {
+
+		let r = 0;
+
+		var p = new Point(0,0);
+
+		do {
+
+			var a = arc/2;
+			var s = 1 + r*arc;
+			var len = s;
+
+			g.moveTo(r*Math.cos(arc/2), r*Math.sin(arc/2) );
+
+			do {
+
+				g.lineStyle( 0.02 + 0.1*Math.random()*radius, FLAKE_COLOR );
+
+				var size = 1 + Math.random()*0.8*len;
+
+				p.set( r*Math.cos(a), r*Math.sin(a) );
+
+				this.drawShape(g,p,size);
+
+				a += 0.2*arc;
+				s -= 0.2*radius;
+
+			} while ( s >= 0 );
+
+			r += 0.01 + (0.5 + 0.5*Math.random() )*len;
+
+		} while ( r < radius );
+
+	}
+
+/**
+	 * Make cuts anywhere along the interior of an arc.
+	 * @param {*} g
+	 * @param {*} minArc
+	 * @param {*} maxArc
+	 * @param {*} radius
+	 */
+	randArcCuts( g, minArc, maxArc, radius ) {
+
+		let r = 0.01;
+		let halfArc = (maxArc+minArc)/2;
+
+		while ( r <= 1.4 ) {
+
+			var s = r;
+
+			while ( s >= 0 ) {
+
+				var a = randRange( minArc, halfArc );
+				g.moveTo( r*Math.cos(a)*radius, r*Math.sin(a)*radius );
+
+				g.beginFill( HOLE_COLOR );
+
+				a = randRange( halfArc, maxArc);
+				var r2 = r + 0.4*Math.random();
+				g.lineTo( r2*Math.cos(a)*radius, r2*Math.sin(a)*radius );
+
+				a = randRange(minArc, maxArc);
+				r2 = r + 0.2 + 0.2*Math.random();
+				g.lineTo( r2*Math.cos(a)*radius, r2*Math.sin(a)*radius);
+
+				if ( Math.random() < 0.7 ) {
+					a = randRange(minArc, maxArc);
+					r2 = r + 0.05 + 0.2*Math.random();
+					g.lineTo( r2*Math.cos(a)*radius, r2*Math.sin(a)*radius);
+				}
+
+				g.closePath();
+				g.endFill();
+
+				s -= 0.12;
+
+			}
+
+			// next r.
+			r += r2;
+
+		}
+
+	}
+
+	/**
+	 * Make cuts along the edge of an arc.
+	 * @param {Graphics} g
+	 * @param {number} minArc
+	 * @param {number} maxArc
+	 * @param {*} radius
+	 */
+	cutArc( g, minArc, maxArc, radius ) {
+
+		let r = 0.025;
+
+		// premultiply radius
+		var cos1 = radius*Math.cos(minArc);
+		var sin1 = radius*Math.sin(minArc);
+
+		while ( r <= 1.2 ) {
+
+			var dr = r + 0.1 + 0.4*Math.random();
+
+			var a = randRange( minArc, maxArc );
+			var rmid = radius * ( r + 0.3*Math.random() );	// premultiply.
+
+			g.beginFill( HOLE_COLOR );
+			g.drawPolygon( [r*cos1, r*sin1,
+						(dr)*cos1, (dr)*sin1,
+						rmid*Math.cos(a), rmid*Math.sin(a)] );
+			g.endFill();
+
+			r = dr;
+
+		}
+
+	}
+
+	// sprite swap reflect.
+	/*flakeTex( r=100, segs=16 ){
+
+		if ( segs % 2 !== 0 ) segs++;
+
+		let arc=DEG_TO_RAD*(360/segs)
+		let tex1 = PIXI.RenderTexture.create( 2*r, 2*r );
+		let tex2 = PIXI.RenderTexture.create( 2*r, 2*r );
+
+		let s1 = new PIXI.Sprite(tex1);
+		let s2 = new PIXI.Sprite(tex2);
+
+		let gap = Math.random() < 0.5 ? 0 : randRange( MIN_GAP, MAX_GAP );
+		let g = this.makeSnowArc( r, arc*(1-gap) );
+
+		let mat = new PIXI.Matrix();
+		mat.translate(r,r);
+		this.renderer.render(g, tex1, false,mat );
+
+		var s3, tex3;
+		for( let i = 1; i <4; i *=2 ) {
+
+			var a = Math.cos(arc);
+			var b = Math.sin(arc);
+			setReflect(mat, a, b );
+			arc*=2;
+
+			this.renderer.render( s1, tex2, false, mat );
+			tex3 = tex2;
+			s3 = s1;
+
+			s1 = s2;
+			tex2 = tex1;
+
+			s2 = s3;
+			tex1 = tex3;
+
+
+		}
+		return tex1;
+
+	}*/
