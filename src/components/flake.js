@@ -42,7 +42,7 @@ export default class Flake extends Component {
 
 		this.wind = this.game.wind;
 
-		this.z = 0;
+		this.z = 8*Math.random();
 		this.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
 		this.vz = randRange(-MAX_VZ, MAX_VZ );
 		this.k = projAt(this.z);

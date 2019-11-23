@@ -2,8 +2,17 @@ import Gibbon, { Game, Group, GameObject, Rand } from "gibbon.js";
 import { Point, Container, System } from "pixi.js";
 import BoundsDestroy from "gibbon.js/systems/boundsDestroy";
 import Flake from "../components/flake";
+import { Components } from 'gibbon.js';
+import FlakeSpawner from "../components/flakeSpawner";
+
+const {TimeDestroy} = Components;
 
 const { randInt, randRange } = Rand;
+
+/**
+ * Default spawner time.
+ */
+var SPAWNER_TIME = 3;
 
 export const SPECIAL_TINT = 0x4455bb;
 
@@ -42,18 +51,53 @@ export default class SnowGroup extends BoundsDestroy {
 
 		this.bounds = game.screen.clone().pad(64);
 
+		this.stats = game.stats;
 		this.count = 0;
 
 		this.start();
 
 	}
 
+	update(){
+
+		super.update();
+		if ( Math.random() <0.1 ) {
+			this.makeAutoFlake();
+		}
+
+	}
+
 	makeAutoFlake() {
 
-		let g = this.factory.makeSnowflake();
+		let g = this.factory.makeSnowflake( Rand.inRect( this.bounds ) );
 		let s = g.clip;
+		s.tint = SPECIAL_TINT;
+
+		let timer = g.add( TimeDestroy );
+		timer.time = SPAWNER_TIME;
 
 		s.interactive = true;
+		g.emitter.on('click', this.clickAuto, this );
+
+		this.add(g);
+
+	}
+
+	makeSpawner(){
+
+		let g = new GameObject();
+		g.add( FlakeSpawner );
+		let timer = g.add( TimeDestroy );
+		timer.time = SPAWNER_TIME;
+
+
+		this.add(g);
+
+	}
+
+	clickAuto(){
+
+		this.makeSpawner();
 
 	}
 
@@ -66,9 +110,8 @@ export default class SnowGroup extends BoundsDestroy {
 		let g = this.factory.makeSnowflake(pt);
 
 		this.add(g);
-		this.count++;
 
-		this.game.emitter.emit('snow-count', this.count );
+		this.stats.count++;
 
 	}
 

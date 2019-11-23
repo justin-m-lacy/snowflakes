@@ -1,4 +1,4 @@
-import Gibbon, { Game, GameObject, Mover, Rand, Component } from "gibbon.js";
+import Gibbon, { Game, GameObject, Rand, Component } from "gibbon.js";
 import Flake from "./flake";
 import { Point } from "pixi.js";
 import { projAt, MAX_OMEGA } from "../groups/snowGroup";

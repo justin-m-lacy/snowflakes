@@ -45,12 +45,6 @@ const MIN_SEGS = 12;
 const MAX_SEGS = 12;
 
 /**
- * Minimum/maximum cuts to make in flake arc.
- */
-const MIN_CUTS = 2;
-const MAX_CUTS = 4;
-
-/**
  * Get the length of an arc of angle theta
  * at distance r.
  * @param {number} theta
@@ -447,56 +441,6 @@ export default class SnowFactory extends Factory {
 			r = dr;
 
 		}
-
-	}
-
-	/**
-	 * Cut (draw) a random polygon from a graphic.
-	 * @param {*} g
-	 * @param {*} r
-	 * @param {*} minArc
-	 * @param {*} maxArc
-	 */
-	cutPoly( g, r=100, minArc=0, maxArc=2*Math.PI ){
-
-		let p = this.randPoly();
-
-		let t = minArc + Math.random()*(maxArc-minArc);
-		r = Math.random()*r;
-
-		move( p, r*Math.cos(t), r*Math.sin(t) );
-
-		g.beginFill( HOLE_COLOR,1);
-		g.drawPolygon( p );
-		g.endFill();
-
-	}
-
-	/**
-	 * Create random polygon centered on 0,0.
-	 * @param {number} minPoints
-	 * @param {number} maxPoints
-	 * @param {number} minRadius
-	 * @param {number} maxRadius
-	 * @returns {PIXI.Polygon}
-	 */
-	randPoly( minPoints=3, maxPoints=4, minRadius=4, maxRadius=10 ){
-
-		const len = randInt(minPoints, maxPoints );
-		const step = 2*Math.PI/maxPoints;
-
-		let pts = new Array(len);
-		let r, theta = 0;
-		for( let i = 0; i < len; i++ ) {
-
-			r = minRadius + Math.random()*(maxRadius-minRadius);
-			pts[i] = new Point( r*Math.cos(theta), r*Math.sin(theta) );
-
-			theta += step;
-
-		}
-
-		return new Polygon( pts );
 
 	}
 

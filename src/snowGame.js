@@ -18,6 +18,11 @@ export default class SnowGame extends Game {
 	set flakes(v) { this._flakes =v;}
 
 	/**
+	 * @property {Stats} stats
+	 */
+	get stats() { return this._stats; }
+
+	/**
 	 * @property {Point} wind
 	 */
 	get wind(){ return this._wind; }
@@ -54,18 +59,17 @@ export default class SnowGame extends Game {
 
 		this.wind = new Point();
 
+		this.root = new GameObject( new PIXI.Container() );
+		this.addObject( this.root );
+
+		this.root.add( BackSnow );
+		this._stats = this.root.add( Stats );
+
 		this.flakes = new SnowGroup( this );
 		this.objectLayer.addChild( this.flakes.clip );
 
 		this.stars = new StarGroup(this);
 		this.backgroundLayer.addChild( this.stars.clip );
-
-		this.root = new GameObject( new PIXI.Container() );
-		this.addObject( this.root );
-
-		this.root.add( BackSnow );
-		this.root.add( Stats );
-		this.root.add( FlakeSpawner );
 
 		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 
@@ -80,7 +84,6 @@ export default class SnowGame extends Game {
 
 		this.sky = this.instantiate( s );
 		this.sky.add( Sky );
-
 
 	}
 
@@ -106,7 +109,10 @@ export default class SnowGame extends Game {
 	 * @param {InteractionEvent} evt
 	 */
 	stageClicked(evt){
+
+		this.stats.clicks++;
 		this.flakes.createFlake(evt.data.global);
+
 	}
 
 
