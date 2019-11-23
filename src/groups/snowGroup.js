@@ -77,7 +77,7 @@ export default class SnowGroup extends BoundsDestroy {
 		timer.time = SPAWNER_TIME;
 
 		s.interactive = true;
-		g.emitter.on('click', this.clickAuto, this );
+		g.on('click', ()=>this.clickAuto(g), this );
 
 		this.add(g);
 
@@ -95,9 +95,14 @@ export default class SnowGroup extends BoundsDestroy {
 
 	}
 
-	clickAuto(){
+	/**
+	 *
+	 * @param {GameObject} g - object clicked.
+	 */
+	clickAuto(g){
 
 		this.makeSpawner();
+		g.Destroy();
 
 	}
 
