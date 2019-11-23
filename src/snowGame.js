@@ -7,8 +7,12 @@ import StarGroup from "./groups/starGroup";
 import BackSnow from "./components/backSnow";
 import Sky from "./components/sky";
 import Stats from "./components/stats";
-import FlakeSpawner from "./components/flakeSpawner";
 import UIGroup from "./groups/uiGroup";
+import ZWorld from "./data/zworld";
+
+const MIN_Z = 32;
+const MAX_Z = 200;
+const FOCUS = 64;
 
 export default class SnowGame extends Game {
 
@@ -36,13 +40,6 @@ export default class SnowGame extends Game {
 	set wind(v) { this._wind = v}
 
 	/**
-	 * @property {GameObject} root - root object
-	 * for shared values/systems.
-	 */
-	get root(){ return this._root; }
-	set root(v) { this._root = v}
-
-	/**
 	 * Construction done in init() to allow Game to be a shared export
 	 * but initialized from index.js.
 	 * @param {PIXI.Application} app - PIXI Application.
@@ -62,15 +59,13 @@ export default class SnowGame extends Game {
 
 		super.init();
 
-		this.initBg();
-
 		this.wind = new Point();
-
-		this.root = new GameObject( new PIXI.Container() );
-		this.addObject( this.root );
 
 		this.root.add( BackSnow );
 		this._stats = this.root.add( Stats );
+
+		this.initBg();
+		this.initZWorld();
 
 		this.flakes = new SnowGroup( this );
 		this.objectLayer.addChild( this.flakes.clip );
@@ -78,9 +73,16 @@ export default class SnowGame extends Game {
 		this.ui = new UIGroup(this, this.uiLayer );
 		this.addGroup( this.ui );
 
-		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
+		//this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
+		this.start();
 
-		this.emitter.on( 'snow-clicked', this.snowClicked, this );
+	}
+
+	start() {
+
+		this.stage.interactive = true;
+		this.stage.on('click', this.stageClicked, this );
+		super.start();
 
 	}
 
@@ -88,6 +90,10 @@ export default class SnowGame extends Game {
 	 * Initialize game parallax vars.
 	 */
 	initZWorld() {
+
+		let zworld = new ZWorld( MIN_Z, MAX_Z, FOCUS );
+		this.root.addExisting( zworld, ZWorld );
+
 	}
 
 	initBg(){
@@ -111,12 +117,6 @@ export default class SnowGame extends Game {
 	assetsLoaded( loader, resources ) {
 
 		console.log('ASSETS LOADED');
-
-		this.stage.interactive = true;
-
-		this.stage.on('click', this.stageClicked, this );
-
-		this.start();
 
 	}
 

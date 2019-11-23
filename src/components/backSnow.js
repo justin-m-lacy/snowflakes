@@ -15,8 +15,6 @@ const MAX_G = 0.8;
 
 
 export const MIN_SIZE = 6;
-export const MIN_Z = 32;
-export const MAX_Z = 200;
 
 export const MIN_ALPHA = 0.2;
 export const MAX_ALPHA = 1;
