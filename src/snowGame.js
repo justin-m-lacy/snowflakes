@@ -7,6 +7,7 @@ import StarGroup from "./groups/starGroup";
 import BackSnow from "./components/backSnow";
 import Sky from "./components/sky";
 import Stats from "./components/stats";
+import FlakeSpawner from "./components/flakeSpawner";
 
 export default class SnowGame extends Game {
 
@@ -52,11 +53,19 @@ export default class SnowGame extends Game {
 		this.initSky();
 
 		this.wind = new Point();
+
+		this.flakes = new SnowGroup( this );
+		this.objectLayer.addChild( this.flakes.clip );
+
+		this.stars = new StarGroup(this);
+		this.backgroundLayer.addChild( this.stars.clip );
+
 		this.root = new GameObject( new PIXI.Container() );
 		this.addObject( this.root );
 
 		this.root.add( BackSnow );
 		this.root.add( Stats );
+		this.root.add( FlakeSpawner );
 
 		this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 
@@ -87,12 +96,6 @@ export default class SnowGame extends Game {
 		this.stage.interactive = true;
 
 		this.stage.on('click', this.stageClicked, this );
-
-		this.flakes = new SnowGroup( this );
-		this.objectLayer.addChild( this.flakes.clip );
-
-		this.stars = new StarGroup(this);
-		this.backgroundLayer.addChild( this.stars.clip );
 
 		this.start();
 

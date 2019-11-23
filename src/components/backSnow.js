@@ -5,7 +5,7 @@ import { projAt, MAX_OMEGA } from "../groups/snowGroup";
 
 const { randRange } = Rand;
 
-const FLAKE_COUNT = 512;
+const FLAKE_COUNT = 128;
 
 const MAX_WIND = 2.7;
 const MIN_G = 0.4;
