@@ -61,11 +61,11 @@ export default class SnowGame extends Game {
 
 		this.wind = new Point();
 
-		this.root.add( BackSnow );
-		this._stats = this.root.add( Stats );
-
 		this.initBg();
 		this.initZWorld();
+
+		this.root.add( BackSnow );
+		this._stats = this.root.add( Stats );
 
 		this.flakes = new SnowGroup( this );
 		this.objectLayer.addChild( this.flakes.clip );

@@ -30,4 +30,9 @@ export default class ZWorld extends Component {
  	*/
 	projAt(z){ return this._f/( z + this._f ) };
 
+	/**
+	 * @returns {number} random z in world range.
+	 */
+	randZ() { return this._zmin + Math.random()*(this._zmax - this._zmin ); }
+
 }

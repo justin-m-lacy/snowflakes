@@ -2,6 +2,8 @@ import Gibbon, { Game, GameObject, Rand, Component } from "gibbon.js";
 import Flake from "./flake";
 import { Point } from "pixi.js";
 import { MAX_OMEGA } from "../groups/snowGroup";
+import ZWorld from "../data/zworld";
+import ZMover from "./zmover";
 
 const { randRange } = Rand;
 
@@ -15,9 +17,6 @@ const MAX_G = 0.8;
 
 
 export const MIN_SIZE = 6;
-
-export const MIN_ALPHA = 0.2;
-export const MAX_ALPHA = 1;
 
 const MAX_V = 0.2;
 const MAX_VZ = 0.001;
@@ -33,6 +32,8 @@ export default class BackSnow extends Component {
 
 		this.bounds = this.game.screen.clone().pad( 40 );
 		this.wind = this.game.wind;
+
+		this.world = this.get( ZWorld );
 
 		this.wind.set( randRange(-MAX_WIND, MAX_WIND ), randRange( MIN_G, MAX_G ) );
 
@@ -60,8 +61,9 @@ export default class BackSnow extends Component {
 
 			this.game.addObject(g);
 
-			var f = g.get(Flake);
-			f.setZ( randRange(MIN_Z,MAX_Z) );
+			var f = g.get( ZMover );
+			f.z = this.world.randZ();
+
 			//f.position.set( randRange(-bounds.width/2,bounds.width/2), randRange(-bounds.height/2,bounds.height/2) );
 
 			clip.addChild(g.clip);
@@ -84,8 +86,6 @@ export default class BackSnow extends Component {
 			var f = a[i];
 			var p = f.position;
 
-			if ( f.z < MIN_Z ) f.vz = Math.abs(f.vz);
-
 			if ( !bounds.contains( p.x, p.y ) ) {
 				this.randomize(f);
 			}
@@ -100,7 +100,7 @@ export default class BackSnow extends Component {
 	 */
 	randomize(f) {
 
-		f.z = randRange(MIN_Z,MAX_Z);
+		f.z = this.world.randZ();
 		f.velocity.set( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 		f.vz = randRange(-MAX_VZ, MAX_VZ );
 
