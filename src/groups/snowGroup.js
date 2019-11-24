@@ -223,7 +223,7 @@ export default class SnowGroup extends BoundsDestroy {
 			if ( --i < 0 ) i = len-1;
 
 			var g = this.objects[i];
-			if ( this.innerBounds.contains( g.clip.x, g.clip.y ) ) {
+			if ( g.clip && this.innerBounds.contains( g.clip.x, g.clip.y ) ) {
 				spec = g;
 				break;
 			}
