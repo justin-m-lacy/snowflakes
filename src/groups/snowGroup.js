@@ -173,8 +173,11 @@ export default class SnowGroup extends BoundsDestroy {
 
 		e.stopped = true;
 
+		let n = this.stats.spawners++;
+		this.cometRate = expLerp( MIN_COMET_RATE, MAX_COMET_RATE, n );
+
 		this.startAutoSpawn();
-		this.stats.spawners++;
+
 		g.Destroy();
 
 	}
@@ -185,10 +188,6 @@ export default class SnowGroup extends BoundsDestroy {
 		g.add( FlakeSpawner );
 		let timer = g.add( TimeDestroy );
 		timer.time = this.spawnerTime;
-
-		let n = this.stats.spawners++;
-		this.cometRate = expLerp( MIN_COMET_RATE, MAX_COMET_RATE, n );
-
 
 		this.add(g);
 
