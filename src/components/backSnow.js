@@ -12,8 +12,8 @@ const FLAKE_COUNT = 128;
 const MIN_WIND = 0.25;
 const MAX_WIND = 3.4;
 
-const MIN_G = 0.4;
-const MAX_G = 0.8;
+const MIN_G = 0.3;
+const MAX_G = 0.5;
 
 
 export const MIN_SIZE = 6;

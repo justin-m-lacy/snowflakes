@@ -42,7 +42,7 @@ export default class Snowburst extends Component {
 			var mv = go.get(ZMover);
 
 			mv.vz = 0.1 + 2*Math.random();
-			mv.velocity.set( -2+4*Math.random(), -1.5+2*Math.random() );
+			mv.velocity.set( -2.5+5*Math.random(), -1.75+3*Math.random() );
 
 		}
 
