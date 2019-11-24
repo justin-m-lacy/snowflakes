@@ -12,7 +12,8 @@ const FONT_NAME = 'Snowburst One'; // thin, large
 const PADDING = 24;
 
 const Styles = {
-	fontFamily:FONT_NAME, fill:TEXT_COLOR
+	fontFamily:FONT_NAME, fill:TEXT_COLOR,
+	fontSize:24
 };
 
 export default class UIGroup extends Group {
@@ -48,13 +49,15 @@ export default class UIGroup extends Group {
 
 			var stat = StatEvents[i];
 			var counter = this.statViews[stat] = new CounterFld( stat, 0, Styles );
-			counter.showCount = true;
+			counter.showCount = false;
 			counter.position.set( top.x, top.y );
+			counter.visible = false;
 			top.y += counter.height + PADDING;
 
 			this.clip.addChild( counter );
 
 		}
+		this.statViews.snow.showCount = true;
 
 	}
 
@@ -63,6 +66,7 @@ export default class UIGroup extends Group {
 		let fld = this.statViews[stat];
 		if ( !fld ) console.warn('missing stat: ' + stat );
 		else {
+			fld.visible = true;
 			fld.update(count);
 		}
 
