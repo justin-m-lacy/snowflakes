@@ -51,19 +51,28 @@ export default class ZMover extends Component {
 	 */
 	get world() { return this.zworld; }
 
+	constructor() {
+
+		super();
+
+		this._minAlpha = 0;
+		this._maxAlpha = 1;
+		this._vz = 0;
+
+		this._z=0;
+
+		this._omega = 0;
+		this._vel = new Point();
+
+	}
+
 	init(){
 
 		this.zworld = this.game.root.get( ZWorld );
 		this.baseScale = this.clip.scale.x;
 
-		this._minAlpha = 0;
-		this._maxAlpha = 1;
-
-		this._omega = 0;
-
 		this._position = this.clip.position;
 
-		this._vel = new Point();
 
 	}
 

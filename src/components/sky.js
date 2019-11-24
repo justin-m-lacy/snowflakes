@@ -5,11 +5,11 @@ import { Gradient } from "gibbon.js/data/gradient";
 import { lerpColor, htmlStr } from "gibbon.js/utils/colorUtils";
 
 
-const TEX_WIDTH = 2;
+const TEX_WIDTH = 1;
 /**
  * @const {number} TEX_HEIGHT - sky texture size.
  */
-const TEX_HEIGHT = 400;
+const TEX_HEIGHT = 512;
 
 /**
  * @const {object.<number,number[]>} skyColors - colors at different

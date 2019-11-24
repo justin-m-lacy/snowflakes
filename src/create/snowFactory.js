@@ -8,6 +8,7 @@ import * as PIXI from 'pixi.js';
 import { setLerp } from "gibbon.js/utils/geom";
 import Flake from "../components/flake";
 import Comet from '../components/comet';
+import ZMover from "../components/zmover";
 
 
 /**
@@ -28,7 +29,7 @@ const COMET_COLOR = 0xe8c21a;
 /**
  * @const {number} COMET_SIZE - base comet radius.
  */
-const COMET_SIZE = 16;
+const COMET_R = 12;
 
 const FLAKE_COLOR = 0xffffff;
 
@@ -37,7 +38,7 @@ const DRAW_RADIUS = 64;
 /**
  * @property {const} SPARK_SIZE - radius for spark particles.
  */
-const SPARK_SIZE = 2;
+const SPARK_R = 2;
 
 /**
  * @property {number} FLAKE_SIZE - base flake size.
@@ -75,19 +76,9 @@ export default class SnowFactory extends Factory {
 
 		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, DRAW_RADIUS );
 
-		// store spark bitmaps.
-		this.makeSparkTex();
+		this.initTextures();
 
 		this.addCreator( 'comet', this.makeComet );
-
-	}
-
-	makeSpark() {
-
-		let s = new PIXI.Sprite( this.sparkTex );
-		s.tint = CometColors[ randInt(0, CometColors.length ) ];
-
-		return s;
 
 	}
 
@@ -98,19 +89,16 @@ export default class SnowFactory extends Factory {
 	 */
 	makeComet(pt) {
 
-		let g = new Graphics();
-		g.beginFill( COMET_COLOR );
-		g.drawStar( 0, 0, 5, COMET_SIZE, COMET_SIZE/2 );
-		g.endFill();
+		let c = new PIXI.ParticleContainer();
+		c.addChild( PIXI.Sprite.from( this.cometTex ) );
 
-		g.cacheAsBitmap=true;
-
-		let obj = new GameObject( g, pt );
+		let obj = new GameObject( c, pt );
 		obj.setDestroyOpts(true,true,true);
 
+		obj.add(ZMover);
 		obj.add(Comet);
 
-		return g;
+		return obj;
 
 	}
 
@@ -293,17 +281,52 @@ export default class SnowFactory extends Factory {
 
 	}
 
-	makeSparkTex() {
+	initTextures(){
 
-		let bm = PIXI.RenderTexture.create( { width:2*SPARK_SIZE, height:2*SPARK_SIZE } );
+		this.makeCometTex();
+		this.makeSparkTex();
+
+	}
+
+	makeCometTex(){
+
+		let g = new Graphics();
+		g.beginFill( 0xffffff );
+		g.drawStar( COMET_R, COMET_R, 5, COMET_R, COMET_R/2 );
+		g.endFill();
+		//g.cacheAsBitmap=true;
+
+		this.cometTex = this.makeTex(g);
+
+	}
+
+
+	makeSparkTex() {
 
 		const g = new Graphics();
 		g.beginFill( 0xffffff );
-		g.drawStar( SPARK_SIZE, SPARK_SIZE, 3, SPARK_SIZE, SPARK_SIZE/2 );
+		g.drawStar( SPARK_R, SPARK_R, 3, SPARK_R, SPARK_R/2 );
 		g.endFill();
 
+		this.sparkTex = this.makeTex(g);
+
+	}
+
+	makeTex( g ){
+
+		let bm = PIXI.RenderTexture.create( {width:g.width, height:g.height });
+
 		this.renderer.render( g, bm );
-		this.sparkTex = bm;
+
+		return bm;
+
+	}
+
+	makeSpark() {
+
+		let s = new PIXI.Sprite( this.sparkTex );
+		s.tint = CometColors[ randInt(0, CometColors.length-1 ) ];
+		return s;
 
 	}
 

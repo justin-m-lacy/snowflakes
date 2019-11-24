@@ -1,5 +1,8 @@
 export default class Particle {
 
+	get clip(){return this._clip;}
+	set clip(v) { this._clip=v}
+
 	get vx(){ return this._vx;}
 	set vx(v){this._vx = v;}
 
@@ -15,9 +18,10 @@ export default class Particle {
 	get da(){ return this._da;}
 	set da(v){this._da = v;}
 
-	constructor( clip, vx=0, vy=0, ay=0 ){
+	constructor( clip, pt, vx=0, vy=0, ay=0 ){
 
 		this._clip = clip;
+		clip.position.set(pt.x,pt.y);
 
 		this._vx = vx;
 		this._vy = vy;
@@ -39,4 +43,8 @@ export default class Particle {
 
 	}
 
+	destroy(){
+		this._clip.destroy();
+		this._clip = null;
+	}
 }

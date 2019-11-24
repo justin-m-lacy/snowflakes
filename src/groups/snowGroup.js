@@ -4,21 +4,31 @@ import BoundsDestroy from "gibbon.js/systems/boundsDestroy";
 import Flake from "../components/flake";
 import { Components } from 'gibbon.js';
 import FlakeSpawner from "../components/flakeSpawner";
+import ZMover from "../components/zmover";
 
 const {TimeDestroy} = Components;
 
 const { randInt, randRange } = Rand;
 
 const SPAWNER_TINT = 0xff11bb;
+
+const MIN_COMET_RATE = 0.01;
+const MAX_COMET_RATE = 0.01;
+
+const COMET_TIME = 3;
+const MAX_COMET_TIME = 7;
+
 /**
- *  @const {number} SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
+ *  @const {number} MIN_SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
  */
-const SPAWNER_RATE = 0.001;
+const MIN_SPAWNER_RATE = 0.001;
 const MAX_SPAWNER_RATE = 0.01;
+
+
 /**
- * @const {number} SPAWNER_TIME - Min. spawner flake effect length, in seconds.
+ * @const {number} MIN_SPAWNER_TIME - Min. spawner flake effect length, in seconds.
  */
-const SPAWNER_TIME = 1.5;
+const MIN_SPAWNER_TIME = 1.5;
 const MAX_SPAWNER_TIME = 7;
 
 /**
@@ -53,8 +63,8 @@ export default class SnowGroup extends BoundsDestroy {
 		/**
 		 * Default spawner time.
 		 */
-		this.spawnerTime = SPAWNER_TIME;
-		this.spawnerRate = SPAWNER_RATE;
+		this.spawnerTime = MIN_SPAWNER_TIME;
+		this.spawnerRate = MIN_SPAWNER_RATE;
 
 		this.factory = game.factory;
 
@@ -74,28 +84,48 @@ export default class SnowGroup extends BoundsDestroy {
 	}
 
 	/**
+	 * Get spawn position on the same side as the wind.
+	 * @returns {Point}
+	*/
+	windPos(){
+		return new Point( this.wind.x > 0 ? this.bounds.x : this.bounds.right, 0.8*Math.random()*this.bounds.height );
+	}
+
+	/**
 	 * Get spawn position opposite wind-side, and within 80% of screen top.
 	 * @returns {Point}
 	*/
-	aleePos(){
-
-		return this.wind.x > 0 ? new Point( this.bounds.x, 0.8*Math.random()*this.bounds.height ) :
-			new Point( this.bounds.right, 0.8*Math.random()*this.bounds.height );
-
+	aleePos() {
+		return new Point( this.wind.x > 0 ? this.view.right : this.view.x, 0.8*Math.random()*this.bounds.height );
 	}
 
 	update(){
 
 		super.update();
 		if ( Math.random() < this.spawnerRate ) {
-			this.mkSpawnFlake();
+			this.mkSpawner();
+		}
+		if ( Math.random() < MIN_COMET_RATE ) {
+			this.mkComet();
 		}
 
 	}
 
-	mkSpawnFlake() {
+	mkComet(){
 
-		let g = this.factory.makeSnowflake( this.aleePos() );
+		let g = this.factory.makeComet( this.aleePos() );
+		g.clip.interactive = true;
+
+		let mv = g.require(ZMover);
+		mv.velocity.set( this.wind.x > 0 ? -1.5-1.75*Math.random() : 1,5+1.75*Math.random(), -0.05+0.1*Math.random() );
+
+		this.add(g);
+
+	}
+
+	mkSpawner() {
+
+		let g = this.factory.makeSnowflake( this.windPos() );
 		g.clip.tint = SPAWNER_TINT;
 		g.clip.interactive = true;
 
@@ -109,7 +139,7 @@ export default class SnowGroup extends BoundsDestroy {
 
 	}
 
-	makeSpawner(){
+	startAutoSpawn(){
 
 		let g = new GameObject();
 		g.add( FlakeSpawner );
@@ -117,7 +147,7 @@ export default class SnowGroup extends BoundsDestroy {
 		timer.time = this.spawnerTime;
 
 		let n = this.stats.spawners++;
-		this.spawnerTime = expLerp( SPAWNER_TIME, MAX_SPAWNER_TIME, n );
+		this.spawnerTime = expLerp( MIN_SPAWNER_TIME, MAX_SPAWNER_TIME, n );
 
 
 		this.add(g);
@@ -130,7 +160,7 @@ export default class SnowGroup extends BoundsDestroy {
 	 */
 	clickAuto(g){
 
-		this.makeSpawner();
+		this.startAutoSpawn();
 		g.Destroy();
 
 	}
@@ -146,7 +176,7 @@ export default class SnowGroup extends BoundsDestroy {
 		this.add(g);
 
 		let n = this.stats.count++;
-		this.spawnerRate = expLerp( SPAWNER_RATE, MAX_SPAWNER_RATE, n, 0.00001 );
+		this.spawnerRate = expLerp( MIN_SPAWNER_RATE, MAX_SPAWNER_RATE, n, 0.00001 );
 
 	}
 

@@ -18,7 +18,7 @@
   },
   "homepage": "https://gitlab.com/lerpinglemur/snowflake#readme",
   "dependencies": {
-    "gibbon.js": "^1.4.0",
+    "gibbon.js": "^1.5.1",
     "pixi.js": "^5.2.0",
     "signals": "^1.0.0"
   },
