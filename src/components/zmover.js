@@ -17,8 +17,8 @@ export default class ZMover extends Component {
 
 	get z(){return this._z; }
 	set z(z){
-		this.z = z;
-		this.k = this.zworld.projAt(z);
+		this._z = z;
+		this._k = this.zworld.projAt(z);
 		this.rescale();
 	}
 
@@ -40,6 +40,17 @@ export default class ZMover extends Component {
 	get omega(){ return this._omega; }
 	set omega(v){this._omega = v;}
 
+	/**
+	 * @property {Point} position - reference to clip position.
+	 */
+	get position(){ return this._position; }
+	set position(v) { this._position = v; }
+
+	/**
+	 * @property {ZWorld} world - world mover is moving in.
+	 */
+	get world() { return this.zworld; }
+
 	init(){
 
 		this.zworld = this.game.root.get( ZWorld );
@@ -50,6 +61,8 @@ export default class ZMover extends Component {
 
 		this._omega = 0;
 
+		this._position = this.clip.position;
+
 		this._vel = new Point();
 
 	}
@@ -58,11 +71,11 @@ export default class ZMover extends Component {
 
 		this._z += this._vz;
 
-		this.clip.rotation += this.omega;
+		this.clip.rotation += this._omega;
 		this._k = this.zworld.projAt( this._z);
 
-		this._position.set( this._position.x + (this.velocity.x )*this._k,
-		this._position.y + (this.velocity.y )*this._k )
+		this._position.set( this._position.x + (this._vel.x )*this._k,
+		this._position.y + (this._vel.y )*this._k )
 
 		this.rescale();
 
@@ -82,8 +95,8 @@ export default class ZMover extends Component {
 	*/
 	rescale(){
 
-		this.clip.scale.set( this.k*this.baseScale );
-		this.clip.alpha = this.minAlpha + ( this._maxAlpha - this.minAlpha )*this.k;
+		this.clip.scale.set( this._k*this._baseScale );
+		this.clip.alpha = this._minAlpha + ( this._maxAlpha - this._minAlpha )*this._k;
 
 	}
 

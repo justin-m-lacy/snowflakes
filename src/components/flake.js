@@ -1,10 +1,10 @@
 import { Point } from "pixi.js";
-import { BASE_SCALE } from "../create/snowFactory";
-import { MAX_OMEGA } from "../groups/snowGroup";
 import { Component, Rand } from "gibbon.js";
 import ZMover from "./zmover";
 
 const { randRange } = Rand;
+
+export const MAX_OMEGA = Math.PI/800;
 
 const MIN_ALPHA = 0.2;
 const MAX_ALPHA = 1;
@@ -23,31 +23,30 @@ export default class Flake extends Component {
 	init(){
 
 		var mover = this.mover = this.add( ZMover );
-		this.mover.velocity = new Point( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
+		mover.velocity = new Point( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
 
 		// base scaling before effects.
 		mover.minAlpha = MIN_ALPHA;
 		mover.maxAlpha = MAX_ALPHA;
+		mover.z = 10*Math.random();
 		mover.vz = randRange(-MAX_VZ, MAX_VZ );
+		mover.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
 
 		//this._position =new Point();
 
 		this.wind = this.game.wind;
 
-		mover.z = 10*Math.random();
-		this.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
-
 	}
 
 	update(){
 
-		if ( this.z < 0 ) {
-			this.z = 0;
-			this.vz = 0.1*Math.abs(this.vz);
+		if ( this.mover.z < 0 ) {
+
+			this.mover.z = 0;
+			this.mover.vz = 0.1*Math.abs( this.mover.vz);
 		}
 
-		this._position.set( this._position.x + (this.velocity.x+this.wind.x )*this.k,
-		this._position.y + (this.velocity.y + this.wind.y )*this.k )
+		this.mover.move( this.wind.x, this.wind.y );
 
 	}
 

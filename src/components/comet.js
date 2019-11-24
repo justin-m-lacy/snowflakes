@@ -26,6 +26,9 @@ export default class Comet extends Component {
 		 */
 		this.factory = this.game.factory;
 
+		var mover = this.mover = this.add( ZMover );
+		mover.velocity = new Point( randRange(-MAX_V, MAX_V), randRange(-MAX_V, MAX_V) );
+
 	}
 
 	update(){

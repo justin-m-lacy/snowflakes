@@ -1,7 +1,7 @@
 import Gibbon, { Game, GameObject, Rand, Component } from "gibbon.js";
 import Flake from "./flake";
 import { Point } from "pixi.js";
-import { MAX_OMEGA } from "../groups/snowGroup";
+import { MAX_OMEGA } from './flake';
 import ZWorld from "../data/zworld";
 import ZMover from "./zmover";
 
@@ -64,8 +64,6 @@ export default class BackSnow extends Component {
 			var f = g.get( ZMover );
 			f.z = this.world.randZ();
 
-			//f.position.set( randRange(-bounds.width/2,bounds.width/2), randRange(-bounds.height/2,bounds.height/2) );
-
 			clip.addChild(g.clip);
 			this.flakes.push( f );
 
@@ -87,7 +85,17 @@ export default class BackSnow extends Component {
 			var p = f.position;
 
 			if ( !bounds.contains( p.x, p.y ) ) {
+
 				this.randomize(f);
+
+				if ( Math.random() < 0.4 ){
+					f.position.set( this.bounds.left + Math.random()*this.bounds.width, this.bounds.y+1 );
+				} else if ( this.wind.x + f.velocity.x >= 0 ) {
+					f.position.set( this.bounds.left+1, this.bounds.y + Math.random()*this.bounds.height );
+				} else {
+					f.position.set( this.bounds.right-1, this.bounds.y + Math.random()*this.bounds.height );
+				}
+
 			}
 
 		}
@@ -106,13 +114,6 @@ export default class BackSnow extends Component {
 
 		f.omega = randRange( -MAX_OMEGA, MAX_OMEGA );
 
-		if ( Math.random() < 0.4 ){
-			f.position.set( this.bounds.left + Math.random()*this.bounds.width, this.bounds.y+1 );
-		} else if ( this.wind.x + f.velocity.x >= 0 ) {
-			f.position.set( this.bounds.left+1, this.bounds.y + Math.random()*this.bounds.height );
-		} else {
-			f.position.set( this.bounds.right-1, this.bounds.y + Math.random()*this.bounds.height );
-		}
 
 	}
 

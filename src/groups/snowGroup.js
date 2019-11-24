@@ -9,8 +9,6 @@ const {TimeDestroy} = Components;
 
 const { randInt, randRange } = Rand;
 
-export const MAX_OMEGA = Math.PI/800;
-
 const SPAWNER_TINT = 0xff11bb;
 /**
  *  @const {number} SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
