@@ -31,6 +31,12 @@ export default class UIGroup extends Group {
 		layer.addChild( this._special );
 
 		/**
+		 * @property {number} lastTop - top of last visible stat.
+		 * stats added below as they become visible.
+		 */
+		this.lastTop = this.view.top + PADDING;
+
+		/**
 		 * @property {.<string,CounterFld>} statViews - counters by event-type.
 		 */
 		this.statViews = {};
@@ -42,7 +48,6 @@ export default class UIGroup extends Group {
 
 	mkStatsViews() {
 
-		var top = new Point( this.view.right - 200, this.view.top + PADDING );
 
 		let len = StatEvents.length;
 		for( let i = 0; i < len; i++ ) {
@@ -50,14 +55,15 @@ export default class UIGroup extends Group {
 			var stat = StatEvents[i];
 			var counter = this.statViews[stat] = new CounterFld( stat, 0, Styles );
 			counter.showCount = false;
-			counter.position.set( top.x, top.y );
+			counter.position.set( this.view.right-200, this.lastTop );
 			counter.visible = false;
-			top.y += counter.height + PADDING;
 
 			this.clip.addChild( counter );
 
 		}
 		this.statViews.snow.showCount = true;
+
+		this.lastTop += this.statViews.snow.y;
 
 	}
 
@@ -66,7 +72,13 @@ export default class UIGroup extends Group {
 		let fld = this.statViews[stat];
 		if ( !fld ) console.warn('missing stat: ' + stat );
 		else {
-			fld.visible = true;
+			if ( !fld.visible ) {
+
+				fld.y = this.lastTop;
+				this.lastTop += fld.height + PADDING;
+				fld.visible = true;
+
+			}
 			fld.update(count);
 		}
 
