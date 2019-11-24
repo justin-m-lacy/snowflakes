@@ -1,7 +1,9 @@
 import { Component } from "gibbon.js";
 
+export const EVT_SNOW = 'snow';
+
 export const StatEvents = [
-	'snow',
+	EVT_SNOW,
 	'magic',
 	'comets',
 	'specials'
@@ -18,7 +20,8 @@ export default class Stats extends Component {
 	get count() { return this._count;}
 	set count(v) {
 		this._count = v;
-		this.emitter.emit('stat', 'snow', v );
+		this.emitter.emit('stat', EVT_SNOW, v );
+		this.emitter.emit( EVT_SNOW, v );
 	}
 
 	/**

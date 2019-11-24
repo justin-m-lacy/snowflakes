@@ -42,6 +42,7 @@ export default class Comet extends Component {
 
 	setVelocity( vx, vy ){
 		this.mover.velocity.set( vx, vy );
+		this.mover.omega = this.mover.velocity.x/14;
 		if ( vx < 0) this.mover.baseScale = -this.mover.baseScale;
 	}
 

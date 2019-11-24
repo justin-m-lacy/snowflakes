@@ -25,7 +25,7 @@ export const FrostColors = [ 0x4287f5, 0x8bb2f0, 0xa2c4fa, 0xc1c3e8];
 /**
  * @const {number} COMET_SIZE - base comet radius.
  */
-const COMET_R = 4;
+const COMET_R = 5;
 
 /**
  * @const {number} COMET_COLOR - Color of shooting stars.
@@ -58,7 +58,7 @@ export const BASE_SCALE = FLAKE_RADIUS/DRAW_RADIUS;
  * @const {number} MIN_SEGS - each segment is actually
  * half a snowflake arm.
  */
-const MIN_SEGS = 12;
+//const MIN_SEGS = 12;
 const MAX_SEGS = 12;
 
 /**
@@ -132,7 +132,7 @@ export default class SnowFactory extends Factory {
 	createFlake( loc ){
 
 		let r = DRAW_RADIUS;
-		const tex = this.makeFlakeTex( r, randInt( MIN_SEGS, MAX_SEGS ) );
+		const tex = this.makeFlakeTex( r, MAX_SEGS );
 
 		const sprite = new PIXI.Sprite();
 		sprite.interactive = false;
@@ -191,7 +191,7 @@ export default class SnowFactory extends Factory {
 
 	}
 
-	drawArc( r, arc ){
+	drawArc( r ){
 
 		const c = new PIXI.Container();
 		let g = new Graphics();
@@ -203,7 +203,7 @@ export default class SnowFactory extends Factory {
 		let p = new Point();
 
 		// central shape.
-		this.drawSolid(g, p, (0.02+0.05*Math.random())*r );
+		this.drawSolid(g, p, (0.01 + 0.09*Math.random())*r );
 
 		this.branch( g, p, 0, 1.4*r );
 		//this.arcItems(g, r, arc );
@@ -228,7 +228,7 @@ export default class SnowFactory extends Factory {
 		g.lineStyle( (0.02 + 0.05*Math.random())*DRAW_RADIUS, FLAKE_COLOR );
 		this.drawShape(g, p1, subR );
 
-		if ( subR <= 8 ) return;
+		if ( maxR < DRAW_RADIUS && subR <= 8 ) return;
 
 		setLerp( p0, p1, 0.4 + 0.8*Math.random() );
 		this.branch( g, p0,
@@ -247,16 +247,16 @@ export default class SnowFactory extends Factory {
 		g.beginFill(FLAKE_COLOR);
 
 		var n = Math.random();
-		if ( n < 0.2 ) {
+		if ( n < 0.25 ) {
 
 			g.drawShape( new PIXI.Ellipse(p.x,p.y, (0.5 + Math.random())*size, (0.5 + Math.random())*size ) );
 
-		} else if ( n < 0.4 ) {
+		} else if ( n < 0.5 ) {
 
 			g.drawShape( new PIXI.RoundedRectangle(p.x,p.y,
 				(0.5 + Math.random())*size, (0.5 + Math.random())*size, Math.random()*size/8 ) );
 
-		} else if ( n < 0.7 ) {
+		} else if ( n < 0.75 ) {
 
 			g.drawStar( p.x, p.y, MAX_SEGS, size, size/2 );
 		} else {
@@ -271,19 +271,19 @@ export default class SnowFactory extends Factory {
 
 		//if ( size < 4 ) size = 4;
 		var n = Math.random();
-		if ( n < 0.05 ) {
+		if ( n < 0.09 ) {
 
 			g.drawShape( new PIXI.Ellipse(p.x,p.y, (0.5 +0.3* Math.random())*size,(0.5 + 0.3*Math.random())*size ) );
 
-		} else if ( n < 0.17 ) {
+		} else if ( n < 0.23 ) {
 
 			g.drawShape( new PIXI.RoundedRectangle(p.x,p.y, (0.5 +1* Math.random())*size, (0.5 +1*Math.random())*size, Math.random()*size/8 ) );
 
-		} else if ( n < 0.21 ) {
+		} else if ( n < 0.27 ) {
 
 			g.drawCircle( p.x, p.y, (0.7+0.3*Math.random())*size );
 
-		} else if ( n < 0.25 ) {
+		} else if ( n < 0.33 ) {
 
 			g.drawRect( new PIXI.Rectangle( p.x, p.y, (0.7 +1* Math.random())*size,(0.7 + 1*Math.random())*size ) );
 		}else {

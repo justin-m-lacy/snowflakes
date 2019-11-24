@@ -3,6 +3,7 @@ import CanvasDraw from "gibbon.js/utils/canvasDraw";
 import * as PIXI from 'pixi.js';
 import { Gradient } from "gibbon.js/data/gradient";
 import { lerpColor, htmlStr } from "gibbon.js/utils/colorUtils";
+import { EVT_SNOW } from "./stats";
 
 
 const TEX_WIDTH = 1;
@@ -42,7 +43,7 @@ export default class Sky extends Component {
 
 		this.index = ind;
 		if ( ind === SkyColors.length-1 ) {
-			this.game.emitter.removeListener( 'mk-flake', this.onCount, this );
+			this.game.emitter.removeListener( EVT_SNOW, this.onCount, this );
 		}
 
 		this.redrawSky();
@@ -67,7 +68,7 @@ export default class Sky extends Component {
 
 		this.clip.addChild(s);
 
-		this.game.emitter.on('mk-flake', this.onCount, this );
+		this.game.emitter.on(EVT_SNOW, this.onCount, this );
 
 		//this.clip.texture = this.texture;
 

@@ -1,6 +1,6 @@
 import { Group } from "gibbon.js";
 import { CounterFld } from 'pixiwixi';
-import SpecialView from "../ui/specialView";
+import SpecialView from "./specialView";
 import { StatEvents } from "../components/stats";
 import { Point } from "pixi.js";
 
@@ -48,11 +48,11 @@ export default class UIGroup extends Group {
 
 	mkStatsViews() {
 
-
-		let len = StatEvents.length;
+		let visStats = ['snow'];
+		let len = visStats.length;
 		for( let i = 0; i < len; i++ ) {
 
-			var stat = StatEvents[i];
+			var stat = visStats[i];
 			var counter = this.statViews[stat] = new CounterFld( stat, 0, Styles );
 			counter.showCount = false;
 			counter.position.set( this.view.right-200, this.lastTop );
@@ -62,8 +62,6 @@ export default class UIGroup extends Group {
 
 		}
 		this.statViews.snow.showCount = true;
-
-		this.lastTop += this.statViews.snow.y;
 
 	}
 

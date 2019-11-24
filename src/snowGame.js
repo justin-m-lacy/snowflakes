@@ -7,7 +7,7 @@ import StarGroup from "./groups/starGroup";
 import BackSnow from "./components/backSnow";
 import Sky from "./components/sky";
 import Stats from "./components/stats";
-import UIGroup from "./groups/uiGroup";
+import UIGroup from "./ui/uiGroup";
 import ZWorld from "./data/zworld";
 
 const MIN_Z = 32;

@@ -50,7 +50,7 @@ export default class SpecialView extends Container {
 	mkFlakeHolder( tex ) {
 
 		this.snowflake = new Sprite(tex);
-		this.snowflake.scale.set(  0.48 );
+		this.snowflake.scale.set(  0.5 );
 		this.snowflake.anchor.set( 0, 0 );
 		this.snowflake.position.set( this.field.x + this.field.width + this.padding, this.field.y + ( this.field.height - this.snowflake.height)/2 );
 		this.addChild( this.snowflake);

@@ -43,8 +43,8 @@ const MAX_SPAWNER_RATE = 0.01;
 /**
  * @const {number} MIN_SPAWNER_TIME - Min. spawner flake effect length, in seconds.
  */
-const MIN_SPAWNER_TIME = 1.5;
-const MAX_SPAWNER_TIME = 7;
+const MIN_SPAWNER_TIME = 1;
+const MAX_SPAWNER_TIME = 8;
 
 /**
  * Function that starts at min and exponentially approaches max
