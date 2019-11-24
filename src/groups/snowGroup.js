@@ -16,7 +16,7 @@ const SPAWNER_TINT = 0xff11bb;
 /**
  * @property {number} MIN_SPEC_RATE - special snowflake rate.
  */
-const MIN_SPEC_RATE = 0.001;
+const MIN_SPEC_RATE = 0.01;
 const MAX_SPEC_RATE = 0.01;
 
 const MIN_COMET_RATE = 0.001;
@@ -96,6 +96,8 @@ export default class SnowGroup extends BoundsDestroy {
 		this.view = game.screen;
 		this.bounds = game.screen.clone().pad(64);
 		this.innerBounds = game.screen.clone().pad(-64);
+
+		this.onExit = this.outOfBounds;
 
 		this.stats = game.stats;
 
@@ -216,9 +218,9 @@ export default class SnowGroup extends BoundsDestroy {
 
 		let spec = null;
 
-		while ( i !== st) {
+		do {
 
-			if ( i < 0 ) i = len-1;
+			if ( --i < 0 ) i = len-1;
 
 			var g = this.objects[i];
 			if ( this.innerBounds.contains( g.clip.x, g.clip.y ) ) {
@@ -226,15 +228,42 @@ export default class SnowGroup extends BoundsDestroy {
 				break;
 			}
 
-		}
+		} while ( i !== st );
 
 		if ( !spec) return;
 
 		this.special = spec;
+		spec.clip.interactive = true;
+		spec.on('click', this.specClicked, this );
+
 		this.game.emitter.emit('new-special', spec );
 
 	}
 
+	specClicked( e ){
+
+		e.stopped = true;
+
+		if ( this.special ) {
+
+			this.special.Destroy();
+			this.game.emitter.emit('new-special', null );
+			this.special = null;
+
+		}
+
+	}
+
+	outOfBounds(g) {
+
+		if ( g === this.special ){
+
+			this.game.emitter.emit('new-special', null );
+			this.special = null;
+		}
+		g.Destroy();
+
+	}
 
 	/**
 	 *

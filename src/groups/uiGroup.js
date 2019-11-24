@@ -7,7 +7,7 @@ const FONT_NAME = 'Snowburst One'; // thin, large
 //const FONT_NAME = 'Mountains of Christmas'; // slightly cramped?
 //const FONT_NAME = 'Delius Swash Caps'; // overly simple?
 
-const PADDING = 12;
+const PADDING = 24;
 
 const Styles = {
 	fontFamily:FONT_NAME, fill:TEXT_COLOR
@@ -24,14 +24,12 @@ export default class UIGroup extends Group {
 		this.view = this.game.screen;
 
 		this._counter = new CounterFld( 'snow', 0, Styles );
-		this._special = new SpecialView( game, Styles );
+		this._special = new SpecialView( game, Styles, PADDING/2 );
 
 		this._special.position.set( this.view.left + PADDING, this.view.top + PADDING );
 
-
 		this._counter.showCount = true;
-		this._counter.y = this.view.top + PADDING;
-		this._counter.x = this.view.right - 200;
+		this._counter.position.set( this.view.right - 200, this.view.top + PADDING );
 		//this._counter.anchor.set(1,0);
 
 		layer.addChild( this._counter );

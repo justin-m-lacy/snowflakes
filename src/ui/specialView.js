@@ -1,15 +1,18 @@
 import { Container, Text, Sprite } from "pixi.js";
 import {gsap} from 'gsap'
+import { BASE_SCALE } from "../create/snowFactory";
 
 export default class SpecialView extends Container {
 
-	constructor( game, styleInfo ) {
+	constructor( game, styleInfo, padding=0 ) {
 
 		super();
 
 		this.game = game;
 
 		this.create( styleInfo );
+
+		this.padding = padding;
 
 		this.game.emitter.on('new-special', this.onSpecial, this );
 
@@ -47,7 +50,9 @@ export default class SpecialView extends Container {
 	mkFlakeHolder( tex ) {
 
 		this.snowflake = new Sprite(tex);
-		this.snowflake.position.set( this.field.x + this.field.width + 12 );
+		this.snowflake.scale.set(  0.48 );
+		this.snowflake.anchor.set( 0, 0 );
+		this.snowflake.position.set( this.field.x + this.field.width + this.padding, this.field.y + ( this.field.height - this.snowflake.height)/2 );
 		this.addChild( this.snowflake);
 
 	}
