@@ -2,6 +2,7 @@ import { Component } from "gibbon.js";
 import { quickSplice } from "gibbon.js/utils/arrayUtils";
 import Particle from "../data/particle";
 import ZMover from "./zmover";
+import { ParticleContainer } from "pixi.js";
 
 /**
  * spark alpha fade per frame.
@@ -20,35 +21,57 @@ export default class Comet extends Component {
 		/**
 		 * @note clip must have parent at this point.
 		 */
-		this.parent = this.clip.parent;
+		this.parent = this.clip.parent.addChild( new ParticleContainer() );
 
+		this.clip.interactive = true;
 		/**
 		 * @property {SnowFactory}
 		 */
 		this.factory = this.game.factory;
 
-		var mover = this.mover = this.get( ZMover );
-		mover.z = mover.world.randZ();
+		var mover = this.mover = this.require( ZMover );
+		mover.z = 12*Math.random();
 
+		this._fading = false;
+
+
+	}
+
+	setVelocity( vx, vy ){
+		this.mover.velocity.set( vx, vy );
+		if ( vx < 0) this.mover.baseScale = -this.mover.baseScale;
+	}
+
+	fadeOut(){
+		this._clip.visible = false;
+		this.clip.interactive = false;
+		this._fading = true;
 	}
 
 	update(){
 
-		// create spark.
-		var p = new Particle( this.factory.makeSpark(), this.clip.position, -0.5+1*Math.random(), -.75+1*Math.random(), 0.01 );
-		p.da = -FADE_RATE;
-		this.parts.push(p);
-		this.parent.addChild(p.clip);
+		if ( !this._fading ) {
+
+			var p = new Particle( this.factory.makeSpark(),
+				this.clip.position.x+ (0.5-1*Math.random())*this.clip.width, this.clip.position.y + (0.5-1*Math.random())*this.clip.height,
+				-0.5+1*Math.random(), -.5+0.5*Math.random(), 0.005 );
+
+			p.da = -FADE_RATE;
+			this.parts.push(p);
+			this.parent.addChild(p.clip);
+
+		}
 
 		var a = this.parts;
 		for( let i = a.length-1; i>= 0; i-- ) {
 
-			p = this.parts[i];
+			p = a[i];
 			p.update();
 
 			if ( p.clip.alpha <= 0) {
-				quickSplice( this.parts, i );
+				quickSplice( a, i );
 				p.destroy();
+				if ( this._fading && a.length === 0 ) this.gameObject.Destroy();
 			}
 
 		}
@@ -56,6 +79,8 @@ export default class Comet extends Component {
 	}
 
 	destroy(){
+
+		this.parent.destroy();
 
 		for( let i = this.parts.length-1; i>=0; i--){
 			this.parts[i].destroy();

@@ -5,6 +5,7 @@ import Flake from "../components/flake";
 import { Components } from 'gibbon.js';
 import FlakeSpawner from "../components/flakeSpawner";
 import ZMover from "../components/zmover";
+import Comet from "../components/comet";
 
 const {TimeDestroy} = Components;
 
@@ -12,7 +13,7 @@ const { randInt, randRange } = Rand;
 
 const SPAWNER_TINT = 0xff11bb;
 
-const MIN_COMET_RATE = 0.01;
+const MIN_COMET_RATE = 0.002;
 const MAX_COMET_RATE = 0.01;
 
 const COMET_TIME = 3;
@@ -116,10 +117,11 @@ export default class SnowGroup extends BoundsDestroy {
 		let g = this.factory.makeComet( this.aleePos() );
 		g.clip.interactive = true;
 
-		let mv = g.require(ZMover);
-		mv.velocity.set( this.wind.x > 0 ? -1.5-1.75*Math.random() : 1,5+1.75*Math.random(), -0.05+0.1*Math.random() );
-
 		this.add(g);
+
+		g.get(Comet).setVelocity( this.wind.x > 0 ? -1.5-1.75*Math.random() : 1.5+1.75*Math.random(), -0.4*Math.random() );
+
+		g.on('click', ()=>this.clickComet(g), this );
 
 	}
 
@@ -151,6 +153,12 @@ export default class SnowGroup extends BoundsDestroy {
 
 
 		this.add(g);
+
+	}
+
+	clickComet(g){
+
+		g.get(Comet).fadeOut();
 
 	}
 

@@ -9,6 +9,7 @@ import { setLerp } from "gibbon.js/utils/geom";
 import Flake from "../components/flake";
 import Comet from '../components/comet';
 import ZMover from "../components/zmover";
+import { randElm } from "gibbon.js/utils/arrayUtils";
 
 
 /**
@@ -22,14 +23,16 @@ export const CometColors = [ 0xe8e5c1, 0xdeda68, 0xe6e4be, 0xf0e518 ];
 export const FrostColors = [ 0x4287f5, 0x8bb2f0, 0xa2c4fa, 0xc1c3e8];
 
 /**
+ * @const {number} COMET_SIZE - base comet radius.
+ */
+const COMET_R = 4;
+
+/**
  * @const {number} COMET_COLOR - Color of shooting stars.
  */
 const COMET_COLOR = 0xe8c21a;
+const COMET_HIT = new PIXI.Rectangle( -60, -20, 80, 40 );
 
-/**
- * @const {number} COMET_SIZE - base comet radius.
- */
-const COMET_R = 12;
 
 const FLAKE_COLOR = 0xffffff;
 
@@ -89,11 +92,17 @@ export default class SnowFactory extends Factory {
 	 */
 	makeComet(pt) {
 
-		let c = new PIXI.ParticleContainer();
-		c.addChild( PIXI.Sprite.from( this.cometTex ) );
+		let s = PIXI.Sprite.from(this.cometTex );
+		s.alpha = 0.75;
 
-		let obj = new GameObject( c, pt );
-		obj.setDestroyOpts(true,true,true);
+		//s.tint = randElm( CometColors );
+		s.scale.set(1.2);
+		s.anchor.set(0.5, 0.5);
+
+		s.hitArea = COMET_HIT;
+
+		let obj = new GameObject( s, pt );
+		obj.setDestroyOpts(true,false,false);
 
 		obj.add(ZMover);
 		obj.add(Comet);
@@ -292,7 +301,7 @@ export default class SnowFactory extends Factory {
 
 		let g = new Graphics();
 		g.beginFill( 0xffffff );
-		g.drawStar( COMET_R, COMET_R, 5, COMET_R, COMET_R/2 );
+		g.drawStar( COMET_R, COMET_R, 5, COMET_R );
 		g.endFill();
 		//g.cacheAsBitmap=true;
 

@@ -18,10 +18,10 @@ export default class Particle {
 	get da(){ return this._da;}
 	set da(v){this._da = v;}
 
-	constructor( clip, pt, vx=0, vy=0, ay=0 ){
+	constructor( clip, x, y, vx=0, vy=0, ay=0 ){
 
 		this._clip = clip;
-		clip.position.set(pt.x,pt.y);
+		clip.position.set( x, y );
 
 		this._vx = vx;
 		this._vy = vy;

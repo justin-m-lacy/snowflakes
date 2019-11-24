@@ -69,6 +69,7 @@ export default class ZMover extends Component {
 	init(){
 
 		this.zworld = this.game.root.get( ZWorld );
+		this.maxAlpha = this.clip.alpha;
 		this.baseScale = this.clip.scale.x;
 
 		this._position = this.clip.position;
