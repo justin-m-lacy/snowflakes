@@ -31,7 +31,7 @@ const COMET_R = 4;
  * @const {number} COMET_COLOR - Color of shooting stars.
  */
 const COMET_COLOR = 0xe8c21a;
-const COMET_HIT = new PIXI.Rectangle( -60, -20, 80, 40 );
+const COMET_HIT = new PIXI.Rectangle( -50, -20, 75, 40 );
 
 
 const FLAKE_COLOR = 0xffffff;

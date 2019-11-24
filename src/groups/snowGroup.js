@@ -95,6 +95,7 @@ export default class SnowGroup extends BoundsDestroy {
 
 		this.view = game.screen;
 		this.bounds = game.screen.clone().pad(64);
+		this.innerBounds = game.screen.clone().pad(-64);
 
 		this.stats = game.stats;
 
@@ -126,6 +127,9 @@ export default class SnowGroup extends BoundsDestroy {
 		}
 		if ( Math.random() < this.cometRate ) {
 			this.mkComet();
+		}
+		if ( this.special === null && Math.random() <this.specRate ) {
+			this.mkSpecial();
 		}
 
 	}
@@ -202,15 +206,32 @@ export default class SnowGroup extends BoundsDestroy {
 	/**
 	 *
 	 */
-	pickSpecial(){
+	mkSpecial() {
 
 		let len = this.objects.length;
-		let st = Math.floor(Math)
-		for( let i = this.objects.length-1; i >= 0; i-- ) {
+		if ( len === 0 ) return;
+
+		let st = Math.floor(Math.random()*len );
+		let i = st-1;
+
+		let spec = null;
+
+		while ( i !== st) {
+
+			if ( i < 0 ) i = len-1;
+
+			var g = this.objects[i];
+			if ( this.innerBounds.contains( g.clip.x, g.clip.y ) ) {
+				spec = g;
+				break;
+			}
 
 		}
 
-		this.game.emitter.emit('new-special');
+		if ( !spec) return;
+
+		this.special = spec;
+		this.game.emitter.emit('new-special', spec );
 
 	}
 
