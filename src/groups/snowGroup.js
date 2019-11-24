@@ -6,6 +6,8 @@ import { Components } from 'gibbon.js';
 import FlakeSpawner from "../components/flakeSpawner";
 import ZMover from "../components/zmover";
 import Comet from "../components/comet";
+import Snowburst from "../components/snowburst";
+import { EVT_SNOW, EVT_STAT } from "../components/stats";
 
 const {TimeDestroy} = Components;
 
@@ -65,15 +67,18 @@ export const expLerp = ( min, max, v, k=0.001 ) => {
 
 }
 
+/**
+ * Group for interactive Snow elements.
+ */
 export default class SnowGroup extends BoundsDestroy {
 
 	/**
 	 *
 	 * @param {Game} game
 	 */
-	constructor( game ) {
+	constructor( game, mc ) {
 
-		super(game, new Container() );
+		super(game, mc );
 
 		/**
 		 * Default spawner time.
@@ -100,8 +105,7 @@ export default class SnowGroup extends BoundsDestroy {
 		this.onExit = this.outOfBounds;
 
 		this.stats = game.stats;
-
-		this.start();
+		this.game.on( EVT_STAT, this.onStat );
 
 	}
 
@@ -130,15 +134,34 @@ export default class SnowGroup extends BoundsDestroy {
 		if ( Math.random() < this.cometRate ) {
 			this.mkComet();
 		}
-		if ( this.special === null && Math.random() <this.specRate ) {
+		if ( this.special === null && Math.random() < this.specRate ) {
 			this.mkSpecial();
 		}
 
 	}
 
+	/**
+	 * Flake created.
+	 */
+	onStat( stat, n ) {
+
+		if ( stat === EVT_SNOW ) {
+			this.spawnerRate = expLerp( MIN_SPAWNER_RATE, MAX_SPAWNER_RATE, n, 0.00001 );
+		}
+	}
+
+	/**
+	 *
+	 * @param {InteractionEvent} evt
+	 */
+	mkFlake( pt ){
+		this.stats.count++;
+		this.add( this.factory.mkSnowflake( pt ) );
+	}
+
 	mkComet(){
 
-		let g = this.factory.makeComet( this.aleePos() );
+		let g = this.factory.mkComet( this.aleePos() );
 		g.clip.interactive = true;
 
 		this.engine.add(g);
@@ -151,7 +174,7 @@ export default class SnowGroup extends BoundsDestroy {
 
 	mkSpawner() {
 
-		let g = this.factory.makeSnowflake( this.windPos() );
+		let g = this.factory.mkSnowflake( this.windPos() );
 		g.clip.tint = SPAWNER_TINT;
 		g.clip.interactive = true;
 
@@ -171,7 +194,7 @@ export default class SnowGroup extends BoundsDestroy {
 	 */
 	clickAuto(e,g){
 
-		e.stopped = true;
+		e.stopPropagation();
 
 		let n = this.stats.spawners++;
 		this.cometRate = expLerp( MIN_COMET_RATE, MAX_COMET_RATE, n );
@@ -195,7 +218,7 @@ export default class SnowGroup extends BoundsDestroy {
 
 	clickComet(e,g){
 
-		e.stopped = true;
+		e.stopPropagation();
 		g.get(Comet).fadeOut();
 
 		let n = this.stats.comets++;
@@ -239,6 +262,10 @@ export default class SnowGroup extends BoundsDestroy {
 
 	}
 
+	/**
+	 *
+	 * @param {InteractionEvent} e
+	 */
 	specClicked( e ){
 
 		e.stopped = true;
@@ -250,6 +277,10 @@ export default class SnowGroup extends BoundsDestroy {
 			this.special.Destroy();
 			this.game.emitter.emit('new-special', null );
 			this.special = null;
+
+			let g = new GameObject( null);
+			g.addExisting( new Snowburst( e.data.global, this.objects.length ) );
+			this.engine.add( g );
 
 		}
 
@@ -263,21 +294,6 @@ export default class SnowGroup extends BoundsDestroy {
 			this.special = null;
 		}
 		g.Destroy();
-
-	}
-
-	/**
-	 *
-	 * @param {Point} pt
-	 */
-	createFlake( pt ){
-
-		let g = this.factory.makeSnowflake(pt);
-
-		this.add(g);
-
-		let n = this.stats.count++;
-		this.spawnerRate = expLerp( MIN_SPAWNER_RATE, MAX_SPAWNER_RATE, n, 0.00001 );
 
 	}
 

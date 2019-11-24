@@ -17,8 +17,8 @@ const MAX_VZ = 0.02;
  */
 export default class Flake extends Component {
 
-	get color(){return this._color;}
-	set color(v){this._color=v;}
+	/*get color(){return this._color;}
+	set color(v){this._color=v;}*/
 
 	init(){
 

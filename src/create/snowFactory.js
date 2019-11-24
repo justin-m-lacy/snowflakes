@@ -81,7 +81,8 @@ export default class SnowFactory extends Factory {
 
 		this.initTextures();
 
-		this.addCreator( 'comet', this.makeComet );
+		this.addCreator( 'comet', this.mkComet );
+		this.addCreator('flake', this.mkSnowflake);
 
 	}
 
@@ -90,7 +91,7 @@ export default class SnowFactory extends Factory {
 	 * @param {Point} pt
 	 * @returns {GameObject}
 	 */
-	makeComet(pt) {
+	mkComet(pt) {
 
 		let s = PIXI.Sprite.from(this.cometTex );
 		s.alpha = 0.75;
@@ -116,7 +117,7 @@ export default class SnowFactory extends Factory {
 	 * @param {Point} pt
 	 * @returns {GameObject}
 	 */
-	makeSnowflake( pt ){
+	mkSnowflake( pt ){
 
 		let s = this.createFlake(pt);
 		//s.cacheAsBitmap = true;

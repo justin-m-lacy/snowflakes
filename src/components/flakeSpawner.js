@@ -31,7 +31,7 @@ export default class FlakeSpawner extends Component {
 
 		if ( ++this.timer > this._frames ) {
 
-			this.flakes.createFlake( this.mouseInfo.global );
+			this.flakes.mkFlake( this.mouseInfo.global );
 			this.timer = 0;
 
 		}

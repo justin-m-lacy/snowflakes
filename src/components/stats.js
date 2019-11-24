@@ -1,5 +1,6 @@
 import { Component } from "gibbon.js";
 
+export const EVT_STAT = 'stat';
 export const EVT_SNOW = 'snow';
 
 export const StatEvents = [
@@ -20,7 +21,7 @@ export default class Stats extends Component {
 	get count() { return this._count;}
 	set count(v) {
 		this._count = v;
-		this.emitter.emit('stat', EVT_SNOW, v );
+		this.emitter.emit( EVT_STAT, EVT_SNOW, v );
 		this.emitter.emit( EVT_SNOW, v );
 	}
 
@@ -36,19 +37,19 @@ export default class Stats extends Component {
 	get spawners(){return this._spawners;}
 	set spawners(v) {
 		this._spawners = v;
-		this.emitter.emit('stat', 'magic', v );
+		this.emitter.emit( EVT_STAT, 'magic', v );
 	}
 
 	get comets() { return this._comets; }
 	set comets(v) {
 		this._comets = v;
-		this.emitter.emit( 'stat', 'comets', v );
+		this.emitter.emit( EVT_STAT, 'comets', v );
 	}
 
 	get specials(){return this._specials; }
 	set specials(v) {
 		this._specials = v;
-		this.emitter.emit('stat', 'specials', v);
+		this.emitter.emit( EVT_STAT, 'specials', v);
 	}
 
 	init(){

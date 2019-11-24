@@ -67,8 +67,8 @@ export default class SnowGame extends Game {
 		this.root.add( BackSnow );
 		this._stats = this.root.add( Stats );
 
-		this.flakes = new SnowGroup( this );
-		this.objectLayer.addChild( this.flakes.clip );
+		this.flakes = new SnowGroup( this, this.objectLayer );
+		//this.objectLayer.addChild( this.flakes.clip );
 
 		this.ui = new UIGroup(this, this.uiLayer );
 		this.addGroup( this.ui );
@@ -80,10 +80,16 @@ export default class SnowGame extends Game {
 
 	start() {
 
-		this.stage.interactive = true;
-		this.stage.on('click', this.stageClicked, this );
 		super.start();
+		this.flakes.start();
+		this.stage.interactive=true;
+		this.stage.on( 'click', this.clickBg, this );
 
+	}
+
+	clickBg(e){
+		this.stats.clicks++;
+		this.flakes.mkFlake( e.data.global );
 	}
 
 	/**
@@ -117,19 +123,6 @@ export default class SnowGame extends Game {
 	assetsLoaded( loader, resources ) {
 
 		console.log('ASSETS LOADED');
-
-	}
-
-	/**
-	 *
-	 * @param {InteractionEvent} evt
-	 */
-	stageClicked(evt){
-
-		evt.stopped =true;
-
-		this.stats.clicks++;
-		this.flakes.createFlake(evt.data.global);
 
 	}
 
