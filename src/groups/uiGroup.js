@@ -1,5 +1,6 @@
 import { Group } from "gibbon.js";
 import { CounterFld } from 'pixiwixi';
+import SpecialView from "../ui/specialView";
 
 const TEXT_COLOR = 0xffffff;
 const FONT_NAME = 'Snowburst One'; // thin, large
@@ -7,6 +8,10 @@ const FONT_NAME = 'Snowburst One'; // thin, large
 //const FONT_NAME = 'Delius Swash Caps'; // overly simple?
 
 const PADDING = 12;
+
+const Styles = {
+	fontFamily:FONT_NAME, fill:TEXT_COLOR
+};
 
 export default class UIGroup extends Group {
 
@@ -18,7 +23,9 @@ export default class UIGroup extends Group {
 
 		this.view = this.game.screen;
 
-		this._counter = new CounterFld( 'snow', 0, { fontFamily:FONT_NAME, fill:TEXT_COLOR });
+		this._counter = new CounterFld( 'snow', 0, Styles );
+		this._special = new SpecialView( game, Styles );
+
 
 		this._counter.showCount = true;
 		this._counter.y = this.view.top + PADDING;
