@@ -246,6 +246,8 @@ export default class SnowGroup extends BoundsDestroy {
 
 		if ( this.special ) {
 
+			this.stats.specials++;
+
 			this.special.Destroy();
 			this.game.emitter.emit('new-special', null );
 			this.special = null;

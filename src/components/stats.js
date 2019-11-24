@@ -1,5 +1,12 @@
 import { Component } from "gibbon.js";
 
+export const StatEvents = [
+	'snowflakes',
+	'spawners',
+	'comets',
+	'specials'
+];
+
 /**
  * Stats to share a values across multiple components/objects.
  */

@@ -1,6 +1,7 @@
 import { Group } from "gibbon.js";
 import { CounterFld } from 'pixiwixi';
 import SpecialView from "../ui/specialView";
+import { StatEvents } from "../components/stats";
 
 const TEXT_COLOR = 0xffffff;
 const FONT_NAME = 'Snowburst One'; // thin, large
@@ -23,24 +24,53 @@ export default class UIGroup extends Group {
 
 		this.view = this.game.screen;
 
-		this._counter = new CounterFld( 'snow', 0, Styles );
+
 		this._special = new SpecialView( game, Styles, PADDING/2 );
+
+		/**
+		 * @property {.<string,CounterFld>} statViews - counters by event-type.
+		 */
+		this.statViews = {};
 
 		this._special.position.set( this.view.left + PADDING, this.view.top + PADDING );
 
-		this._counter.showCount = true;
-		this._counter.position.set( this.view.right - 200, this.view.top + PADDING );
+
 		//this._counter.anchor.set(1,0);
 
 		layer.addChild( this._counter );
 		layer.addChild( this._special );
 
-		game.emitter.on('mk-flake', this.onCount, this );
+		game.emitter.on( 'stat', this.onStat, this );
 
 	}
 
-	onCount( count ){
-		this._counter.update(count);
+	mkStatsViews() {
+
+		var top = new Point( this.view.right - 200, this.view.top + PADDING );
+
+		let len = StatEvents.length;
+		for( let i = 0; i < len; i++ ) {
+
+			var stat = StatEvents[i];
+			var counter = new CounterFld( stat, 0, Styles );
+			counter.showCount = true;
+			counter.position.set( top.x, top.y );
+			top.y += counter.height + PADDING;
+
+			this.clip.addChild( counter );
+
+		}
+
+	}
+
+	onStat( stat, count ) {
+
+		let fld = this.statViews[stat];
+		if ( !fld ) console.warn('missing stat: ' + stat );
+		else {
+			fld.update(count);
+		}
+
 	}
 
 }
