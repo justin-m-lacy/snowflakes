@@ -10,10 +10,8 @@ export default class Stats extends Component {
 	 */
 	get count() { return this._count;}
 	set count(v) {
-
 		this._count = v;
-		this.game.emitter.emit('snow-count', v );
-
+		this.emitter.emit('mk-flake', v );
 	}
 
 	/**
@@ -26,13 +24,25 @@ export default class Stats extends Component {
 	 * @property {number} spawners - spawners clicked.
 	 */
 	get spawners(){return this._spawners;}
-	set spawners(v) { this._spawners = v; }
+	set spawners(v) {
+		this._spawners = v;
+		this.emitter.emit('spawner', v );
+	}
+
+	get comets() { return this._comets; }
+	set comets(v) {
+		this._comets = v;
+		this.emitter.emit('comet', v );
+	}
 
 	init(){
+
+		this.emitter = this.game.emitter;
 
 		this._count = 0;
 		this._clicks = 0;
 		this._spawners = 0;
+		this._comets = 0;
 
 	}
 

@@ -22,7 +22,7 @@ const app = new PIXI.Application({
 
 WebFont.load({
 	google: {
-		families: ['Snowburst One','Mountains+of+Christmas']
+		families: ['Snowburst One']
 	},
 	active:e=>{
 
@@ -30,7 +30,6 @@ WebFont.load({
 		let g = new SnowGame( app );
 
 		g.init();
-		g.start();
 
 	}
 

@@ -126,6 +126,8 @@ export default class SnowGame extends Game {
 	 */
 	stageClicked(evt){
 
+		evt.stopped =true;
+
 		this.stats.clicks++;
 		this.flakes.createFlake(evt.data.global);
 

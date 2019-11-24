@@ -94,9 +94,10 @@ export default class SnowFactory extends Factory {
 
 		let s = PIXI.Sprite.from(this.cometTex );
 		s.alpha = 0.75;
+		//s.cacheAsBitmap = true;
 
 		//s.tint = randElm( CometColors );
-		s.scale.set(1.2);
+		s.scale.set(1.4);
 		s.anchor.set(0.5, 0.5);
 
 		s.hitArea = COMET_HIT;
@@ -118,6 +119,7 @@ export default class SnowFactory extends Factory {
 	makeSnowflake( pt ){
 
 		let s = this.createFlake(pt);
+		//s.cacheAsBitmap = true;
 		let g = new GameObject(s);
 		g.setDestroyOpts(true,true,true);
 

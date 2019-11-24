@@ -27,7 +27,7 @@ export default class UIGroup extends Group {
 
 		layer.addChild( this._counter );
 
-		game.emitter.on('snow-count', this.onCount, this );
+		game.emitter.on('mk-flake', this.onCount, this );
 
 	}
 

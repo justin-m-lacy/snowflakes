@@ -42,7 +42,7 @@ export default class Sky extends Component {
 
 		this.index = ind;
 		if ( ind === SkyColors.length-1 ) {
-			this.game.emitter.removeListener( 'snow-count', this.onCount, this );
+			this.game.emitter.removeListener( 'mk-flake', this.onCount, this );
 		}
 
 		this.redrawSky();
@@ -67,8 +67,7 @@ export default class Sky extends Component {
 
 		this.clip.addChild(s);
 
-		console.log('INIT SKY');
-		this.game.emitter.on('snow-count', this.onCount, this );
+		this.game.emitter.on('mk-flake', this.onCount, this );
 
 		//this.clip.texture = this.texture;
 
