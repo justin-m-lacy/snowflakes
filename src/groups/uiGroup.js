@@ -26,6 +26,8 @@ export default class UIGroup extends Group {
 		this._counter = new CounterFld( 'snow', 0, Styles );
 		this._special = new SpecialView( game, Styles );
 
+		this._special.position.set( this.view.left + PADDING, this.view.top + PADDING );
+
 
 		this._counter.showCount = true;
 		this._counter.y = this.view.top + PADDING;
@@ -33,6 +35,7 @@ export default class UIGroup extends Group {
 		//this._counter.anchor.set(1,0);
 
 		layer.addChild( this._counter );
+		layer.addChild( this._special );
 
 		game.emitter.on('mk-flake', this.onCount, this );
 

@@ -145,7 +145,7 @@ export default class SnowFactory extends Factory {
 		//sprite.pivot = new Point( r, r );
 		sprite.rotation = Math.PI*Math.random();
 
-		sprite.scale = new Point( FLAKE_RADIUS/r,FLAKE_RADIUS/r );
+		sprite.scale = new Point( BASE_SCALE, BASE_SCALE );
 
 		return sprite;
 
@@ -202,6 +202,7 @@ export default class SnowFactory extends Factory {
 
 		let p = new Point();
 
+		// central shape.
 		this.drawSolid(g, p, (0.02+0.05*Math.random())*r );
 
 		this.branch( g, p, 0, 1.4*r );
