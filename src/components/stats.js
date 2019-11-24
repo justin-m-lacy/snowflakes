@@ -18,7 +18,7 @@ export default class Stats extends Component {
 	get count() { return this._count;}
 	set count(v) {
 		this._count = v;
-		this.emitter.emit('mk-flake', v );
+		this.emitter.emit('stat', 'snowflakes', v );
 	}
 
 	/**
@@ -33,19 +33,19 @@ export default class Stats extends Component {
 	get spawners(){return this._spawners;}
 	set spawners(v) {
 		this._spawners = v;
-		this.emitter.emit('spawner', v );
+		this.emitter.emit('stat', 'spawners', v );
 	}
 
 	get comets() { return this._comets; }
 	set comets(v) {
 		this._comets = v;
-		this.emitter.emit('comet', v );
+		this.emitter.emit( 'stat', 'comets', v );
 	}
 
 	get specials(){return this._specials; }
 	set specials(v) {
 		this._specials = v;
-		this.emitter.emit('special', v);
+		this.emitter.emit('stat', 'specials', v);
 	}
 
 	init(){

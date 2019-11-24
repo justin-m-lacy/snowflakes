@@ -2,6 +2,7 @@ import { Group } from "gibbon.js";
 import { CounterFld } from 'pixiwixi';
 import SpecialView from "../ui/specialView";
 import { StatEvents } from "../components/stats";
+import { Point } from "pixi.js";
 
 const TEXT_COLOR = 0xffffff;
 const FONT_NAME = 'Snowburst One'; // thin, large
@@ -24,21 +25,15 @@ export default class UIGroup extends Group {
 
 		this.view = this.game.screen;
 
-
 		this._special = new SpecialView( game, Styles, PADDING/2 );
+		this._special.position.set( this.view.left + PADDING, this.view.top + PADDING );
+		layer.addChild( this._special );
 
 		/**
 		 * @property {.<string,CounterFld>} statViews - counters by event-type.
 		 */
 		this.statViews = {};
-
-		this._special.position.set( this.view.left + PADDING, this.view.top + PADDING );
-
-
-		//this._counter.anchor.set(1,0);
-
-		layer.addChild( this._counter );
-		layer.addChild( this._special );
+		this.mkStatsViews();
 
 		game.emitter.on( 'stat', this.onStat, this );
 
@@ -52,7 +47,7 @@ export default class UIGroup extends Group {
 		for( let i = 0; i < len; i++ ) {
 
 			var stat = StatEvents[i];
-			var counter = new CounterFld( stat, 0, Styles );
+			var counter = this.statViews[stat] = new CounterFld( stat, 0, Styles );
 			counter.showCount = true;
 			counter.position.set( top.x, top.y );
 			top.y += counter.height + PADDING;
