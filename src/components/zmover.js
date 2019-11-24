@@ -80,6 +80,7 @@ export default class ZMover extends Component {
 	update(){
 
 		this._z += this._vz;
+		this.clip.zIndex = -this._z;
 
 		this.clip.rotation += this._omega;
 		this._k = this.zworld.projAt( this._z);

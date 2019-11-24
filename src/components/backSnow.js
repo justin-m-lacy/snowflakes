@@ -10,7 +10,7 @@ const { randRange } = Rand;
 const FLAKE_COUNT = 128;
 
 const MIN_WIND = 0.25;
-const MAX_WIND = 2.7;
+const MAX_WIND = 3.4;
 
 const MIN_G = 0.4;
 const MAX_G = 0.8;
@@ -18,7 +18,7 @@ const MAX_G = 0.8;
 
 export const MIN_SIZE = 6;
 
-const MAX_V = 0.2;
+const MAX_V = 0.24;
 const MAX_VZ = 0.001;
 
 /**

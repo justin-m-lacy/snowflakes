@@ -23,6 +23,8 @@ export default class Comet extends Component {
 		 */
 		this.parent = this.clip.parent.addChild( new ParticleContainer() );
 
+		this.view = this.game.screen;
+
 		this.clip.interactive = true;
 		/**
 		 * @property {SnowFactory}
@@ -32,6 +34,7 @@ export default class Comet extends Component {
 		var mover = this.mover = this.require( ZMover );
 		mover.z = 12*Math.random();
 
+		this.parent.zIndex = this.clip.zIndex;
 		this._fading = false;
 
 
@@ -51,6 +54,8 @@ export default class Comet extends Component {
 	update(){
 
 		if ( !this._fading ) {
+
+			if ( this.clip.x + 20 < 0 || this.clip.x -20 > this.view.right ) this._fading = true;
 
 			var p = new Particle( this.factory.makeSpark(),
 				this.clip.position.x+ (0.5-1*Math.random())*this.clip.width, this.clip.position.y + (0.5-1*Math.random())*this.clip.height,

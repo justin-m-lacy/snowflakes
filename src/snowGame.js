@@ -98,7 +98,7 @@ export default class SnowGame extends Game {
 
 	initBg(){
 
-		let s = new PIXI.Container();
+		let s = new PIXI.ParticleContainer();
 		this.backgroundLayer.addChild( s );
 
 		this.sky = this.instantiate( s );

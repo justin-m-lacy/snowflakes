@@ -22,7 +22,7 @@ export default class FlakeSpawner extends Component {
 		this.mouseInfo = this.game.mouseInfo;
 		this.flakes = this.game.flakes;
 
-		this.rate = 0.1;
+		this.rate = 0.2;
 		this.timer = 0;
 
 	}

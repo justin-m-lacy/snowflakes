@@ -35,6 +35,12 @@ export default class Stats extends Component {
 		this.emitter.emit('comet', v );
 	}
 
+	get specials(){return this._specials; }
+	set specials(v) {
+		this._specials = v;
+		this.emitter.emit('special', v);
+	}
+
 	init(){
 
 		this.emitter = this.game.emitter;
@@ -43,6 +49,7 @@ export default class Stats extends Component {
 		this._clicks = 0;
 		this._spawners = 0;
 		this._comets = 0;
+		this._specials = 0;
 
 	}
 

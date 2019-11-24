@@ -24,6 +24,9 @@ export default class ZWorld extends Component {
 
 	}
 
+	init() {
+		this.clip.sortableChildren = true;
+	}
 	/**
  	* Projection factor at distance z.
  	* @param {number} z

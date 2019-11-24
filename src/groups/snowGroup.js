@@ -13,16 +13,30 @@ const { randInt, randRange } = Rand;
 
 const SPAWNER_TINT = 0xff11bb;
 
-const MIN_COMET_RATE = 0.002;
-const MAX_COMET_RATE = 0.01;
+/**
+ * @property {number} MIN_SPEC_RATE - special snowflake rate.
+ */
+const MIN_SPEC_RATE = 0.001;
+const MAX_SPEC_RATE = 0.01;
 
-const COMET_TIME = 3;
+const MIN_COMET_RATE = 0.001;
+const MAX_COMET_RATE = 0.005;
+
+/**
+ * Snowflakes -> auto-spawners rate
+ * Auto-Spawners -> comet rate
+ * Comets -> Auto-spawner length
+ */
+/**
+ * @property {number} MIN_COMET_TIME - minimum comet-effect length, in seconds.
+ */
+const MIN_COMET_TIME = 3;
 const MAX_COMET_TIME = 7;
 
 /**
  *  @const {number} MIN_SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
  */
-const MIN_SPAWNER_RATE = 0.001;
+const MIN_SPAWNER_RATE = 0.002;
 const MAX_SPAWNER_RATE = 0.01;
 
 
@@ -69,6 +83,9 @@ export default class SnowGroup extends BoundsDestroy {
 
 		this.cometRate = MIN_COMET_RATE;
 
+		this.specRate = MIN_SPEC_RATE;
+		this.special = null;
+
 		this.factory = game.factory;
 
 		/**
@@ -107,7 +124,7 @@ export default class SnowGroup extends BoundsDestroy {
 		if ( Math.random() < this.spawnerRate ) {
 			this.mkSpawner();
 		}
-		if ( Math.random() < MIN_COMET_RATE ) {
+		if ( Math.random() < this.cometRate ) {
 			this.mkComet();
 		}
 
@@ -118,9 +135,9 @@ export default class SnowGroup extends BoundsDestroy {
 		let g = this.factory.makeComet( this.aleePos() );
 		g.clip.interactive = true;
 
-		this.add(g);
+		this.engine.add(g);
 
-		g.get(Comet).setVelocity( this.wind.x > 0 ? -1.5-1.75*Math.random() : 1.5+1.75*Math.random(), -0.4*Math.random() );
+		g.get(Comet).setVelocity( this.wind.x > 0 ? -3-3.5*Math.random() : 3+3.5*Math.random(), -0.4+0.8*Math.random() );
 
 		g.on('click', (e)=>this.clickComet(e,g), this );
 
@@ -164,7 +181,7 @@ export default class SnowGroup extends BoundsDestroy {
 		timer.time = this.spawnerTime;
 
 		let n = this.stats.spawners++;
-		this.spawnerTime = expLerp( MIN_SPAWNER_TIME, MAX_SPAWNER_TIME, n );
+		this.cometRate = expLerp( MIN_COMET_RATE, MAX_COMET_RATE, n );
 
 
 		this.add(g);
@@ -175,10 +192,27 @@ export default class SnowGroup extends BoundsDestroy {
 
 		e.stopped = true;
 		g.get(Comet).fadeOut();
-		this.stats.comets++;
+
+		let n = this.stats.comets++;
+
+		this.spawnerTime = expLerp( MIN_SPAWNER_TIME, MAX_SPAWNER_TIME, n );
 
 	}
 
+	/**
+	 *
+	 */
+	pickSpecial(){
+
+		let len = this.objects.length;
+		let st = Math.floor(Math)
+		for( let i = this.objects.length-1; i >= 0; i-- ) {
+
+		}
+
+		this.game.emitter.emit('new-special');
+
+	}
 
 
 	/**
@@ -191,8 +225,7 @@ export default class SnowGroup extends BoundsDestroy {
 
 		this.add(g);
 
-		let n = this.stats.count + 1;
-		this.stats.count = n;
+		let n = this.stats.count++;
 		this.spawnerRate = expLerp( MIN_SPAWNER_RATE, MAX_SPAWNER_RATE, n, 0.00001 );
 
 	}

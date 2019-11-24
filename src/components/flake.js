@@ -9,8 +9,8 @@ export const MAX_OMEGA = Math.PI/800;
 const MIN_ALPHA = 0.2;
 const MAX_ALPHA = 1;
 
-const MAX_V = 0.2;
-const MAX_VZ = 0.01;
+const MAX_V = 0.32;
+const MAX_VZ = 0.02;
 
 /**
  * Container for holding flake/clip/velocity information.
