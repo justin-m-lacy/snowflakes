@@ -68,8 +68,9 @@ export default class UIGroup extends Group {
 	onStat( stat, count ) {
 
 		let fld = this.statViews[stat];
-		if ( !fld ) console.warn('missing stat: ' + stat );
-		else {
+
+		if ( fld ) {
+
 			if ( !fld.visible ) {
 
 				fld.y = this.lastTop;
@@ -78,7 +79,8 @@ export default class UIGroup extends Group {
 
 			}
 			fld.update(count);
-		}
+
+		}// else console.warn('missing stat: ' + stat );
 
 	}
 

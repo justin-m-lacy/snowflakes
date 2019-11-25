@@ -8,6 +8,7 @@ import ZMover from "../components/zmover";
 import Comet from "../components/comet";
 import Snowburst from "../components/snowburst";
 import { EVT_SNOW, EVT_STAT } from "../components/stats";
+import Dispersal from "../components/dispersal";
 
 const {TimeDestroy} = Components;
 
@@ -268,18 +269,18 @@ export default class SnowGroup extends BoundsDestroy {
 	 */
 	specClicked( e ){
 
-		e.stopped = true;
+		e.stopPropagation();
 
 		if ( this.special ) {
 
 			this.stats.specials++;
 
-			this.special.Destroy();
+			//this.special.Destroy();
 			this.game.emitter.emit('new-special', null );
 			this.special = null;
 
 			let g = new GameObject( null);
-			g.addExisting( new Snowburst( e.data.global, this.objects.length ) );
+			g.addExisting( new Dispersal( this ) );
 			this.engine.add( g );
 
 		}

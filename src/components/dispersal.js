@@ -18,13 +18,12 @@ export default class Dispersal extends Component {
 		super();
 
 		this.flakes = group.objects;
-		this.bursts = burst;
 
 		// max index at time of dispersal.
 		this.max = this.flakes.length;
 		this.index = 0;
 
-		this.group = group;
+		this.snowGroup = group;
 
 		/**
 		 * @property {number} flakesPer - flakes per burst.
@@ -40,8 +39,6 @@ export default class Dispersal extends Component {
 		/**
 		 * @property {number} burstId
 		 */
-		this.burstId = burst;
-
 		this.burstId = this.stats.specials;
 		this.markFlakes( this.flakes, this.burstId );
 
@@ -57,6 +54,8 @@ export default class Dispersal extends Component {
 
 	burst(p) {
 
+		this.snowGroup.remove( p );
+
 		for( let i = this.flakesPer; i > 0; i-- ) {
 
 			var go = this.factory.mkSnowflake( p.position );
@@ -68,25 +67,40 @@ export default class Dispersal extends Component {
 
 		}
 
+		p.Destroy();
+
 	}
 
 	update(){
 
-		let max = Math.min( this.max, this.flakes.length, this.index+MAX_BURSTS );
+		let max = Math.min( this.flakes.length, this.index+MAX_BURSTS );
+
+		// total added to stat.
+		let snowTot = 0;
+
 		for( let i = this.index; i < max; i++ ) {
 
 			var go = this.flakes[i];
-			if ( go.burst == this.burstId ) {
+			if (!go) console.warn('INvalid object: ' + go );
+			else if ( go.burst == this.burstId ) {
 				this.burst(go);
+				snowTot += this.flakesPer;
 			}
 
 		}
 
+		this.stats.count += snowTot;
+
 		this.index += MAX_BURSTS
-		if ( this.index >= this.max || this.index >= this.flakes.length ) {
+		if ( this.index >= this.flakes.length ) {
 			this.gameObject.Destroy();
 		}
 
+	}
+
+	destroy(){
+		this.snowGroup = null;
+		this.flakes = null;
 	}
 
 }
