@@ -103,7 +103,7 @@ export default class SnowGroup extends BoundsDestroy {
 		this.bounds = game.screen.clone().pad(64);
 		this.innerBounds = game.screen.clone().pad(-64);
 
-		this.onExit = this.outOfBounds;
+		this.onExit = this.wrapSnow;
 
 		this.stats = game.stats;
 		this.game.on( EVT_STAT, this.onStat );
@@ -137,6 +137,18 @@ export default class SnowGroup extends BoundsDestroy {
 		}
 		if ( this.special === null && Math.random() < this.specRate ) {
 			this.mkSpecial();
+		}
+
+	}
+
+	wrapSnow(go) {
+
+		if ( go.x < this.bounds.left ) go.x = this.bounds.right-1;
+		else if ( go.x > this.bounds.right ) go.x = this.bounds.left+1;
+		else if ( go.y > this.bounds.top ) {
+			go.y = this.bounds.bottom+1;
+		} else {
+			go.y = this.bounds.top-1;
 		}
 
 	}
@@ -287,14 +299,14 @@ export default class SnowGroup extends BoundsDestroy {
 
 	}
 
-	outOfBounds(g) {
+	remove(go) {
 
-		if ( g === this.special ){
+		super.remove();
+		if ( go === this.special ) {
 
 			this.game.emitter.emit('new-special', null );
 			this.special = null;
 		}
-		g.Destroy();
 
 	}
 

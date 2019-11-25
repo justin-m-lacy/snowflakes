@@ -60,17 +60,19 @@ export default class Dispersal extends Component {
 		// total added to stat.
 		let snowTot = 0;
 
-		let len = Math.min(MAX_BURSTS, this.flakes.length );
+		let len = Math.min(MAX_BURSTS, this.flakes.length, this.count );
 		for( let i = 0; i < len; i++ ) {
 
 			var go = this.flakes[i];
-			if (!go) console.warn('invalid obj: ' + go );
-			else {
+			if (!go || go.destroyed ) {
+				this.count--;
+				console.warn('invalid obj: ' + go );
+			} else {
 
 				this.burst(go);
 				snowTot += this.flakesPer;
 
-				if ( --this.count < 0 ) break;
+				if ( --this.count <= 0 ) break;
 
 			}
 
