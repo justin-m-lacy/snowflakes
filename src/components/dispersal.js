@@ -30,7 +30,7 @@ export default class Dispersal extends Component {
 		this.t = 0;
 
 		/**
-		 * @property {number} flakesPer - flakes per burst.
+		 * @property {number} flakesPer - flakes awarded per burst.
 		 */
 		this.flakesPer = Math.min( Math.ceil( this.count / 9 ), 8 );
 
@@ -44,7 +44,8 @@ export default class Dispersal extends Component {
 
 	burst(p) {
 
-		for( let i = this.flakesPer; i > 0; i-- ) {
+		// constant visual per burst.
+		for( let i = 3; i > 0; i-- ) {
 
 			var go = this.factory.mkSnowflake( p.position );
 			this.engine.add(go);

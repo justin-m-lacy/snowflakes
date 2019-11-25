@@ -24,16 +24,12 @@ export default class GameMode extends System {
 	}
 
 	start() {
-
 		super.start();
-
-		console.log('GAME MODE START');
 	}
 
 	update() {
 
-		console.log('UPDATE');
-		this.coldRate = expLerp( MIN_COLD_RATE, MAX_COLD_RATE, this.stats.snow );
+		this.coldRate = expLerp( MIN_COLD_RATE, MAX_COLD_RATE, this.stats.snow, 0.0001 );
 		this.stats.cold += this.coldRate;
 
 	}

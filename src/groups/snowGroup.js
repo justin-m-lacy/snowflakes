@@ -7,6 +7,9 @@ import FlakeSpawner from "../components/flakeSpawner";
 import Comet from "../components/comet";
 import { EVT_SNOW, EVT_STAT } from "../components/stats";
 import Dispersal from "../components/dispersal";
+import { FLAKE_RADIUS } from "../create/snowFactory";
+import ZBound from "../components/zbound";
+import ZMover from "../components/zmover";
 
 const {TimeDestroy} = Components;
 
@@ -23,18 +26,16 @@ const MAX_SPEC_RATE = 0.01;
 const MIN_COMET_RATE = 0.001;
 const MAX_COMET_RATE = 0.005;
 
-const COMET_COLD = -15;
-
 /**
  * Snowflakes -> auto-spawners rate
  * Auto-Spawners -> comet rate
  * Comets -> Auto-spawner length
  */
 /**
- * @property {number} MIN_COMET_TIME - minimum comet-effect length, in seconds.
+ * @property {number} MIN_COMET_COLD - minimum comet-cold reduction.
  */
-const MIN_COMET_TIME = 3;
-const MAX_COMET_TIME = 7;
+const MIN_COMET_COLD = 5;
+const MAX_COMET_COLD = 30;
 
 /**
  *  @const {number} MIN_SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
@@ -116,8 +117,8 @@ export default class SnowGroup extends System {
 		this.wind = game.wind;
 
 		this.view = game.screen;
-		this.bounds = game.screen.clone().pad(64);
-		this.innerBounds = game.screen.clone().pad(-64);
+		this.bounds = game.screen.clone().pad( FLAKE_RADIUS+2 );
+		this.innerBounds = game.screen.clone().pad(-(FLAKE_RADIUS+2));
 
 		this.stats = game.stats;
 		this.game.on( EVT_STAT, this.onStat );
@@ -170,9 +171,9 @@ export default class SnowGroup extends System {
 			}
 
 			var pos = go.position;
-			if ( go.y > bnds.top || go.y < bnds.bottom ) go.Destroy();
-			if ( go.x < bnds.left ) go.x = bnds.right-1;
-			else if ( go.x > bnds.right ) go.x = bnds.left+1;
+			if ( pos.y > bnds.bottom || pos.y < bnds.top ) go.Destroy();
+			if ( pos.x < bnds.left ) pos.x = bnds.right-1;
+			else if ( pos.x > bnds.right ) pos.x = bnds.left+1;
 
 		}
 
@@ -272,7 +273,7 @@ export default class SnowGroup extends System {
 		e.stopPropagation();
 		g.get(Comet).fadeOut();
 
-		this.stats.cold += COMET_COLD;
+		this.stats.cold += expLerp( MIN_COMET_RATE, MAX_COMET_COLD, this.stats.specials, 0.01 );
 
 		let n = this.stats.comets++;
 		this.spawnerTime = expLerp( MIN_SPAWNER_TIME, MAX_SPAWNER_TIME, n );
@@ -307,6 +308,7 @@ export default class SnowGroup extends System {
 		if ( !spec) return;
 
 		this.special = spec;
+		spec.addExisting( new ZBound(spec.get(ZMover) ) );
 		spec.clip.interactive = true;
 		spec.on('click', this.specClicked, this );
 

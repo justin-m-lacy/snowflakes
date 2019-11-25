@@ -1,4 +1,5 @@
 import { Component } from "gibbon.js";
+import ZMover from "./zmover";
 
 export default class ZBound extends Component {
 
@@ -7,9 +8,18 @@ export default class ZBound extends Component {
 		this.mover = mover;
 	}
 
+	init(){
+		if ( !this.mover ) this.mover = this.get(ZMover);
+	}
+
 	update(){
 
-		if ( this.mover.z >= this.mover.world.zmax ) this.gameObject.Destroy();
+		if ( this.mover.z >= this.mover.world.zmin ){
+
+			if ( this.gameObject.group ) this.gameObject.group.remove(this.gameObject);
+			else if ( this.mover.z >= this.mover.world.zmax ) this.gameObject.Destroy();
+
+		}
 
 	}
 

@@ -21,6 +21,8 @@ const UiStyle = {
 	fontSize:24
 };
 
+const SubStyle = Object.assign( {fontSize:16 }, UiStyle );
+
 export const MakeHiliter = (targ) => {
 	return gsap.to( targ, { duration:0.5, tint:HILITE_COLOR } );
 }
@@ -34,6 +36,14 @@ export const MakeText = (text )=>{
 	let t = new Text( text, UiStyle );
 	t.tint = TEXT_COLOR;
 
+	return t;
+
+}
+
+export const MakeSubText = (text)=>{
+
+	let t = new Text( text, SubStyle );
+	t.tint = TEXT_COLOR;
 	return t;
 
 }
