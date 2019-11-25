@@ -5,7 +5,7 @@ import ZMover from "./zmover";
 /**
  * @property {number} MAX_BURSTS - max bursts per frame.
  */
-const MAX_BURSTS = 2;
+const MAX_BURSTS = 1;
 
 export default class Dispersal extends Component {
 
@@ -27,7 +27,7 @@ export default class Dispersal extends Component {
 		/**
 		 * @property {number} flakesPer - flakes per burst.
 		 */
-		this.flakesPer = 3;
+		this.flakesPer = Math.min( Math.ceil( this.count / 5 ), 8 );
 
 	}
 
@@ -64,7 +64,7 @@ export default class Dispersal extends Component {
 		for( let i = 0; i < len; i++ ) {
 
 			var go = this.flakes[i];
-			if (!go) console.warn('INvalid object: ' + go );
+			if (!go) console.warn('invalid obj: ' + go );
 			else {
 
 				this.burst(go);
