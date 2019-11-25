@@ -105,6 +105,7 @@ export default class SnowGame extends Game {
 		this.stage.interactive=true;
 		this.stage.on( 'click', this.clickBg, this );
 
+		this.onPlay('game');
 	}
 
 	onPlay( mode ) {
@@ -123,12 +124,22 @@ export default class SnowGame extends Game {
 
 		this.addGroup( grp );
 		this.controller = grp;
+		this.controller.start();
 
+	}
+
+	clickBg(e){
+		this.stats.clicks++;
+		this.stats.cold += 0.4;
+		this.flakes.mkFlake( e.data.global );
 	}
 
 	endGame( mode ) {
 
 		// report all stats.
+		this.reportStats();
+
+		this.stats.reset();
 
 	}
 
@@ -143,12 +154,6 @@ export default class SnowGame extends Game {
 
 	onStat( stat, v ){
 		window.kong.stats.submit( stat, v );
-	}
-
-	clickBg(e){
-		this.stats.clicks++;
-		this.stats.cold += 0.5;
-		this.flakes.mkFlake( e.data.global );
 	}
 
 	/**
@@ -179,10 +184,10 @@ export default class SnowGame extends Game {
 	 * @param {PIXI.loaders.Loader} loader
 	 * @param {Object} resources
 	 */
-	assetsLoaded( loader, resources ) {
+	/*assetsLoaded( loader, resources ) {
 
 		console.log('ASSETS LOADED');
 
-	}
+	}*/
 
 }

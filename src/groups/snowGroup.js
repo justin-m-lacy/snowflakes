@@ -142,17 +142,7 @@ export default class SnowGroup extends System {
 
 	update(){
 
-		for( let i = this.objects.length-1; i >= 0; i-- ) {
-
-			var o = this.objects[i];
-			if ( o.destroyed ) { continue; }
-
-			var pos = o.position;
-			if ( this.bounds.contains( pos.x, pos.y ) === false ) {
-				o.Destroy();
-			}
-
-		}
+		this.wrapSnow();
 
 		if ( Math.random() < this.spawnerRate ) {
 			this.mkSpawner();
@@ -166,28 +156,31 @@ export default class SnowGroup extends System {
 
 	}
 
-	/**
-	 *
-	 * @param {GameObject} go
-	 */
-	wrapSnow(go) {
+	wrapSnow() {
 
-		/*if ( go.flags & TYP_FLAKE === 0) go.Destroy();
-		else {
+		var bnds = this.bounds;
 
+		for( let i = this.objects.length-1; i >= 0; i-- ) {
+
+			var go = this.objects[i];
+			if ( go.destroyed ) { continue; }
+			else if ( go.flags & TYP_FLAKE === 0) {
+				go.Destroy();
+				continue;
+			}
+
+			var pos = go.position;
+			if ( go.y > bnds.top || go.y < bnds.bottom ) go.Destroy();
+			if ( go.x < bnds.left ) go.x = bnds.right-1;
+			else if ( go.x > bnds.right ) go.x = bnds.left+1;
+
+		}
+
+		/*
 			if ( !go.has(SnowTimer ) ){
 				go.addExisting( new SnowTimer() );
 				go.addExisting( new ZBound() );
 			}
-
-			if ( go.x < this.bounds.left ) go.x = this.bounds.right-1;
-			else if ( go.x > this.bounds.right ) go.x = this.bounds.left+1;
-			else if ( go.y > this.bounds.top ) {
-				go.y = this.bounds.bottom+1;
-			} else {
-				go.y = this.bounds.top-1;
-			}
-
 		}*/
 
 	}
