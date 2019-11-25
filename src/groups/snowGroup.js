@@ -9,6 +9,8 @@ import Comet from "../components/comet";
 import Snowburst from "../components/snowburst";
 import { EVT_SNOW, EVT_STAT } from "../components/stats";
 import Dispersal from "../components/dispersal";
+import SnowTimer from "../components/snowTimer";
+import ZBound from "../components/zbound";
 
 const {TimeDestroy} = Components;
 
@@ -48,6 +50,14 @@ const MAX_SPAWNER_RATE = 0.01;
  */
 const MIN_SPAWNER_TIME = 1;
 const MAX_SPAWNER_TIME = 8;
+
+/**
+ * Object flags.
+ */
+const TYP_FLAKE = 1;
+const TYP_SPAWNER = 2;
+const TYP_COMET = 3;
+
 
 /**
  * Function that starts at min and exponentially approaches max
@@ -141,14 +151,28 @@ export default class SnowGroup extends BoundsDestroy {
 
 	}
 
+	/**
+	 *
+	 * @param {GameObject} go
+	 */
 	wrapSnow(go) {
 
-		if ( go.x < this.bounds.left ) go.x = this.bounds.right-1;
-		else if ( go.x > this.bounds.right ) go.x = this.bounds.left+1;
-		else if ( go.y > this.bounds.top ) {
-			go.y = this.bounds.bottom+1;
-		} else {
-			go.y = this.bounds.top-1;
+		if ( go.flags & TYP_FLAKE === 0) go.Destroy();
+		else {
+
+			if ( !go.has(SnowTimer ) ){
+				go.addExisting( new SnowTimer() );
+				go.addExisting( new ZBound() );
+			}
+
+			if ( go.x < this.bounds.left ) go.x = this.bounds.right-1;
+			else if ( go.x > this.bounds.right ) go.x = this.bounds.left+1;
+			else if ( go.y > this.bounds.top ) {
+				go.y = this.bounds.bottom+1;
+			} else {
+				go.y = this.bounds.top-1;
+			}
+
 		}
 
 	}
@@ -169,13 +193,17 @@ export default class SnowGroup extends BoundsDestroy {
 	 */
 	mkFlake( pt ){
 		this.stats.count++;
-		this.add( this.factory.mkSnowflake( pt ) );
+		let g = this.factory.mkSnowflake( pt );
+		g.flags = TYP_FLAKE;
+
+		this.add( g );
 	}
 
 	mkComet(){
 
 		let g = this.factory.mkComet( this.aleePos() );
 		g.clip.interactive = true;
+		g.flags = TYP_COMET;
 
 		this.engine.add(g);
 
@@ -190,6 +218,7 @@ export default class SnowGroup extends BoundsDestroy {
 		let g = this.factory.mkSnowflake( this.windPos() );
 		g.clip.tint = SPAWNER_TINT;
 		g.clip.interactive = true;
+		g.flags = TYP_SPAWNER;
 
 		let f = g.get(Flake);
 		f.z = 100*Math.random();
