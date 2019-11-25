@@ -32,13 +32,12 @@ export default class Dispersal extends Component {
 	}
 
 	init() {
+		console.log('INIT COUNT: ' + this.flakes.length );
 		this.factory = this.game.factory;
 		this.stats = this.game.stats;
 	}
 
 	burst(p) {
-
-		this.snowGroup.remove( p );
 
 		for( let i = this.flakesPer; i > 0; i-- ) {
 
@@ -61,26 +60,30 @@ export default class Dispersal extends Component {
 		let snowTot = 0;
 
 		let len = Math.min(MAX_BURSTS, this.flakes.length, this.count );
+
 		for( let i = 0; i < len; i++ ) {
 
 			var go = this.flakes[i];
-			if (!go || go.destroyed ) {
-				this.count--;
+			if (!go ){
 				console.warn('invalid obj: ' + go );
+			} else if ( go.destroyed ) {
+				console.log('obj destroyed: ' + go );
+				//len++;
+				//if ( len > this.flakes.length ) break;
 			} else {
 
+				console.log('BURST AT: ' + i );
 				this.burst(go);
 				snowTot += this.flakesPer;
-
-				if ( --this.count <= 0 ) break;
-
+				this.count--;
 			}
+
 
 		}
 
 		this.stats.count += snowTot;
-		if ( this.count < 0 ) {
-			this.gameObject.Destroy();
+		if ( this.count <= 0 ) {
+			this.burst(this.gameObject);
 		}
 
 	}

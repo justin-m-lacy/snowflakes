@@ -9,8 +9,6 @@ import Comet from "../components/comet";
 import Snowburst from "../components/snowburst";
 import { EVT_SNOW, EVT_STAT } from "../components/stats";
 import Dispersal from "../components/dispersal";
-import SnowTimer from "../components/snowTimer";
-import ZBound from "../components/zbound";
 
 const {TimeDestroy} = Components;
 
@@ -145,7 +143,7 @@ export default class SnowGroup extends BoundsDestroy {
 		if ( Math.random() < this.cometRate ) {
 			this.mkComet();
 		}
-		if ( this.special === null && Math.random() < this.specRate ) {
+		if ( this.special === null && this.objects.length>= 2 && Math.random() < this.specRate ) {
 			this.mkSpecial();
 		}
 
@@ -157,7 +155,9 @@ export default class SnowGroup extends BoundsDestroy {
 	 */
 	wrapSnow(go) {
 
-		if ( go.flags & TYP_FLAKE === 0) go.Destroy();
+		go.Destroy();
+
+		/*if ( go.flags & TYP_FLAKE === 0) go.Destroy();
 		else {
 
 			if ( !go.has(SnowTimer ) ){
@@ -173,7 +173,7 @@ export default class SnowGroup extends BoundsDestroy {
 				go.y = this.bounds.top-1;
 			}
 
-		}
+		}*/
 
 	}
 
@@ -197,6 +197,7 @@ export default class SnowGroup extends BoundsDestroy {
 		g.flags = TYP_FLAKE;
 
 		this.add( g );
+		console.log('NEW GROUP LEN: ' + this.objects.length);
 	}
 
 	mkComet(){
@@ -316,21 +317,23 @@ export default class SnowGroup extends BoundsDestroy {
 
 			this.stats.specials++;
 
+			//console.log('Flake Count: ' + this.objects );
 			//this.special.Destroy();
 			this.game.emitter.emit('new-special', null );
-			this.special = null;
 
-			let g = new GameObject( null);
-			g.addExisting( new Dispersal( this ) );
-			this.engine.add( g );
+			console.log('REMOVE SPECIAL');
+			var s = this.special;
+			super.remove( s );
+			s.addExisting( new Dispersal( this ) );
+			this.special = null;
 
 		}
 
 	}
 
-	remove(go) {
+	remove(go, removeClip=true) {
 
-		super.remove();
+		super.remove( go, removeClip );
 		if ( go === this.special ) {
 
 			this.game.emitter.emit('new-special', null );
