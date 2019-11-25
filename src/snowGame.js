@@ -6,15 +6,28 @@ import SnowGroup from "./groups/snowGroup";
 import StarGroup from "./groups/starGroup";
 import BackSnow from "./components/backSnow";
 import Sky from "./components/sky";
-import Stats from "./components/stats";
+import Stats, { EVT_STAT, EVT_COLD, EVT_FREEZE } from "./components/stats";
 import UIGroup from "./ui/uiGroup";
 import ZWorld from "./data/zworld";
+import GameMode from "./groups/gameMode";
+import CasualMode from "./groups/casualMode";
 
 const MIN_Z = 32;
-const MAX_Z = 200;
+const MAX_Z = 148;
 const FOCUS = 64;
 
 export default class SnowGame extends Game {
+
+	/**
+	 * @property {System} controller - PlayMode or GameMode.
+	 */
+	get controller() { return this._controller; }
+	set controller(v) { this._controller =v;}
+
+	/**
+	 * @property {string} mode
+	 */
+	get mode(){ return this._controller.mode;}
 
 	/**
 	 * @property {SnowGroup} flakes
@@ -73,6 +86,13 @@ export default class SnowGame extends Game {
 		this.ui = new UIGroup(this, this.uiLayer );
 		this.addGroup( this.ui );
 
+		if ( window.kong ) {
+			this.emitter.on( EVT_STAT, this.onStat );
+		}
+
+		this.emitter.on( EVT_FREEZE, this.onFreeze );
+		this.emitter.on('play', this.onPlay, this );
+
 		//this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 		this.start();
 
@@ -87,8 +107,47 @@ export default class SnowGame extends Game {
 
 	}
 
+	onPlay( mode ) {
+
+		var grp;
+
+		if ( mode === 'game') {
+
+			grp = new GameMode( this );
+
+		} else {
+
+			grp = new CasualMode( this );
+
+		}
+
+		this.addGroup( grp );
+		this.controller = grp;
+
+	}
+
+	endGame( mode ) {
+
+		// report all stats.
+
+	}
+
+	onFreeze() {
+	}
+
+	/**
+	 * Report all stats to backend, if any.
+	 */
+	reportStats() {
+	}
+
+	onStat( stat, v ){
+		window.kong.stats.submit( stat, v );
+	}
+
 	clickBg(e){
 		this.stats.clicks++;
+		this.stats.cold += 0.5;
 		this.flakes.mkFlake( e.data.global );
 	}
 

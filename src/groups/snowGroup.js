@@ -1,12 +1,10 @@
-import Gibbon, { Game, Group, GameObject, Rand } from "gibbon.js";
-import { Point, Container, System } from "pixi.js";
-import BoundsDestroy from "gibbon.js/systems/boundsDestroy";
+import Gibbon, { Game, System, Group, GameObject, Rand } from "gibbon.js";
+import { Point } from "pixi.js";
 import Flake from "../components/flake";
 import { Components } from 'gibbon.js';
 import FlakeSpawner from "../components/flakeSpawner";
-import ZMover from "../components/zmover";
+
 import Comet from "../components/comet";
-import Snowburst from "../components/snowburst";
 import { EVT_SNOW, EVT_STAT } from "../components/stats";
 import Dispersal from "../components/dispersal";
 
@@ -19,11 +17,13 @@ const SPAWNER_TINT = 0xff11bb;
 /**
  * @property {number} MIN_SPEC_RATE - special snowflake rate.
  */
-const MIN_SPEC_RATE = 0.01;
+const MIN_SPEC_RATE = 0.005;
 const MAX_SPEC_RATE = 0.01;
 
 const MIN_COMET_RATE = 0.001;
 const MAX_COMET_RATE = 0.005;
+
+const COMET_COLD = -15;
 
 /**
  * Snowflakes -> auto-spawners rate
@@ -79,7 +79,15 @@ export const expLerp = ( min, max, v, k=0.001 ) => {
 /**
  * Group for interactive Snow elements.
  */
-export default class SnowGroup extends BoundsDestroy {
+export default class SnowGroup extends System {
+
+	/**
+	 * @property {Rectangle} bounds - objects in system outside the bounds
+	 * will automatically be destroyed unless an onExit() function is specified.
+	 * If so, the onExit function will be called instead.
+	 */
+	get bounds(){ return this._bounds; }
+	set bounds(v){ this._bounds=v; }
 
 	/**
 	 *
@@ -111,8 +119,6 @@ export default class SnowGroup extends BoundsDestroy {
 		this.bounds = game.screen.clone().pad(64);
 		this.innerBounds = game.screen.clone().pad(-64);
 
-		this.onExit = this.wrapSnow;
-
 		this.stats = game.stats;
 		this.game.on( EVT_STAT, this.onStat );
 
@@ -136,7 +142,18 @@ export default class SnowGroup extends BoundsDestroy {
 
 	update(){
 
-		super.update();
+		for( let i = this.objects.length-1; i >= 0; i-- ) {
+
+			var o = this.objects[i];
+			if ( o.destroyed ) { continue; }
+
+			var pos = o.position;
+			if ( this.bounds.contains( pos.x, pos.y ) === false ) {
+				o.Destroy();
+			}
+
+		}
+
 		if ( Math.random() < this.spawnerRate ) {
 			this.mkSpawner();
 		}
@@ -154,8 +171,6 @@ export default class SnowGroup extends BoundsDestroy {
 	 * @param {GameObject} go
 	 */
 	wrapSnow(go) {
-
-		go.Destroy();
 
 		/*if ( go.flags & TYP_FLAKE === 0) go.Destroy();
 		else {
@@ -192,12 +207,12 @@ export default class SnowGroup extends BoundsDestroy {
 	 * @param {InteractionEvent} evt
 	 */
 	mkFlake( pt ){
-		this.stats.count++;
+		this.stats.snow++;
 		let g = this.factory.mkSnowflake( pt );
 		g.flags = TYP_FLAKE;
 
 		this.add( g );
-		console.log('NEW GROUP LEN: ' + this.objects.length);
+
 	}
 
 	mkComet(){
@@ -264,8 +279,9 @@ export default class SnowGroup extends BoundsDestroy {
 		e.stopPropagation();
 		g.get(Comet).fadeOut();
 
-		let n = this.stats.comets++;
+		this.stats.cold += COMET_COLD;
 
+		let n = this.stats.comets++;
 		this.spawnerTime = expLerp( MIN_SPAWNER_TIME, MAX_SPAWNER_TIME, n );
 
 	}
@@ -321,7 +337,6 @@ export default class SnowGroup extends BoundsDestroy {
 			//this.special.Destroy();
 			this.game.emitter.emit('new-special', null );
 
-			console.log('REMOVE SPECIAL');
 			var s = this.special;
 			super.remove( s );
 			s.addExisting( new Dispersal( this ) );

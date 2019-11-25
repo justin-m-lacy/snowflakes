@@ -19,12 +19,12 @@ const TEX_HEIGHT = 512;
 var SkyColors = [
 
 	{ at:0, colors:[0x1308d2,0x4040da, 0xff6200 ], stops:[0.2,0.75,1] },
-	{ at:100, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
-	{ at:200, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
-	{ at:300, colors:[0x040141,0x110088,0x771181 ], stops:[0.2,0.75,1] },
-	{ at:400, colors:[0x020024,0x131378,0x4c00ff ], stops:[0.2,0.75,1] },
-	{ at:500, colors:[0x010121,0x0d0f44,0x1a0d7e ], stops:[0.2,0.75,1] },
-	{ at:700, colors:[0x010121,0x070b32,0x03073e ], stops:[0.2,0.75,1] }
+	{ at:500, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
+	{ at:1000, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:3000, colors:[0x040141,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:7000, colors:[0x020024,0x131378,0x4c00ff ], stops:[0.2,0.75,1] },
+	{ at:10000, colors:[0x010121,0x0d0f44,0x1a0d7e ], stops:[0.2,0.75,1] },
+	{ at:25000, colors:[0x010121,0x070b32,0x03073e ], stops:[0.2,0.75,1] }
 
 
 ]

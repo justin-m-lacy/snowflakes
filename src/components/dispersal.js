@@ -1,6 +1,7 @@
 import { Component } from "gibbon.js";
 import SnowGroup from "../groups/snowGroup";
 import ZMover from "./zmover";
+import ZBound from "./zbound";
 
 /**
  * @property {number} MAX_BURSTS - max bursts per frame.
@@ -24,15 +25,19 @@ export default class Dispersal extends Component {
 
 		this.snowGroup = group;
 
+		// frame between flake bursts.
+		this.wait = 2;
+		this.t = 0;
+
 		/**
 		 * @property {number} flakesPer - flakes per burst.
 		 */
-		this.flakesPer = Math.min( Math.ceil( this.count / 5 ), 8 );
+		this.flakesPer = Math.min( Math.ceil( this.count / 9 ), 8 );
 
 	}
 
 	init() {
-		console.log('INIT COUNT: ' + this.flakes.length );
+		//console.log('INIT COUNT: ' + this.flakes.length );
 		this.factory = this.game.factory;
 		this.stats = this.game.stats;
 	}
@@ -44,8 +49,9 @@ export default class Dispersal extends Component {
 			var go = this.factory.mkSnowflake( p.position );
 			this.engine.add(go);
 			var mv = go.get(ZMover);
+			go.addExisting( new ZBound(mv) );
 
-			mv.vz = 0.1 + 2*Math.random();
+			mv.vz = 1 + 2*Math.random();
 			mv.velocity.set( -2.5+5*Math.random(), -1.75+3*Math.random() );
 
 		}
@@ -55,6 +61,9 @@ export default class Dispersal extends Component {
 	}
 
 	update(){
+
+		if ( this.t-- > 0 ) return;
+		this.t = this.wait;
 
 		// total added to stat.
 		let snowTot = 0;
@@ -72,7 +81,7 @@ export default class Dispersal extends Component {
 				//if ( len > this.flakes.length ) break;
 			} else {
 
-				console.log('BURST AT: ' + i );
+				//console.log('BURST AT: ' + i );
 				this.burst(go);
 				snowTot += this.flakesPer;
 				this.count--;
@@ -81,7 +90,8 @@ export default class Dispersal extends Component {
 
 		}
 
-		this.stats.count += snowTot;
+		this.stats.snow += snowTot;
+		this.stats.cold -= 0.3*snowTot;
 		if ( this.count <= 0 ) {
 			this.burst(this.gameObject);
 		}

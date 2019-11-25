@@ -33,7 +33,7 @@ export default class Snowburst extends Component {
 
 		let i = this.count < PER_FRAME ? this.count : PER_FRAME;
 		this.count -= i;
-		this.stats.count += i;
+		this.stats.snow += i;
 
 		while ( i-- > 0 ){
 

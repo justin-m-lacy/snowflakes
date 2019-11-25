@@ -2,6 +2,8 @@ import { Component } from "gibbon.js";
 
 export const EVT_STAT = 'stat';
 export const EVT_SNOW = 'snow';
+export const EVT_COLD = 'cold';
+export const EVT_FREEZE = 'freeze';
 
 export const StatEvents = [
 	EVT_SNOW,
@@ -10,19 +12,41 @@ export const StatEvents = [
 	'specials'
 ];
 
+const MAX_COLD = 100;
+
 /**
  * Stats to share a values across multiple components/objects.
  */
 export default class Stats extends Component {
 
 	/**
-	 * @property {number} count - total snowflake count.
+	 * @property {number} snow - total snowflake count.
 	 */
-	get count() { return this._count;}
-	set count(v) {
-		this._count = v;
+	get snow() { return this._snow;}
+	set snow(v) {
+		this._snow = v;
 		this.emitter.emit( EVT_STAT, EVT_SNOW, v );
 		this.emitter.emit( EVT_SNOW, v );
+	}
+
+	get cold() { return this._cold; }
+	set cold(v) {
+
+		if ( v < 0 ) v = 0;
+		else if ( v >= MAX_COLD ) {
+			v = MAX_COLD;
+			this.emitter.emit( EVT_FREEZE, v );
+		}
+		this._cold=v;
+
+		let f = Math.floor(v);
+		if ( f !== this._lastCold ) {
+
+			this._lastCold = f;
+			this.emitter.emit( EVT_COLD, f );
+
+		}
+
 	}
 
 	/**
@@ -52,15 +76,26 @@ export default class Stats extends Component {
 		this.emitter.emit( EVT_STAT, 'specials', v);
 	}
 
-	init(){
+	/**
+	 * Reset stats.
+	 */
+	reset(){
 
-		this.emitter = this.game.emitter;
-
-		this._count = 0;
+		this._snow = 0;
 		this._clicks = 0;
 		this._spawners = 0;
 		this._comets = 0;
 		this._specials = 0;
+
+		this._lastCold = 0;
+		this._cold = 0;
+
+	}
+
+	init(){
+
+		this.emitter = this.game.emitter;
+		this.reset();
 
 	}
 

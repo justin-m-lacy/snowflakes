@@ -1,6 +1,17 @@
 import * as PIXI from 'pixi.js';
 import SnowGame from './snowGame';
 
+if ( window.hasOwnProperty('kongregateAPI') ) {
+
+	kongregateAPI.loadAPI( function(){
+
+		window.kong = kongregateAPI.getAPI();
+		// You can now access the Kongregate API with:
+		// kongregate.services.getUsername()
+
+	});
+}
+
 /*window.addEventListener( 'load', ()=>{
 
 	console.log('DOC LOAD: ' + document.body.clientWidth + ', ' + document.body.clientHeight );
