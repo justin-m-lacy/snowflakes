@@ -5,7 +5,7 @@ import ZMover from "./zmover";
 /**
  * @property {number} MAX_BURSTS - max bursts per frame.
  */
-const MAX_BURSTS = 3;
+const MAX_BURSTS = 2;
 
 export default class Dispersal extends Component {
 
@@ -19,9 +19,8 @@ export default class Dispersal extends Component {
 
 		this.flakes = group.objects;
 
-		// max index at time of dispersal.
-		this.max = this.flakes.length;
-		this.index = 0;
+		// max count of flakes to destroy.
+		this.count = this.flakes.length;
 
 		this.snowGroup = group;
 
@@ -35,21 +34,6 @@ export default class Dispersal extends Component {
 	init() {
 		this.factory = this.game.factory;
 		this.stats = this.game.stats;
-
-		/**
-		 * @property {number} burstId
-		 */
-		this.burstId = this.stats.specials;
-		this.markFlakes( this.flakes, this.burstId );
-
-	}
-
-	markFlakes( flakes, id ) {
-
-		for( let i = flakes.length-1; i>= 0; i-- ) {
-			flakes[i].burst = id;
-		}
-
 	}
 
 	burst(p) {
@@ -73,26 +57,27 @@ export default class Dispersal extends Component {
 
 	update(){
 
-		let max = Math.min( this.flakes.length, this.index+MAX_BURSTS );
-
 		// total added to stat.
 		let snowTot = 0;
 
-		for( let i = this.index; i < max; i++ ) {
+		let len = Math.min(MAX_BURSTS, this.flakes.length );
+		for( let i = 0; i < len; i++ ) {
 
 			var go = this.flakes[i];
 			if (!go) console.warn('INvalid object: ' + go );
-			else if ( go.burst == this.burstId ) {
+			else {
+
 				this.burst(go);
 				snowTot += this.flakesPer;
+
+				if ( --this.count < 0 ) break;
+
 			}
 
 		}
 
 		this.stats.count += snowTot;
-
-		this.index += MAX_BURSTS
-		if ( this.index >= this.flakes.length ) {
+		if ( this.count < 0 ) {
 			this.gameObject.Destroy();
 		}
 
