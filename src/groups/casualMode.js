@@ -34,7 +34,7 @@ export default class CasualMode extends System {
 		this.stats.reset();
 
 		this.uiView = game.ui.showGameView();
-		this.uiView.hideCold();
+		this.uiView.hideCheer();
 
 	}
 

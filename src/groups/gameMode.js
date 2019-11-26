@@ -1,14 +1,13 @@
-import { System } from "gibbon.js";
 import { expLerp } from "./snowGroup";
-import { EVT_FREEZE, EVT_WIN } from "../components/stats";
+import { EVT_LOSE, EVT_WIN } from "../components/stats";
 import CasualMode from "./casualMode";
 
 /**
  * Amount of snow which represents winning the game.
  */
 const MAX_SNOW = 30000;
-const MIN_COLD_RATE = 0.007;
-const MAX_COLD_RATE = 0.25;
+const MIN_CHEER_RATE = -0.007;
+const MAX_CHEER_RATE = -0.25;
 
 /**
  * Lerp clamped below max.
@@ -41,11 +40,11 @@ export default class GameMode extends CasualMode {
 
 		super( game );
 
-		this.coldRate = MIN_COLD_RATE;
+		this.cheerRate = MIN_CHEER_RATE;
 
-		this.uiView.showCold();
+		this.uiView.showCheer();
 
-		game.on(EVT_FREEZE, this.onLose, this );
+		game.on(EVT_LOSE, this.onLose, this );
 		game.on(EVT_WIN, this.onWin, this );
 
 	}
@@ -60,13 +59,13 @@ export default class GameMode extends CasualMode {
 	}
 
 	removeListeners(){
-		this.game.removeListener( EVT_FREEZE, this.onLose, this );
+		this.game.removeListener( EVT_LOSE, this.onLose, this );
 		this.game.removeListener( EVT_WIN, this.onWin, this );
 	}
 
 	clickBg(e){
 		this.stats.clicks++;
-		this.stats.cold -= 0.05;
+		this.stats.cheer += 0.05;
 		this.flakes.mkFlake( e.data.global );
 	}
 
@@ -86,8 +85,8 @@ export default class GameMode extends CasualMode {
 
 	update() {
 
-		this.coldRate = expLerp( MIN_COLD_RATE, MAX_COLD_RATE, this.stats.snow, 0.00001 );
-		this.stats.cold += this.coldRate;
+		this.cheerRate = expLerp( MIN_CHEER_RATE, MAX_CHEER_RATE, this.stats.snow, 0.00001 );
+		this.stats.cheer += this.cheerRate;
 
 	}
 

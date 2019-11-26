@@ -7,7 +7,7 @@ import HelpView from "./helpView";
 import GameUI from "./gameUI";
 import MenuView from "./menuView";
 
-export const COLD_COLOR = 0x0091ff;
+export const CHEER_COLOR = 0x0091ff;
 
 const TEXT_COLOR = 0xffffff;
 const BASE_COLOR = 0xf5f6f7;

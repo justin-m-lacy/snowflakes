@@ -30,10 +30,10 @@ const MAX_COMET_RATE = 0.005;
  * Comets -> Auto-spawner length
  */
 /**
- * @property {number} MIN_COMET_COLD - minimum comet-cold reduction.
+ * @property {number} MIN_COMET_CHEER - minimum comet-cheer reduction.
  */
-const MIN_COMET_COLD = -5;
-const MAX_COMET_COLD = -30;
+const MIN_COMET_CHEER = 5;
+const MAX_COMET_CHEER = 30;
 
 /**
  *  @const {number} MIN_SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
@@ -297,7 +297,7 @@ export default class SnowGroup extends System {
 		e.stopPropagation();
 		g.get(Comet).fadeOut();
 
-		this.stats.cold += expLerp( MIN_COMET_COLD, MAX_COMET_COLD, this.stats.specials, 0.01 );
+		this.stats.cheer += expLerp( MIN_COMET_CHEER, MAX_COMET_CHEER, this.stats.specials, 0.01 );
 
 		let n = this.stats.comets++;
 		this.spawnerTime = expLerp( MIN_SPAWNER_TIME, MAX_SPAWNER_TIME, n );

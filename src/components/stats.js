@@ -2,8 +2,8 @@ import { Component } from "gibbon.js";
 
 export const EVT_STAT = 'stat';
 export const EVT_SNOW = 'snow';
-export const EVT_COLD = 'cold';
-export const EVT_FREEZE = 'freeze';
+export const EVT_CHEER = 'cheer';
+export const EVT_LOSE = 'freeze';
 
 export const EVT_PLAY = 'play';
 export const EVT_WIN = 'win';
@@ -19,7 +19,7 @@ export const StatEvents = [
 
 export const WIN_SNOW = 30000;
 
-export const MAX_COLD = 100;
+export const MAX_CHEER = 100;
 
 /**
  * Stats to share a values across multiple components/objects.
@@ -36,21 +36,25 @@ export default class Stats extends Component {
 		this.emitter.emit( EVT_SNOW, v );
 	}
 
-	get cold() { return this._cold; }
-	set cold(v) {
+	get cheer() { return this._cheer; }
+	set cheer(v) {
 
-		if ( v < 0 ) v = 0;
-		else if ( v >= MAX_COLD ) {
-			v = MAX_COLD;
-			this.emitter.emit( EVT_FREEZE, v );
+		if ( v <= 0 ) {
+
+			this.emitter.emit( EVT_LOSE, v );
+			v = 0;
+
+		} else if ( v > MAX_CHEER ) {
+			v = MAX_CHEER;
+
 		}
-		this._cold=v;
+		this._cheer=v;
 
 		let f = Math.floor(v);
-		if ( f !== this._lastCold ) {
+		if ( f !== this._lastCheer ) {
 
-			this._lastCold = f;
-			this.emitter.emit( EVT_COLD, f );
+			this._lastCheer = f;
+			this.emitter.emit( EVT_CHEER, f );
 
 		}
 
@@ -94,8 +98,8 @@ export default class Stats extends Component {
 		this._comets = 0;
 		this._specials = 0;
 
-		this._lastCold = 0;
-		this._cold = 0;
+		this._lastCheer = 0;
+		this._cheer = MAX_CHEER;
 
 	}
 

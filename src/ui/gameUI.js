@@ -1,7 +1,7 @@
 import { Container } from "pixi.js";
-import { EVT_STAT, EVT_COLD, EVT_END, EVT_MENU } from "../components/stats";
+import { EVT_STAT, EVT_CHEER, EVT_END, EVT_MENU } from "../components/stats";
 import { lerpColor } from "gibbon.js/utils/colorUtils";
-import { COLD_COLOR, TextButton, FontStyle } from "./uiGroup";
+import { CHEER_COLOR, TextButton, FontStyle } from "./uiGroup";
 import SpecialView from './specialView';
 import CounterField from "pixiwixi/src/counterFld";
 
@@ -36,13 +36,13 @@ export default class GameUI extends Container {
 		 */
 		this.statViews = {};
 		this.mkStatViews();
-		this.coldView = this.mkStatView( 'cold', true );
-		this.coldView.y = this.statViews.snow.y + this.statViews.snow.height + padding;
+		this.cheerView = this.mkStatView( 'cheer', true );
+		this.cheerView.y = this.statViews.snow.y + this.statViews.snow.height + padding;
 
-		this.lastY = this.coldView.y + this.coldView.height + padding;
+		this.lastY = this.cheerView.y + this.cheerView.height + padding;
 
 		game.on( EVT_STAT, this.onStat, this );
-		game.on( EVT_COLD, this.onCold, this );
+		game.on( EVT_CHEER, this.onCheer, this );
 
 	}
 
@@ -51,15 +51,15 @@ export default class GameUI extends Container {
 		this.game.emitter.emit( EVT_MENU );
 	}
 
-	showCold(){this.coldView.visible = true; }
+	showCheer(){this.cheerView.visible = true; }
 
-	hideCold(){
-		this.coldView.visible = false;
+	hideCheer(){
+		this.cheerView.visible = false;
 	}
 
-	onCold( amt ) {
-		this.coldView.update(amt);
-		this.coldView.tint = lerpColor( 0xffffff, COLD_COLOR, amt/100 );
+	onCheer( amt ) {
+		this.cheerView.update(amt);
+		this.cheerView.tint = lerpColor( 0xffffff, CHEER_COLOR, amt/100 );
 	}
 
 	onStat( stat, count ) {

@@ -24,7 +24,7 @@ export default class HelpView extends MultiPane {
 
 	addSnowRule(){
 
-		const t = MakeText( 'Make snowflakes to absord the cold.' );
+		const t = MakeText( 'Make snowflakes to keep cheery during the night.' );
 		this.addSection( t );
 
 	}
