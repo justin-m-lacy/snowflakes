@@ -51,9 +51,7 @@ export default class Dispersal extends Component {
 			var go = this.factory.mkSnowflake( p.position );
 			this.engine.add(go);
 			var mv = go.get(ZMover);
-			go.addExisting( new ZBound(mv) );
-
-			mv.vz = 1 + 2*Math.random();
+			go.addExisting( new ZBound(mv, 1 + 2*Math.random()), ZBound );
 			mv.velocity.set( -2.5+5*Math.random(), -1.75+3*Math.random() );
 
 		}

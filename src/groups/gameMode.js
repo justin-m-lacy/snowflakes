@@ -48,6 +48,9 @@ export default class GameMode extends System {
 		game.emitter.on(EVT_FREEZE, this.onLose, this );
 		game.emitter.on(EVT_WIN, this.onWin, this );
 
+		this.uiView = game.ui.showGameView();
+
+
 	}
 
 	start() {

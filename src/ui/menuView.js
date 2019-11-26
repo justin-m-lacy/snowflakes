@@ -12,8 +12,8 @@ export default class MenuView extends Pane {
 		this.padding = padding;
 		this.emitter = game.emitter;
 
-		this.width = 1024;
-		this.height = 720;
+		this.width = game.screen.width;
+		this.height = game.screen.height;
 
 		this.bg = MakeBg( this, this.width, this.height );
 

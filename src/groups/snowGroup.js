@@ -13,8 +13,6 @@ import ZMover from "../components/zmover";
 
 const {TimeDestroy} = Components;
 
-const { randInt, randRange } = Rand;
-
 const SPAWNER_TINT = 0xff11bb;
 
 /**
@@ -185,10 +183,12 @@ export default class SnowGroup extends System {
 					pos.y = pos.y > bnds.bottom ? bnds.top+1 : bnds.bottom-1;
 				}
 
-			} else if ( pos.x < bnds.left ) {
-				pos.x = bnds.right-1;
-			} else if ( pos.x > bnds.right ) {
-				pos.x = bnds.left+1;
+			} else if ( pos.x < bnds.left || pos.x > bnds.right ) {
+
+				if ( go.passes === 1 && !go.has(ZBound ) ) go.addExisting( new ZBound( go.get(ZMover), 0.1+0.15*Math.random() ), ZBound );
+				pos.x = pos.x < bnds.left ? bnds.right-1 : bnds.left+1;
+				go.passes++;
+
 			}
 
 		}
@@ -328,7 +328,7 @@ export default class SnowGroup extends System {
 		if ( !spec) return;
 
 		this.special = spec;
-		spec.addExisting( new ZBound(spec.get(ZMover) ) );
+		if ( !spec.has(ZBound)) spec.addExisting( new ZBound( spec.get(ZMover) ), ZBound );
 		spec.passes = 0;		// reset passes to prevent instant-fade.
 		spec.clip.interactive = true;
 		spec.on('click', this.specClicked, this );

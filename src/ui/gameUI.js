@@ -1,7 +1,9 @@
 import { Container } from "pixi.js";
 import { EVT_STAT, EVT_COLD } from "../components/stats";
 import { lerpColor } from "gibbon.js/utils/colorUtils";
-import { COLD_COLOR, TextButton } from "./uiGroup";
+import { COLD_COLOR, TextButton, FontStyle } from "./uiGroup";
+import SpecialView from './specialView';
+import CounterField from "pixiwixi/src/counterFld";
 
 export default class GameUI extends Container {
 
@@ -9,14 +11,15 @@ export default class GameUI extends Container {
 
 		super( game );
 
+		this.game = game;
 		this.view = this.game.screen;
 		this.padding = padding;
 
 		this.btnHelp = TextButton( 'help', this.onHelp, this );
 
-		this._special = new SpecialView( game, UiStyle, padding/2 );
+		this._special = new SpecialView( game, FontStyle, padding/2 );
 		this._special.position.set( (this.view.width - this._special.width)/2 -64, this.view.top + padding );
-		this.clip.addChild( this._special );
+		this.addChild( this._special );
 
 		/**
 		 * @property {number} lastTop - top of last visible stat.
@@ -64,6 +67,31 @@ export default class GameUI extends Container {
 			fld.update(count);
 
 		}// else console.warn('missing stat: ' + stat );
+
+	}
+
+	mkStatViews() {
+
+		let visStats = ['snow'];
+		let len = visStats.length;
+		for( let i = 0; i < len; i++ ) {
+
+			this.statViews[ visStats[i] ] = this.mkStatView( visStats[i] );
+
+		}
+
+	}
+
+	mkStatView( stat, showCount=true ){
+
+		var counter = this.statViews[stat] = new CounterField( stat, 0, FontStyle );
+		counter.showCount = showCount;
+		counter.position.set( this.view.right-200, this.lastY );
+		counter.visible = true;
+
+		this.addChild( counter );
+
+		return counter;
 
 	}
 

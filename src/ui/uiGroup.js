@@ -17,15 +17,18 @@ const PANE_ALPHA = 0.4;
 const FONT_NAME = 'Snowburst One'; // thin, large
 //const FONT_NAME = 'Mountains of Christmas'; // slightly cramped?
 
+const PANE_WIDTH = 0.8;
+const PANE_HEIGHT = 0.8;
+
 const PADDING = 24;
 
-const UiStyle = {
+export const FontStyle = {
 	fontFamily:FONT_NAME, fill:TEXT_COLOR,
 	fontSize:24
 };
 
-const SubStyle = Object.assign( {}, UiStyle );
-SubStyle.fontSize = 16;
+const SmallStyle = Object.assign( {}, FontStyle );
+SmallStyle.fontSize = 16;
 
 export const MakeHiliter = (targ) => {
 	return gsap.to( targ, { duration:0.5, tint:HILITE_COLOR } );
@@ -37,7 +40,7 @@ export const MakeClose = () => {
 
 export const MakeText = (text )=>{
 
-	let t = new Text( text, UiStyle );
+	let t = new Text( text, FontStyle );
 	t.tint = TEXT_COLOR;
 
 	return t;
@@ -46,7 +49,7 @@ export const MakeText = (text )=>{
 
 export const MakeSubText = (text)=>{
 
-	let t = new Text( text, SubStyle );
+	let t = new Text( text, SmallStyle );
 	t.tint = TEXT_COLOR;
 	return t;
 
@@ -79,7 +82,24 @@ export const MakeBg = ( dest, width, height, color=0, alpha=PANE_ALPHA ) => {
 
 export default class UIGroup extends Group {
 
-	get counter(){return this._counter;}
+	get curView(){
+		return this._curView;
+	}
+	set curView(v) {
+
+		let prev = this._curView;
+
+		this._curView = v;
+		this.centerPane( v );
+		this.clip.addChild(v);
+		v.visible = true;
+
+		if ( prev ) {
+			prev.visible = false;
+			this.clip.removeChild( prev );
+		}
+
+	}
 
 	constructor( game, layer ){
 
@@ -96,9 +116,7 @@ export default class UIGroup extends Group {
 	showMenu() {
 
 		if ( !this.mainMenu ) this.mainMenu = new MenuView( this.game, PADDING );
-		this.clip.addChild( this.mainMenu );
-		this.mainMenu.visible = true;
-		this.centerPane( this.mainMenu );
+		this.curView = this.mainMenu;
 
 	}
 
@@ -130,7 +148,7 @@ export default class UIGroup extends Group {
 		if ( !this.helpView ) {
 			this.helpView = new HelpView( this.game, PADDING );
 		}
-		this.addChild( this.helpView );
+		this.curView = this.helpView;
 
 	}
 
@@ -138,9 +156,10 @@ export default class UIGroup extends Group {
 
 		if ( !this.gameView ) {
 			this.gameView = new GameUI( this.game, PADDING );
-			this.addChild( this.gameView );
+			this.clip.addChild( this.gameView );
 		}
 		this.gameView.visible = true;
+		return this.gameView;
 
 	}
 
@@ -149,31 +168,6 @@ export default class UIGroup extends Group {
 		if ( this.gameView ) {
 			this.gameView.visible = false;
 		}
-
-	}
-
-	mkStatViews() {
-
-		let visStats = ['snow'];
-		let len = visStats.length;
-		for( let i = 0; i < len; i++ ) {
-
-			this.statViews[ visStats[i] ] = this.mkStatView( visStats[i] );
-
-		}
-
-	}
-
-	mkStatView( stat, showCount=true ){
-
-		var counter = this.statViews[stat] = new CounterFld( stat, 0, UiStyle );
-		counter.showCount = showCount;
-		counter.position.set( this.view.right-200, this.lastY );
-		counter.visible = true;
-
-		this.clip.addChild( counter );
-
-		return counter;
 
 	}
 

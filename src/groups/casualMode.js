@@ -12,10 +12,12 @@ export default class CasualMode extends System {
 
 	constructor( game ){
 
-		super( game, clip );
+		super( game );
 
 		this.flakes = game.flakes;
 		this.stats = game.stats;
+
+		this.uiView = game.ui.showGameView();
 
 	}
 
