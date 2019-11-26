@@ -22,7 +22,7 @@ export default class LoseView extends Pane {
 		this.addChild(t);
 
 		let btn = TextButton('menu', this.onRestart, this );
-		this.addContentY( btn, t.left, padding );
+		this.addContentY( btn, t.x, padding );
 
 	}
 

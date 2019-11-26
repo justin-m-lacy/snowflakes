@@ -28,6 +28,7 @@ export default class CasualMode extends System {
 		this.game.objectLayer.addChild( this.flakes.clip );
 
 		this.stats = game.stats;
+		this.stats.reset();
 
 		this.uiView = game.ui.showGameView();
 		this.uiView.hideCold();
