@@ -1,7 +1,9 @@
 import { Container } from "pixi.js";
 import { TextButton } from "./uiGroup";
+import { Pane } from "pixiwixi";
+import { EVT_PLAY } from "../components/stats";
 
-export default class MenuView extends Container {
+export default class MenuView extends Pane {
 
 	constructor( game ){
 
@@ -20,12 +22,12 @@ export default class MenuView extends Container {
 
 	playGame() {
 
-		this.emitter.emit( 'play', 'game');
+		this.emitter.emit( EVT_PLAY, 'game');
 	}
 
 	playCasual() {
 
-		this.emitter.emit( 'play', 'casual' );
+		this.emitter.emit( EVT_PLAY, 'casual' );
 
 	}
 

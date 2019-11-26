@@ -20,7 +20,7 @@ const SPAWNER_TINT = 0xff11bb;
 /**
  * @property {number} MIN_SPEC_RATE - special snowflake rate.
  */
-const MIN_SPEC_RATE = 0.005;
+const MIN_SPEC_RATE = 0.009;
 const MAX_SPEC_RATE = 0.01;
 
 const MIN_COMET_RATE = 0.001;
@@ -34,8 +34,8 @@ const MAX_COMET_RATE = 0.005;
 /**
  * @property {number} MIN_COMET_COLD - minimum comet-cold reduction.
  */
-const MIN_COMET_COLD = 5;
-const MAX_COMET_COLD = 30;
+const MIN_COMET_COLD = -5;
+const MAX_COMET_COLD = -30;
 
 /**
  *  @const {number} MIN_SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
@@ -123,6 +123,11 @@ export default class SnowGroup extends System {
 		this.stats = game.stats;
 		this.game.on( EVT_STAT, this.onStat );
 
+		/**
+		 * @property {number} lastSpecial - clicks since last special.
+		 */
+		this.lastSpecial = 0;
+
 	}
 
 	/**
@@ -151,7 +156,8 @@ export default class SnowGroup extends System {
 		if ( Math.random() < this.cometRate ) {
 			this.mkComet();
 		}
-		if ( this.special === null && this.objects.length>= 2 && Math.random() < this.specRate ) {
+		if ( this.special === null &&
+			(this.lastSpecial > (this.stats.specials+5)) && Math.random() < this.specRate ) {
 			this.mkSpecial();
 		}
 
@@ -165,15 +171,25 @@ export default class SnowGroup extends System {
 
 			var go = this.objects[i];
 			if ( go.destroyed ) { continue; }
-			else if ( go.flags & TYP_FLAKE === 0) {
+			else if ( (go.flags & TYP_FLAKE) === 0) {
 				go.Destroy();
 				continue;
 			}
 
 			var pos = go.position;
-			if ( pos.y > bnds.bottom || pos.y < bnds.top ) go.Destroy();
-			if ( pos.x < bnds.left ) pos.x = bnds.right-1;
-			else if ( pos.x > bnds.right ) pos.x = bnds.left+1;
+			if ( pos.y > bnds.bottom || pos.y < bnds.top ) {
+
+				if ( go.passes > 0 ) go.Destroy();
+				else {
+					go.passes++;
+					pos.y = pos.y > bnds.bottom ? bnds.top+1 : bnds.bottom-1;
+				}
+
+			} else if ( pos.x < bnds.left ) {
+				pos.x = bnds.right-1;
+			} else if ( pos.x > bnds.right ) {
+				pos.x = bnds.left+1;
+			}
 
 		}
 
@@ -201,9 +217,13 @@ export default class SnowGroup extends System {
 	 * @param {InteractionEvent} evt
 	 */
 	mkFlake( pt ){
+
 		this.stats.snow++;
 		let g = this.factory.mkSnowflake( pt );
+		g.passes = 0;
 		g.flags = TYP_FLAKE;
+
+		this.lastSpecial++;
 
 		this.add( g );
 
@@ -273,7 +293,7 @@ export default class SnowGroup extends System {
 		e.stopPropagation();
 		g.get(Comet).fadeOut();
 
-		this.stats.cold += expLerp( MIN_COMET_RATE, MAX_COMET_COLD, this.stats.specials, 0.01 );
+		this.stats.cold += expLerp( MIN_COMET_COLD, MAX_COMET_COLD, this.stats.specials, 0.01 );
 
 		let n = this.stats.comets++;
 		this.spawnerTime = expLerp( MIN_SPAWNER_TIME, MAX_SPAWNER_TIME, n );
@@ -309,6 +329,7 @@ export default class SnowGroup extends System {
 
 		this.special = spec;
 		spec.addExisting( new ZBound(spec.get(ZMover) ) );
+		spec.passes = 0;		// reset passes to prevent instant-fade.
 		spec.clip.interactive = true;
 		spec.on('click', this.specClicked, this );
 
@@ -325,6 +346,8 @@ export default class SnowGroup extends System {
 		e.stopPropagation();
 
 		if ( this.special ) {
+
+			this.lastSpecial = 0;
 
 			this.stats.specials++;
 

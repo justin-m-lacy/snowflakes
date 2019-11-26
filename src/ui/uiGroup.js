@@ -4,6 +4,8 @@ import SpecialView from "./specialView";
 import { StatEvents, EVT_STAT, EVT_COLD } from "../components/stats";
 import { Point, Graphics, Text } from "pixi.js";
 import { lerpColor } from "gibbon.js/utils/colorUtils";
+import WinView from "./winView";
+import LoseView from "./loseView";
 
 export const COLD_COLOR = 0x0091ff;
 
@@ -110,7 +112,25 @@ export default class UIGroup extends Group {
 
 	}
 
+	showMenu() {
+
+		let menu = new MenuView();
+		this.clip.addChild( menu );
+
+	}
+
+	showWin() {
+
+		let winPane = new WinView( this.game, PADDING );
+		this.clip.addChild( winPane );
+
+	}
+
 	showLose() {
+
+		let losePane = new LoseView( this.game, PADDING );
+		this.clip.addChild( losePane );
+
 	}
 
 

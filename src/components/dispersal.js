@@ -1,5 +1,5 @@
 import { Component } from "gibbon.js";
-import SnowGroup from "../groups/snowGroup";
+import SnowGroup, { expLerp } from "../groups/snowGroup";
 import ZMover from "./zmover";
 import ZBound from "./zbound";
 
@@ -40,6 +40,7 @@ export default class Dispersal extends Component {
 		//console.log('INIT COUNT: ' + this.flakes.length );
 		this.factory = this.game.factory;
 		this.stats = this.game.stats;
+		this.coldRate = -expLerp( 0.2, 2, this.stats.specials, 0.001 );
 	}
 
 	burst(p) {
@@ -92,7 +93,7 @@ export default class Dispersal extends Component {
 		}
 
 		this.stats.snow += snowTot;
-		this.stats.cold -= 0.3*snowTot;
+		this.stats.cold += this.coldRate*snowTot;
 		if ( this.count <= 0 ) {
 			this.burst(this.gameObject);
 		}

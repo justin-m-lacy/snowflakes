@@ -1,14 +1,15 @@
 import { Container, Text, Graphics } from "pixi.js";
 import gsap from "gsap";
 import { MakeBg } from "./uiGroup";
+import { Pane } from "pixiwixi";
 
-export default class HelpView extends Container {
+export default class HelpView extends Pane {
 
-	constructor( Style, PADDING ){
+	constructor( game, Style, padding ){
 
-		super();
+		super( game.app );
 
-		this.PADDING = PADDING;
+		this.PADDING = padding;
 
 		this.Style = Style;
 

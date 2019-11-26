@@ -1,25 +1,28 @@
 import { Container, Text } from "pixi.js";
 import { MakeText, TextButton } from "./uiGroup";
+import { Pane } from "pixiwixi";
+import { EVT_MENU } from "../components/stats";
 
-export default class LoseView extends Container {
+export default class LoseView extends Pane {
 
-	constructor( game ){
+	constructor( game, padding  ){
 
-		super();
+		super( game.app );
 
+		this.padding = padding;
 		this.emitter = game.emitter;
 
 		let t = new MakeText('You got frozed.' );
-		this.addChild( t );
+		this.addContentY( t, padding );
 
-		let btn = new TextButton('Restart', this.onRestart, this );
-		this.addChild( btn );
+		let btn = new TextButton('menu', this.onRestart, this );
+		this.addContentY( btn, padding );
 
 	}
 
 	onRestart(){
 
-		this.emitter.emit('restart');
+		this.emitter.emit( EVT_MENU );
 		this.destroy();
 
 	}

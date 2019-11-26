@@ -6,7 +6,7 @@ import SnowGroup from "./groups/snowGroup";
 import StarGroup from "./groups/starGroup";
 import BackSnow from "./components/backSnow";
 import Sky from "./components/sky";
-import Stats, { EVT_STAT, EVT_COLD, EVT_FREEZE } from "./components/stats";
+import Stats, { EVT_STAT, EVT_MENU, EVT_PLAY } from "./components/stats";
 import UIGroup from "./ui/uiGroup";
 import ZWorld from "./data/zworld";
 import GameMode from "./groups/gameMode";
@@ -90,8 +90,8 @@ export default class SnowGame extends Game {
 			this.emitter.on( EVT_STAT, this.onStat );
 		}
 
-		this.emitter.on( EVT_FREEZE, this.onFreeze );
-		this.emitter.on('play', this.onPlay, this );
+		this.emitter.on( EVT_MENU, this.showMenu, this );
+		this.emitter.on( EVT_PLAY, this.onPlay, this );
 
 		//this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 		this.start();
@@ -106,6 +106,12 @@ export default class SnowGame extends Game {
 		this.stage.on( 'click', this.clickBg, this );
 
 		this.onPlay('game');
+	}
+
+	showMenu(){
+
+		this.ui.showMenu();
+
 	}
 
 	onPlay( mode ) {
@@ -128,9 +134,21 @@ export default class SnowGame extends Game {
 
 	}
 
+	onReset() {
+
+		// reset sky
+		// reset stats
+		// reset wind
+		// destroy controller
+		// reset snowGroup
+
+		// event listeners?
+
+	}
+
 	clickBg(e){
 		this.stats.clicks++;
-		this.stats.cold += 0.4;
+		this.stats.cold -= 0.05;
 		this.flakes.mkFlake( e.data.global );
 	}
 
@@ -141,9 +159,6 @@ export default class SnowGame extends Game {
 
 		this.stats.reset();
 
-	}
-
-	onFreeze() {
 	}
 
 	/**

@@ -5,12 +5,18 @@ export const EVT_SNOW = 'snow';
 export const EVT_COLD = 'cold';
 export const EVT_FREEZE = 'freeze';
 
+export const EVT_PLAY = 'play';
+export const EVT_WIN = 'win';
+export const EVT_MENU = 'menu';
+
 export const StatEvents = [
 	EVT_SNOW,
 	'magic',
 	'comets',
 	'specials'
 ];
+
+export const WIN_SNOW = 30000;
 
 const MAX_COLD = 100;
 
