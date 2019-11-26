@@ -1,6 +1,7 @@
 import { System } from "gibbon.js";
 import { expLerp } from "./snowGroup";
 import { EVT_FREEZE, EVT_WIN } from "../components/stats";
+import CasualMode from "./casualMode";
 
 /**
  * Amount of snow which represents winning the game.
@@ -29,13 +30,7 @@ const STATE_LOST=3;
 /**
  * Play game as win/lose game.
  */
-export default class GameMode extends System {
-
-	/**
-	 * @property {SnowGroup} flakes
-	 */
-	get flakes() {return this._flakes; }
-	set flakes(v) { this._flakes =v;}
+export default class GameMode extends CasualMode {
 
 	/**
 	 * @property {string} mode
@@ -46,33 +41,17 @@ export default class GameMode extends System {
 
 		super( game );
 
-		this.stats = game.stats;
 		this.coldRate = MIN_COLD_RATE;
 
-		this.flakes = new SnowGroup( this, this.objectLayer );
-		this.addGroup( this.flakes );
+		this.uiView.showCold();
 
 		game.emitter.on(EVT_FREEZE, this.onLose, this );
 		game.emitter.on(EVT_WIN, this.onWin, this );
 
-		this.uiView = game.ui.showGameView();
-
-
 	}
 
 	start() {
-
 		super.start();
-
-		this.flakes.start();
-		this.game.stage.interactive=true;
-		this.game.stage.on( 'click', this.clickBg, this );
-
-	}
-
-	destroy(){
-		super.destroy();
-		this.game.stage.removeListener( 'click', this.clickBg, this );
 	}
 
 	clickBg(e){

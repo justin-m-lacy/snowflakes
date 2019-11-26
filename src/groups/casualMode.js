@@ -1,9 +1,16 @@
 import { System } from "gibbon.js";
+import { Container } from "pixi.js";
 
 /**
  * Play game as win/lose game.
  */
 export default class CasualMode extends System {
+
+	/**
+	 * @property {SnowGroup} flakes
+	 */
+	get flakes() {return this._flakes; }
+	set flakes(v) { this._flakes =v;}
 
 	/**
 	 * @property {string} mode
@@ -14,18 +21,15 @@ export default class CasualMode extends System {
 
 		super( game );
 
-		this.flakes = new SnowGroup( this, this.objectLayer );
+		this.flakes = new SnowGroup( this, new Container() );
 		this.addGroup( this.flakes );
+		this.game.objectLayer.addChild( this.flakes.clip );
+
 		this.stats = game.stats;
 
 		this.uiView = game.ui.showGameView();
 		this.uiView.hideCold();
 
-	}
-
-	destroy(){
-		super.destroy();
-		this.game.stage.removeListener( 'click', this.clickBg, this );
 	}
 
 	start() {
@@ -36,6 +40,11 @@ export default class CasualMode extends System {
 		this.game.stage.interactive=true;
 		this.game.stage.on( 'click', this.clickBg, this );
 
+	}
+
+	destroy(){
+		super.destroy();
+		this.game.stage.removeListener( 'click', this.clickBg, this );
 	}
 
 
