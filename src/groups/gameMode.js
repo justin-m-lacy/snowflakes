@@ -32,6 +32,12 @@ const STATE_LOST=3;
 export default class GameMode extends System {
 
 	/**
+	 * @property {SnowGroup} flakes
+	 */
+	get flakes() {return this._flakes; }
+	set flakes(v) { this._flakes =v;}
+
+	/**
 	 * @property {string} mode
 	 */
 	get mode(){ return 'game';}
@@ -43,7 +49,8 @@ export default class GameMode extends System {
 		this.stats = game.stats;
 		this.coldRate = MIN_COLD_RATE;
 
-		this.flakes = game.flakes;
+		this.flakes = new SnowGroup( this, this.objectLayer );
+		this.addGroup( this.flakes );
 
 		game.emitter.on(EVT_FREEZE, this.onLose, this );
 		game.emitter.on(EVT_WIN, this.onWin, this );

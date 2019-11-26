@@ -30,12 +30,6 @@ export default class SnowGame extends Game {
 	get mode(){ return this._controller.mode;}
 
 	/**
-	 * @property {SnowGroup} flakes
-	 */
-	get flakes() {return this._flakes; }
-	set flakes(v) { this._flakes =v;}
-
-	/**
 	 * @property {UIGroup} ui
 	 */
 	get ui(){return this._ui};
@@ -79,9 +73,6 @@ export default class SnowGame extends Game {
 
 		this.root.add( BackSnow );
 		this._stats = this.root.add( Stats );
-
-		this.flakes = new SnowGroup( this, this.objectLayer );
-		//this.objectLayer.addChild( this.flakes.clip );
 
 		this.ui = new UIGroup(this, this.uiLayer );
 		this.addGroup( this.ui );

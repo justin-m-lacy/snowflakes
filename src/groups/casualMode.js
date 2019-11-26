@@ -14,10 +14,12 @@ export default class CasualMode extends System {
 
 		super( game );
 
-		this.flakes = game.flakes;
+		this.flakes = new SnowGroup( this, this.objectLayer );
+		this.addGroup( this.flakes );
 		this.stats = game.stats;
 
 		this.uiView = game.ui.showGameView();
+		this.uiView.hideCold();
 
 	}
 
@@ -39,7 +41,6 @@ export default class CasualMode extends System {
 
 	clickBg(e){
 		this.stats.clicks++;
-		this.stats.cold -= 0.05;
 		this.flakes.mkFlake( e.data.global );
 	}
 

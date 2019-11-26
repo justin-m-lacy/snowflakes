@@ -185,7 +185,7 @@ export default class SnowGroup extends System {
 
 			} else if ( pos.x < bnds.left || pos.x > bnds.right ) {
 
-				if ( go.passes === 1 && !go.has(ZBound ) ) go.addExisting( new ZBound( go.get(ZMover), 0.1+0.15*Math.random() ), ZBound );
+				if ( go.passes === 1 && !go.has(ZBound ) ) go.addExisting( new ZBound( go.get(ZMover), 0.15+0.2*Math.random() ), ZBound );
 				pos.x = pos.x < bnds.left ? bnds.right-1 : bnds.left+1;
 				go.passes++;
 
@@ -280,7 +280,7 @@ export default class SnowGroup extends System {
 	startAutoSpawn(){
 
 		let g = new GameObject();
-		g.add( FlakeSpawner );
+		g.addExisting( new FlakeSpawner(this), FlakeSpawner );
 		let timer = g.add( TimeDestroy );
 		timer.time = this.spawnerTime;
 

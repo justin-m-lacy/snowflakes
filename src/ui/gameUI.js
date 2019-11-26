@@ -42,6 +42,12 @@ export default class GameUI extends Container {
 
 	}
 
+	showCold(){this.coldView.visible = true; }
+
+	hideCold(){
+		this.coldView.visible = false;
+	}
+
 	onHelp(){
 		this.game.ui.showHelp();
 	}

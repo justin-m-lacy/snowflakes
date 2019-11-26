@@ -17,11 +17,13 @@ export default class FlakeSpawner extends Component {
 	get frames(){return this._frames;}
 	set frames(v){this._frames = v;}
 
+	constructor( flakeGroup ){
+		this.flakes = flakeGroup;
+	}
+
 	init(){
 
 		this.mouseInfo = this.game.mouseInfo;
-		this.flakes = this.game.flakes;
-
 		this.rate = 0.2;
 		this.timer = 0;
 

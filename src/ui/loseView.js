@@ -12,10 +12,10 @@ export default class LoseView extends Pane {
 		this.padding = padding;
 		this.emitter = game.emitter;
 
-		let t = new MakeText( 'You got frozed.' );
+		let t = MakeText( 'You got frozed.' );
 		this.addContentY( t, padding, padding );
 
-		let btn = new TextButton('menu', this.onRestart, this );
+		let btn = TextButton('menu', this.onRestart, this );
 		this.addContentY( btn, padding, padding );
 
 	}

@@ -11,13 +11,13 @@ export default class WinView extends Pane {
 		this.padding = padding;
 		this.emitter = game.emitter;
 
-		let t = new MakeText( 'you has won' );
+		let t = MakeText( 'you has won' );
 		this.addContentY( t, padding, padding );
 
-		let btn = new TextButton('menu', this.onRestart, this );
+		let btn = TextButton('menu', this.onRestart, this );
 		this.addContentY( btn, padding, padding );
 
-		btn = new TextButton( 'continue', this.onCont, this );
+		btn = TextButton( 'continue', this.onCont, this );
 		this.addContentY( btn, padding, padding );
 
 	}
