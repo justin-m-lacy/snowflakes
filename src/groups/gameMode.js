@@ -54,6 +54,16 @@ export default class GameMode extends CasualMode {
 		super.start();
 	}
 
+	stop(){
+		this.removeListeners();
+		super.stop();
+	}
+
+	removeListeners(){
+		this.game.emitter.removeListener( EVT_FREEZE, this.onLose, this );
+		this.game.emitter.removeListener( EVT_WIN, this.onWin, this );
+	}
+
 	clickBg(e){
 		this.stats.clicks++;
 		this.stats.cold -= 0.05;
@@ -62,20 +72,19 @@ export default class GameMode extends CasualMode {
 
 	onLose(){
 
-		this.removeListeners();
+		this.stop();
 		this.game.ui.showLose();
 
 	}
 
 	onWin(){
-		this.removeListeners();
+
+		this.stop();
 		this.game.ui.showWin();
+
 	}
 
-	removeListeners(){
-		this.game.emitter.removeListener( EVT_FREEZE, this.onLose, this );
-		this.game.emitter.removeListener( EVT_WIN, this.onWin, this );
-	}
+
 
 	update() {
 

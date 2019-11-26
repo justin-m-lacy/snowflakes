@@ -1,5 +1,6 @@
 import { System } from "gibbon.js";
 import { Container } from "pixi.js";
+import SnowGroup from "./snowGroup";
 
 /**
  * Play game as win/lose game.
@@ -21,7 +22,7 @@ export default class CasualMode extends System {
 
 		super( game );
 
-		this.flakes = new SnowGroup( this, new Container() );
+		this.flakes = new SnowGroup( game, new Container() );
 		this.addGroup( this.flakes );
 		this.game.objectLayer.addChild( this.flakes.clip );
 
@@ -36,14 +37,13 @@ export default class CasualMode extends System {
 
 		super.start();
 
-		this.flakes.start();
 		this.game.stage.interactive=true;
 		this.game.stage.on( 'click', this.clickBg, this );
 
 	}
 
-	destroy(){
-		super.destroy();
+	stop() {
+		super.stop();
 		this.game.stage.removeListener( 'click', this.clickBg, this );
 	}
 
