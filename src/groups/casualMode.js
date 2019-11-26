@@ -24,6 +24,7 @@ export default class CasualMode extends System {
 
 		this.flakes = new SnowGroup( game, new Container() );
 		this.addGroup( this.flakes );
+
 		this.game.objectLayer.addChild( this.flakes.clip );
 
 		this.stats = game.stats;

@@ -96,6 +96,12 @@ export default class SnowGame extends Game {
 
 
 	showMenu(){
+
+		if ( this.controller ) {
+			this.removeGroup( this.controller );
+			this.controller.destroy();
+		}
+
 		this.ui.showMenu();
 	}
 

@@ -11,6 +11,10 @@ export default class WinView extends Pane {
 		this.padding = padding;
 		this.emitter = game.emitter;
 
+		this.width = game.screen.width;
+		this.height = game.screen.height;
+
+
 		let t = MakeText( 'you has won' );
 		this.addContentY( t, padding, padding );
 

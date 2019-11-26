@@ -18,7 +18,10 @@ export default class FlakeSpawner extends Component {
 	set frames(v){this._frames = v;}
 
 	constructor( flakeGroup ){
+		super();
+
 		this.flakes = flakeGroup;
+
 	}
 
 	init(){

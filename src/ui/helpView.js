@@ -1,9 +1,9 @@
 import { Container, Text, Graphics } from "pixi.js";
 import gsap from "gsap";
 import { MakeBg, MakeText } from "./uiGroup";
-import { Pane } from "pixiwixi";
+import { MultiPane } from "pixiwixi";
 
-export default class HelpView extends Pane {
+export default class HelpView extends MultiPane {
 
 	constructor( game, padding ){
 
@@ -13,7 +13,10 @@ export default class HelpView extends Pane {
 
 		this.lastY = 0;
 
-		MakeBg( this, 400, 700, 0, 0.5 );
+		this.width = game.screen.width;
+		this.height = game.screen.height;
+
+		MakeBg( this, this.width, this.height );
 
 
 
@@ -21,7 +24,7 @@ export default class HelpView extends Pane {
 
 	addSnowRule(){
 
-		const t = MakeText( 'Spread snowflakes to prepare for winter.' );
+		const t = MakeText( 'Make snowflakes to absord the cold.' );
 		this.addSection( t );
 
 	}
@@ -33,9 +36,16 @@ export default class HelpView extends Pane {
 
 	}
 
+	addMagicRule() {
+
+		let t = MakeText( 'Magic snowflakes have magical effects.');
+		this.addSection(t);
+
+	}
+
 	addCometRule() {
 
-		const t = MakeText( 'Catching shooting stars increases other effects' );
+		const t = MakeText( 'Catch shooting stars increases other effects' );
 		this.addSection( t );
 
 	}

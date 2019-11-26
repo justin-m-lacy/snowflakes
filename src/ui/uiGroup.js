@@ -94,7 +94,7 @@ export default class UIGroup extends Group {
 		this.clip.addChild(v);
 		v.visible = true;
 
-		if ( prev ) {
+		if ( prev && prev !== v ) {
 			prev.visible = false;
 			this.clip.removeChild( prev );
 		}
@@ -117,6 +117,7 @@ export default class UIGroup extends Group {
 
 		if ( !this.mainMenu ) this.mainMenu = new MenuView( this.game, PADDING );
 		this.curView = this.mainMenu;
+		this.clip.addChild( this.mainMenu );
 
 	}
 

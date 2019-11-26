@@ -96,6 +96,9 @@ export default class SnowGroup extends System {
 
 		super(game, mc );
 
+		//this.clip.interactiveChildren = true;
+		//this.clip.interactive = true;
+
 		/**
 		 * Default spawner time.
 		 */
@@ -169,15 +172,11 @@ export default class SnowGroup extends System {
 
 			var go = this.objects[i];
 			if ( go.destroyed ) { continue; }
-			else if ( (go.flags & TYP_FLAKE) === 0) {
-				go.Destroy();
-				continue;
-			}
 
 			var pos = go.position;
 			if ( pos.y > bnds.bottom || pos.y < bnds.top ) {
 
-				if ( go.passes > 0 ) go.Destroy();
+				if ( go.passes > 0 || (go.flags & TYP_FLAKE) === 0 ) go.Destroy();
 				else {
 					go.passes++;
 					pos.y = pos.y > bnds.bottom ? bnds.top+1 : bnds.bottom-1;

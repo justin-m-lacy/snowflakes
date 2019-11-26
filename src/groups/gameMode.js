@@ -7,8 +7,8 @@ import CasualMode from "./casualMode";
  * Amount of snow which represents winning the game.
  */
 const MAX_SNOW = 30000;
-const MIN_COLD_RATE = 0.007;
-const MAX_COLD_RATE = 0.25;
+const MIN_COLD_RATE = 1.007;
+const MAX_COLD_RATE = 1.25;
 
 /**
  * Lerp clamped below max.
@@ -83,8 +83,6 @@ export default class GameMode extends CasualMode {
 		this.game.ui.showWin();
 
 	}
-
-
 
 	update() {
 
