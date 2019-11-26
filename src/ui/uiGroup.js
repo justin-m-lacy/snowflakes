@@ -6,6 +6,7 @@ import { Point, Graphics, Text } from "pixi.js";
 import { lerpColor } from "gibbon.js/utils/colorUtils";
 import WinView from "./winView";
 import LoseView from "./loseView";
+import HelpView from "./helpView";
 
 export const COLD_COLOR = 0x0091ff;
 
@@ -114,8 +115,16 @@ export default class UIGroup extends Group {
 
 	showMenu() {
 
-		let menu = new MenuView();
-		this.clip.addChild( menu );
+		if ( !this.mainMenu ) this.mainMenu = new MenuView();
+		this.clip.addChild( this.mainMenu );
+		this.mainMenu.visible = true;
+
+	}
+
+	hideMenu() {
+
+		this.mainMenu.visible = false;
+		this.clip.removeChild( this.mainMenu );
 
 	}
 
@@ -133,10 +142,24 @@ export default class UIGroup extends Group {
 
 	}
 
+	showHelp(){
+
+		if ( !this.helpView ) {
+			this.helpView = new HelpView( this.game, PADDING );
+		}
+		this.addChild( this.helpView );
+
+	}
+
+	showGameView() {
+	}
+
+	hideGameView() {
+	}
 
 	mkHelpButton() {
 
-		var b = new Text('help', UiStyle );
+		var b = MakeText( 'help' );
 		b.position.set( PADDING )
 
 		this.btnHelp = b;

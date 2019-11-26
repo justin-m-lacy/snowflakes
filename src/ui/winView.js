@@ -12,10 +12,10 @@ export default class WinView extends Pane {
 		this.emitter = game.emitter;
 
 		let t = new MakeText( 'you has won' );
-		this.addContentY( t, RSA_PKCS1_OAEP_PADDING );
+		this.addContentY( t, padding, padding );
 
 		let btn = new TextButton('menu', this.onRestart, this );
-		this.addContentY( btn, padding );
+		this.addContentY( btn, padding, padding );
 
 	}
 

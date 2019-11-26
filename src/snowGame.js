@@ -109,9 +109,7 @@ export default class SnowGame extends Game {
 	}
 
 	showMenu(){
-
 		this.ui.showMenu();
-
 	}
 
 	onPlay( mode ) {
@@ -127,6 +125,8 @@ export default class SnowGame extends Game {
 			grp = new CasualMode( this );
 
 		}
+
+		this.ui.hideMenu();
 
 		this.addGroup( grp );
 		this.controller = grp;
