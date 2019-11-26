@@ -18,7 +18,7 @@ export const StatEvents = [
 
 export const WIN_SNOW = 30000;
 
-const MAX_COLD = 100;
+export const MAX_COLD = 100;
 
 /**
  * Stats to share a values across multiple components/objects.

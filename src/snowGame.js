@@ -99,14 +99,10 @@ export default class SnowGame extends Game {
 	}
 
 	start() {
-
 		super.start();
-		this.flakes.start();
-		this.stage.interactive=true;
-		this.stage.on( 'click', this.clickBg, this );
-
-		this.onPlay('game');
+		this.showMenu();
 	}
+
 
 	showMenu(){
 		this.ui.showMenu();
@@ -144,12 +140,6 @@ export default class SnowGame extends Game {
 
 		// event listeners?
 
-	}
-
-	clickBg(e){
-		this.stats.clicks++;
-		this.stats.cold -= 0.05;
-		this.flakes.mkFlake( e.data.global );
 	}
 
 	endGame( mode ) {

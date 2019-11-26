@@ -1,6 +1,6 @@
-import { Container, Text } from "pixi.js";
 import { MakeText, TextButton } from "./uiGroup";
 import { Pane } from "pixiwixi";
+import { EVT_MENU } from "../components/stats";
 
 export default class WinView extends Pane {
 
@@ -17,11 +17,18 @@ export default class WinView extends Pane {
 		let btn = new TextButton('menu', this.onRestart, this );
 		this.addContentY( btn, padding, padding );
 
+		btn = new TextButton( 'continue', this.onCont, this );
+		this.addContentY( btn, padding, padding );
+
+	}
+
+	onCont() {
+		this.destroy();
 	}
 
 	onRestart(){
 
-		this.emitter.emit('restart');
+		this.emitter.emit( EVT_MENU );
 		this.destroy();
 
 	}

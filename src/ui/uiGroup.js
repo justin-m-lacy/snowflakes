@@ -1,18 +1,18 @@
 import { Group } from "gibbon.js";
 import { CounterFld } from 'pixiwixi';
-import SpecialView from "./specialView";
-import { StatEvents, EVT_STAT, EVT_COLD } from "../components/stats";
 import { Point, Graphics, Text } from "pixi.js";
-import { lerpColor } from "gibbon.js/utils/colorUtils";
 import WinView from "./winView";
 import LoseView from "./loseView";
 import HelpView from "./helpView";
+import GameUI from "./gameUI";
+import MenuView from "./menuView";
 
 export const COLD_COLOR = 0x0091ff;
 
 const TEXT_COLOR = 0xffffff;
 const BASE_COLOR = 0xf5f6f7;
 const HILITE_COLOR = 0xffffff;
+const PANE_ALPHA = 0.4;
 
 const FONT_NAME = 'Snowburst One'; // thin, large
 //const FONT_NAME = 'Mountains of Christmas'; // slightly cramped?
@@ -24,7 +24,8 @@ const UiStyle = {
 	fontSize:24
 };
 
-const SubStyle = Object.assign( {fontSize:16 }, UiStyle );
+const SubStyle = Object.assign( {}, UiStyle );
+SubStyle.fontSize = 16;
 
 export const MakeHiliter = (targ) => {
 	return gsap.to( targ, { duration:0.5, tint:HILITE_COLOR } );
@@ -62,7 +63,7 @@ export const TextButton = (text, fn, context)=>{
 
 }
 
-export const MakeBg = ( dest, width, height, color, alpha  ) => {
+export const MakeBg = ( dest, width, height, color=0, alpha=PANE_ALPHA ) => {
 
 	var g = new Graphics();
 	g.beginFill( color, alpha );
@@ -86,38 +87,18 @@ export default class UIGroup extends Group {
 
 		this.view = this.game.screen;
 
-		this.mkHelpButton();
+	}
 
-		this._special = new SpecialView( game, UiStyle, PADDING/2 );
-		this._special.position.set( (this.view.width - this._special.width)/2 -64, this.view.top + PADDING );
-		layer.addChild( this._special );
-
-		/**
-		 * @property {number} lastTop - top of last visible stat.
-		 * stats added below as they become visible.
-		 */
-		this.lastY = this.view.top + PADDING;
-
-		/**
-		 * @property {.<string,CounterFld>} statViews - counters by event-type.
-		 */
-		this.statViews = {};
-		this.mkStatViews();
-		this.coldView = this.mkStatView( 'cold', true );
-		this.coldView.y = this.statViews.snow.y + this.statViews.snow.height + PADDING;
-
-		this.lastY = this.coldView.y + this.coldView.height + PADDING;
-
-		game.emitter.on( EVT_STAT, this.onStat, this );
-		game.emitter.on( EVT_COLD, this.onCold, this );
-
+	centerPane(pane){
+		pane.position.set( (this.view.width - pane.width)/2, (this.view.height-pane.height)/2 );
 	}
 
 	showMenu() {
 
-		if ( !this.mainMenu ) this.mainMenu = new MenuView();
+		if ( !this.mainMenu ) this.mainMenu = new MenuView( this.game, PADDING );
 		this.clip.addChild( this.mainMenu );
 		this.mainMenu.visible = true;
+		this.centerPane( this.mainMenu );
 
 	}
 
@@ -132,6 +113,7 @@ export default class UIGroup extends Group {
 
 		let winPane = new WinView( this.game, PADDING );
 		this.clip.addChild( winPane );
+		this.centerPane( winPane );
 
 	}
 
@@ -139,6 +121,7 @@ export default class UIGroup extends Group {
 
 		let losePane = new LoseView( this.game, PADDING );
 		this.clip.addChild( losePane );
+		this.centerPane( losePane );
 
 	}
 
@@ -152,19 +135,20 @@ export default class UIGroup extends Group {
 	}
 
 	showGameView() {
+
+		if ( !this.gameView ) {
+			this.gameView = new GameUI( this.game, PADDING );
+			this.addChild( this.gameView );
+		}
+		this.gameView.visible = true;
+
 	}
 
 	hideGameView() {
-	}
 
-	mkHelpButton() {
-
-		var b = MakeText( 'help' );
-		b.position.set( PADDING )
-
-		this.btnHelp = b;
-
-		this.clip.addChild(b);
+		if ( this.gameView ) {
+			this.gameView.visible = false;
+		}
 
 	}
 
@@ -190,30 +174,6 @@ export default class UIGroup extends Group {
 		this.clip.addChild( counter );
 
 		return counter;
-
-	}
-
-	onCold( amt ) {
-		this.coldView.update(amt);
-		this.coldView.tint = lerpColor( 0xffffff, COLD_COLOR, amt/100 );
-	}
-
-	onStat( stat, count ) {
-
-		let fld = this.statViews[stat];
-
-		if ( fld ) {
-
-			if ( !fld.visible ) {
-
-				fld.y = this.lastY;
-				this.lastY += fld.height + PADDING;
-				fld.visible = true;
-
-			}
-			fld.update(count);
-
-		}// else console.warn('missing stat: ' + stat );
 
 	}
 

@@ -7,16 +7,13 @@ import ZMover from "./zmover";
 
 const { randRange } = Rand;
 
-const FLAKE_COUNT = 128;
+const FLAKE_COUNT = 100;
 
 const MIN_WIND = 0.25;
 const MAX_WIND = 3.4;
 
 const MIN_G = 0.5;
 const MAX_G = 0.7;
-
-
-export const MIN_SIZE = 6;
 
 const MAX_V = 0.24;
 const MAX_VZ = 0.001;

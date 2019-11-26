@@ -43,9 +43,32 @@ export default class GameMode extends System {
 		this.stats = game.stats;
 		this.coldRate = MIN_COLD_RATE;
 
+		this.flakes = game.flakes;
+
 		game.emitter.on(EVT_FREEZE, this.onLose, this );
 		game.emitter.on(EVT_WIN, this.onWin, this );
 
+	}
+
+	start() {
+
+		super.start();
+
+		this.flakes.start();
+		this.game.stage.interactive=true;
+		this.game.stage.on( 'click', this.clickBg, this );
+
+	}
+
+	destroy(){
+		super.destroy();
+		this.game.stage.removeListener( 'click', this.clickBg, this );
+	}
+
+	clickBg(e){
+		this.stats.clicks++;
+		this.stats.cold -= 0.05;
+		this.flakes.mkFlake( e.data.global );
 	}
 
 	onLose(){
@@ -63,10 +86,6 @@ export default class GameMode extends System {
 	removeListeners(){
 		this.game.emitter.removeListener( EVT_FREEZE, this.onLose, this );
 		this.game.emitter.removeListener( EVT_WIN, this.onWin, this );
-	}
-
-	start() {
-		super.start();
 	}
 
 	update() {

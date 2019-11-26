@@ -14,14 +14,31 @@ export default class CasualMode extends System {
 
 		super( game, clip );
 
+		this.flakes = game.flakes;
 		this.stats = game.stats;
 
+	}
+
+	destroy(){
+		super.destroy();
+		this.game.stage.removeListener( 'click', this.clickBg, this );
 	}
 
 	start() {
 
 		super.start();
 
+		this.flakes.start();
+		this.game.stage.interactive=true;
+		this.game.stage.on( 'click', this.clickBg, this );
+
+	}
+
+
+	clickBg(e){
+		this.stats.clicks++;
+		this.stats.cold -= 0.05;
+		this.flakes.mkFlake( e.data.global );
 	}
 
 	update(){
