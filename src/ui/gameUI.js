@@ -15,7 +15,7 @@ export default class GameUI extends Container {
 		this.view = this.game.screen;
 		this.padding = padding;
 
-		this.btnHelp = TextButton( 'help', this.onHelp, this );
+		//this.btnHelp = TextButton( 'help', this.onHelp, this );
 
 		this._special = new SpecialView( game, FontStyle, padding/2 );
 		this._special.position.set( (this.view.width - this._special.width)/2 -64, this.view.top + padding );
@@ -37,8 +37,8 @@ export default class GameUI extends Container {
 
 		this.lastY = this.coldView.y + this.coldView.height + padding;
 
-		game.emitter.on( EVT_STAT, this.onStat, this );
-		game.emitter.on( EVT_COLD, this.onCold, this );
+		game.on( EVT_STAT, this.onStat, this );
+		game.on( EVT_COLD, this.onCold, this );
 
 	}
 
@@ -46,10 +46,6 @@ export default class GameUI extends Container {
 
 	hideCold(){
 		this.coldView.visible = false;
-	}
-
-	onHelp(){
-		this.game.ui.showHelp();
 	}
 
 	onCold( amt ) {

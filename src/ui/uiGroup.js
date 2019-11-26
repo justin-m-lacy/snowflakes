@@ -152,6 +152,18 @@ export default class UIGroup extends Group {
 		this.curView = this.helpView;
 
 	}
+	hideHelp(){
+
+		if ( this.helpView){
+			this.clip.removeChild(this.helpView);
+			this.helpView.destroy();
+			this.helpView = null;
+		}
+		if ( this.game.controller == null ){
+			this.showMenu();
+		}
+
+	}
 
 	showGameView() {
 

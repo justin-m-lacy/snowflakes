@@ -1,6 +1,5 @@
 import { Container, Text, Sprite } from "pixi.js";
 import {gsap} from 'gsap'
-import { BASE_SCALE } from "../create/snowFactory";
 
 export default class SpecialView extends Container {
 
@@ -14,7 +13,7 @@ export default class SpecialView extends Container {
 
 		this.padding = padding;
 
-		this.game.emitter.on('new-special', this.onSpecial, this );
+		this.game.on('new-special', this.onSpecial, this );
 
 		this.showTween = gsap.fromTo( this, {alpha:0},
 			{paused:true, alpha:1, duration:1, onReverseComplete:(t)=>t.visible=false, onReverseCompleteParams:[this]} );

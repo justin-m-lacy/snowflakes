@@ -122,13 +122,18 @@ export default class SnowGroup extends System {
 		this.innerBounds = game.screen.clone().pad(-(FLAKE_RADIUS+2));
 
 		this.stats = game.stats;
-		this.game.on( EVT_STAT, this.onStat );
+		this.game.on( EVT_STAT, this.onStat, this );
 
 		/**
 		 * @property {number} lastSpecial - clicks since last special.
 		 */
 		this.lastSpecial = 0;
 
+	}
+
+	destroy(){
+		this.game.removeListener( EVT_STAT, this.onStat, this );
+		super.destroy();
 	}
 
 	/**

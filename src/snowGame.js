@@ -100,6 +100,7 @@ export default class SnowGame extends Game {
 		if ( this.controller ) {
 			this.removeGroup( this.controller );
 			this.controller.destroy();
+			this.controller = null;
 		}
 
 		this.ui.showMenu();
@@ -173,8 +174,8 @@ export default class SnowGame extends Game {
 		let s = new PIXI.ParticleContainer();
 		this.backgroundLayer.addChild( s );
 
-		this.sky = this.instantiate( s );
-		this.sky.add( Sky );
+		this.skyObj = this.instantiate( s );
+		this.sky = this.skyObj.add( Sky );
 
 		this.stars = new StarGroup(this);
 		this.backgroundLayer.addChild( this.stars.clip );

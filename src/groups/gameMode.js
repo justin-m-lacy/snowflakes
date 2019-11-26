@@ -45,8 +45,8 @@ export default class GameMode extends CasualMode {
 
 		this.uiView.showCold();
 
-		game.emitter.on(EVT_FREEZE, this.onLose, this );
-		game.emitter.on(EVT_WIN, this.onWin, this );
+		game.on(EVT_FREEZE, this.onLose, this );
+		game.on(EVT_WIN, this.onWin, this );
 
 	}
 
@@ -60,8 +60,8 @@ export default class GameMode extends CasualMode {
 	}
 
 	removeListeners(){
-		this.game.emitter.removeListener( EVT_FREEZE, this.onLose, this );
-		this.game.emitter.removeListener( EVT_WIN, this.onWin, this );
+		this.game.removeListener( EVT_FREEZE, this.onLose, this );
+		this.game.removeListener( EVT_WIN, this.onWin, this );
 	}
 
 	clickBg(e){

@@ -1,6 +1,7 @@
 import { System } from "gibbon.js";
 import { Container } from "pixi.js";
 import SnowGroup from "./snowGroup";
+import Sky from "../components/sky";
 
 /**
  * Play game as win/lose game.
@@ -26,6 +27,8 @@ export default class CasualMode extends System {
 		this.addGroup( this.flakes );
 
 		this.game.objectLayer.addChild( this.flakes.clip );
+
+		this.game.sky.reset();
 
 		this.stats = game.stats;
 		this.stats.reset();
