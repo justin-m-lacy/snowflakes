@@ -6,7 +6,7 @@ import SnowGroup from "./groups/snowGroup";
 import StarGroup from "./groups/starGroup";
 import BackSnow from "./components/backSnow";
 import Sky from "./components/sky";
-import Stats, { EVT_STAT, EVT_MENU, EVT_PLAY } from "./components/stats";
+import Stats, { EVT_PLAY, EVT_END, EVT_MENU } from "./components/stats";
 import UIGroup from "./ui/uiGroup";
 import ZWorld from "./data/zworld";
 import GameMode from "./groups/gameMode";
@@ -77,11 +77,8 @@ export default class SnowGame extends Game {
 		this.ui = new UIGroup(this, this.uiLayer );
 		this.addGroup( this.ui );
 
-		if ( window.kong ) {
-			this.emitter.on( EVT_STAT, this.onStat );
-		}
-
 		this.emitter.on( EVT_MENU, this.showMenu, this );
+		this.emitter.on( EVT_END, this.endGame, this );
 		this.emitter.on( EVT_PLAY, this.onPlay, this );
 
 		//this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
@@ -103,6 +100,7 @@ export default class SnowGame extends Game {
 			this.controller = null;
 		}
 
+		this.ui.hideGameView();
 		this.ui.showMenu();
 	}
 
@@ -128,6 +126,16 @@ export default class SnowGame extends Game {
 
 	}
 
+	/**
+	 * End game and report all stats.
+	 */
+	endGame() {
+
+		// report all stats.
+		this.reportStats();
+
+	}
+
 	onReset() {
 
 		// reset sky
@@ -137,15 +145,6 @@ export default class SnowGame extends Game {
 		// reset snowGroup
 
 		// event listeners?
-
-	}
-
-	endGame( mode ) {
-
-		// report all stats.
-		this.reportStats();
-
-		this.stats.reset();
 
 	}
 

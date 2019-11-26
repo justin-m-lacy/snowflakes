@@ -8,6 +8,7 @@ export const EVT_FREEZE = 'freeze';
 export const EVT_PLAY = 'play';
 export const EVT_WIN = 'win';
 export const EVT_MENU = 'menu';
+export const EVT_END = 'endgame';
 
 export const StatEvents = [
 	EVT_SNOW,

@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { EVT_STAT, EVT_COLD } from "../components/stats";
+import { EVT_STAT, EVT_COLD, EVT_END, EVT_MENU } from "../components/stats";
 import { lerpColor } from "gibbon.js/utils/colorUtils";
 import { COLD_COLOR, TextButton, FontStyle } from "./uiGroup";
 import SpecialView from './specialView';
@@ -16,6 +16,10 @@ export default class GameUI extends Container {
 		this.padding = padding;
 
 		//this.btnHelp = TextButton( 'help', this.onHelp, this );
+		this.btnMenu = TextButton( 'menu', this.onMenu, this );
+		this.btnMenu.position.set( padding, padding );
+		this.addChild( this.btnMenu );
+
 
 		this._special = new SpecialView( game, FontStyle, padding/2 );
 		this._special.position.set( (this.view.width - this._special.width)/2 -64, this.view.top + padding );
@@ -40,6 +44,11 @@ export default class GameUI extends Container {
 		game.on( EVT_STAT, this.onStat, this );
 		game.on( EVT_COLD, this.onCold, this );
 
+	}
+
+	onMenu() {
+		this.game.emitter.emit( EVT_END );
+		this.game.emitter.emit( EVT_MENU );
 	}
 
 	showCold(){this.coldView.visible = true; }
