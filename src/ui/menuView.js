@@ -41,15 +41,19 @@ export default class MenuView extends Pane {
 
 	}
 
-	onHelp(){
+	onHelp(e){
+		e.stopPropagation();
+
 	}
 
-	playGame() {
+	playGame(e) {
+		e.stopPropagation();
 
 		this.emitter.emit( EVT_PLAY, 'game');
 	}
 
-	playCasual() {
+	playCasual(e) {
+		e.stopPropagation();
 
 		this.emitter.emit( EVT_PLAY, 'casual' );
 

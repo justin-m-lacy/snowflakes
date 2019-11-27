@@ -22,7 +22,10 @@ export default class GloomFlake extends Component {
 		this.stats.cheer += CHEER_RATE;
 	}
 
-	onClick(){
+	onClick(e){
+
+		e.stopPropagation();
+
 		this.gameObject.Destroy();
 		this.stats = null;
 	}

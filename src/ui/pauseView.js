@@ -27,12 +27,16 @@ export default class PauseView extends Pane {
 
 	}
 
-	onResume(){
+	onResume(e){
+		e.stopPropagation();
+
 		this.game.emitter.emit(EVT_RESUME );
 		this.destroy();
 	}
 
-	onMenu(){
+	onMenu(e){
+		e.stopPropagation();
+
 		this.game.emitter.emit( EVT_REPORT );
 		this.game.emitter.emit(EVT_MENU);
 		this.destroy();

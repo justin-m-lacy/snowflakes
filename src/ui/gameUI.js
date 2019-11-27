@@ -46,7 +46,9 @@ export default class GameUI extends Container {
 
 	}
 
-	onPause() {
+	onPause(e) {
+		e.stopPropagation();
+
 		this.game.emitter.emit( EVT_PAUSE );
 	}
 

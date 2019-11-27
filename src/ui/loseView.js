@@ -28,7 +28,8 @@ export default class LoseView extends Pane {
 
 	}
 
-	onRestart(){
+	onRestart(e){
+		e.stopPropagation();
 
 		this.emitter.emit( EVT_MENU );
 		this.destroy();

@@ -33,12 +33,15 @@ export default class WinView extends Pane {
 
 	}
 
-	onResume() {
+	onResume(e) {
+		e.stopPropagation();
+
 		this.emitter.emit( EVT_RESUME );
 		this.destroy();
 	}
 
-	onMenu(){
+	onMenu(e){
+		e.stopPropagation();
 
 		this.emitter.emit( EVT_MENU );
 		this.destroy();
