@@ -1,4 +1,3 @@
-import { Container, Text } from "pixi.js";
 import { MakeText, TextButton, MakeBg } from "./uiGroup";
 import { Pane } from "pixiwixi";
 import { EVT_MENU } from "../components/stats";

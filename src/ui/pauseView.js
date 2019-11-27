@@ -1,6 +1,6 @@
 import { Pane } from "pixiwixi";
 import { MakeBg, MakeText } from "./uiGroup";
-import { EVT_RESUME, EVT_MENU } from "../components/stats";
+import { EVT_RESUME, EVT_MENU, EVT_REPORT } from "../components/stats";
 
 export default class PauseView extends Pane {
 
@@ -20,7 +20,7 @@ export default class PauseView extends Pane {
 		let btn = TextButton( 'resume', this.onResume, this );
 		this.addContentY( btn, t.x, padding );
 
-		let btn = TextButton('main menu', this.onMenu, this );
+		btn = TextButton('main menu', this.onMenu, this );
 		this.addContentY( btn, t.x, padding );
 
 	}
@@ -31,6 +31,7 @@ export default class PauseView extends Pane {
 	}
 
 	onMenu(){
+		this.game.emitter.emit( EVT_REPORT );
 		this.game.emitter.emit(EVT_MENU);
 		this.destroy();
 	}

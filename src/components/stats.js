@@ -8,7 +8,11 @@ export const EVT_LOSE = 'freeze';
 export const EVT_PLAY = 'play';
 export const EVT_WIN = 'win';
 export const EVT_MENU = 'menu';
-export const EVT_END = 'endgame';
+
+/**
+ * report stats.
+ */
+export const EVT_REPORT = 'report';
 
 export const EVT_PAUSE = 'pause';
 

@@ -1,8 +1,7 @@
 import { System } from "gibbon.js";
 import { Container } from "pixi.js";
 import SnowGroup from "./snowGroup";
-import Sky from "../components/sky";
-import { EVT_PAUSE } from "../components/stats";
+import { EVT_PAUSE, EVT_RESUME } from "../components/stats";
 
 /**
  * Play game as win/lose game.
