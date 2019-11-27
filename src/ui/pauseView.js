@@ -1,5 +1,5 @@
 import { Pane } from "pixiwixi";
-import { MakeBg, MakeText } from "./uiGroup";
+import { MakeBg, MakeText, TextButton } from "./uiGroup";
 import { EVT_RESUME, EVT_MENU, EVT_REPORT } from "../components/stats";
 
 export default class PauseView extends Pane {
@@ -7,6 +7,8 @@ export default class PauseView extends Pane {
 	constructor( game, padding ) {
 
 		super(game.app);
+
+		this.game = game;
 
 		this.width = game.screen.width;
 		this.height = game.screen.height;

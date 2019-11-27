@@ -76,6 +76,7 @@ export default class GameMode extends CasualMode {
 
 		this.stop();
 
+		console.log('GAME WIN');
 		this.game.emitter.emit( EVT_REPORT );
 		this.game.ui.showWin();
 

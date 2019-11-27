@@ -38,14 +38,16 @@ const FLAKE_COLOR = 0xffffff;
 const DRAW_RADIUS = 64;
 
 /**
+ * @property {number} FLAKE_SIZE - base flake size.
+ */
+export const FLAKE_RADIUS = 32;
+
+/**
  * @property {const} SPARK_SIZE - radius for spark particles.
  */
 const SPARK_R = 2;
 
-/**
- * @property {number} FLAKE_SIZE - base flake size.
- */
-export const FLAKE_RADIUS = 28;
+
 
 /**
  * @const {number} BASE_SCALE - base scale of snowflake sprite

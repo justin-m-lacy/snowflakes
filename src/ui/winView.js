@@ -1,4 +1,4 @@
-import { MakeText, TextButton, MakeSubText } from "./uiGroup";
+import { MakeText, TextButton, MakeSubText, MakeBg } from "./uiGroup";
 import { Pane } from "pixiwixi";
 import { EVT_MENU, EVT_RESUME } from "../components/stats";
 
@@ -34,7 +34,7 @@ export default class WinView extends Pane {
 	}
 
 	onResume() {
-		this.game.emitter.emit( EVT_RESUME );
+		this.emitter.emit( EVT_RESUME );
 		this.destroy();
 	}
 

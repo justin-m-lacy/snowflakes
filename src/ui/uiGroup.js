@@ -31,6 +31,9 @@ export const FontStyle = {
 const SmallStyle = Object.assign( {}, FontStyle );
 SmallStyle.fontSize = 16;
 
+const LgStyle = Object.assign( {}, FontStyle );
+LgStyle.fontSize = 32;
+
 export const MakeHiliter = (targ) => {
 	return gsap.to( targ, { duration:0.5, tint:HILITE_COLOR } );
 }
