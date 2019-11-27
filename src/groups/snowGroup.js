@@ -41,6 +41,11 @@ const MAX_COMET_CHEER = 30;
 const MIN_SPAWNER_RATE = 0.002;
 const MAX_SPAWNER_RATE = 0.01;
 
+/**
+ * @const {number} MIN_GLOOM_RATE
+ */
+const MIN_GLOOM_RATE = 0.001;
+const MAX_GLOOM_RATE = 0.008;
 
 /**
  * @const {number} MIN_SPAWNER_TIME - Min. spawner flake effect length, in seconds.
@@ -51,9 +56,10 @@ const MAX_SPAWNER_TIME = 8;
 /**
  * Object flags.
  */
-const TYP_FLAKE = 1;
-const TYP_SPAWNER = 2;
-const TYP_COMET = 3;
+export const TYP_FLAKE = 1;
+export const TYP_SPAWNER = 2;
+export const TYP_COMET = 4;
+export const TYP_GLOOM = 8;
 
 
 /**
@@ -106,6 +112,8 @@ export default class SnowGroup extends System {
 		this.spawnerRate = MIN_SPAWNER_RATE;
 
 		this.cometRate = MIN_COMET_RATE;
+
+		this.gloomRate = MIN_GLOOM_RATE;
 
 		this.specRate = MIN_SPEC_RATE;
 		this.special = null;
@@ -166,9 +174,12 @@ export default class SnowGroup extends System {
 
 		this.wrapSnow();
 
-		if ( Math.random() < this.spawnerRate ) {
+		if ( Math.random() < this.gloomRate ) {
+			this.mkGloom();
+		} else if ( Math.random() < this.spawnerRate ) {
 			this.mkSpawner();
 		}
+
 		if ( Math.random() < this.cometRate ) {
 			this.mkComet();
 		}
@@ -236,15 +247,17 @@ export default class SnowGroup extends System {
 	mkComet(){
 
 		let g = this.factory.mkComet( this.aleePos() );
-		g.clip.interactive = true;
-		g.flags = TYP_COMET;
-
-		this.engine.add(g);
+		this.add(g);
 
 		g.get(Comet).setVelocity( this.wind.x > 0 ? -3-3.5*Math.random() : 3+3.5*Math.random(), -0.4+0.8*Math.random() );
 
 		g.on('click', (e)=>this.clickComet(e,g), this );
 
+	}
+
+	mkGloom() {
+		let g = this.factory.mkGloom( this.windPos() );
+		this.add(g);
 	}
 
 	mkSpawner() {

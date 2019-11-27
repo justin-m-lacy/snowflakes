@@ -20,11 +20,11 @@ export default class LoseView extends Pane {
 		this.center( t, 0.5, 0.3 );
 		this.addChild(t);
 
-		let it = MakeSmText( 'You succumbed to the gloom.');
+		let it = MakeSmText( 'You succumbed to winter gloom.');
 		this.addContentY( it, t.x, padding );
 
 		let btn = TextButton('menu', this.onRestart, this );
-		this.addContentY( btn, t.x, padding );
+		this.addContentY( btn, t.x, 2*padding );
 
 	}
 

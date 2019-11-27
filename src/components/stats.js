@@ -28,7 +28,7 @@ export const StatEvents = [
 	'specials'
 ];
 
-export const ReportStats = [ 'snow', 'magics', 'stars', 'specials', 'clicks' ]
+export const ReportStats = [ 'snow', 'magics', 'stars', 'specials', 'clicks', 'glooms' ]
 export const WIN_SNOW = 100;
 
 export const MAX_CHEER = 100;
@@ -71,6 +71,9 @@ export default class Stats extends Component {
 		}
 
 	}
+
+	get glooms(){return this._glooms;}
+	set glooms(v){this._glooms=v}
 
 	/**
 	 * @property {number} clicks - user clicks.
@@ -117,6 +120,7 @@ export default class Stats extends Component {
 		this._magics = 0;
 		this._stars = 0;
 		this._specials = 0;
+		this._glooms = 0;
 
 		this._lastCheer = 0;
 		this._cheer = MAX_CHEER;

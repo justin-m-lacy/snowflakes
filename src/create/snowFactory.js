@@ -115,7 +115,7 @@ export default class SnowFactory extends Factory {
 
 	}
 
-	mkGloom(){
+	mkGloom( pt ){
 
 		let s = this.createFlake(pt);
 		let g = new GameObject(s);

@@ -3,6 +3,7 @@ import { quickSplice } from "gibbon.js/utils/arrayUtils";
 import Particle from "../data/particle";
 import ZMover from "./zmover";
 import { ParticleContainer } from "pixi.js";
+import { TYP_COMET } from "../groups/snowGroup";
 
 /**
  * spark alpha fade per frame.
@@ -25,6 +26,7 @@ export default class Comet extends Component {
 
 		this.view = this.game.screen;
 
+		this.gameObject.flags = TYP_COMET;
 		this.clip.interactive = true;
 		/**
 		 * @property {SnowFactory}
