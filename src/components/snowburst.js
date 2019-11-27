@@ -38,6 +38,9 @@ export default class Snowburst extends Component {
 		while ( i-- > 0 ){
 
 			var go = this.factory.mkSnowflake( this.at );
+
+			if ( this.clip ) go.clip.tint = this.clip.tint;
+
 			this.engine.add(go);
 			var mv = go.get(ZMover);
 

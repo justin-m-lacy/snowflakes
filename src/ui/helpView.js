@@ -1,6 +1,6 @@
 import { Container, Text, Graphics } from "pixi.js";
 import gsap from "gsap";
-import { MakeBg, MakeText } from "./uiGroup";
+import { MakeBg, MakeText, MakeSmText } from "./uiGroup";
 import { MultiPane } from "pixiwixi";
 
 export default class HelpView extends MultiPane {
@@ -19,6 +19,40 @@ export default class HelpView extends MultiPane {
 		MakeBg( this, this.width, this.height );
 
 
+
+	}
+
+	initRules() {
+
+		let r = makeBlock( null, 'Collect Snowflakes to survive the night of winter gloom.' );
+
+
+
+	}
+
+	makeBlock( mainTex, subTex, graphic, maxWidth ) {
+
+		let p = new Container();
+
+		var lastY = 0;
+		var textX = 0;
+
+		if ( graphic ) {
+			graphic.position.set( 0, 0 );
+			p.addChild( graphic );
+			textX = graphic.width + this.padding;
+		}
+
+		if ( mainTex ) {
+
+			this.addContentY( MakeText(mainTex), textX, 0, p );
+			lastY = p.height;
+
+		}
+		if ( subTex ) {
+			this.addContentY( MakeSmText( subTex ), textX, lastY + this.padding, p );
+			lastY = p.height;
+		}
 
 	}
 
