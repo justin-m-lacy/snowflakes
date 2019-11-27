@@ -21,7 +21,7 @@ const SPAWNER_TINT = 0xff11bb;
 const MIN_SPEC_RATE = 0.009;
 const MAX_SPEC_RATE = 0.01;
 
-const MIN_COMET_RATE = 0.001;
+const MIN_COMET_RATE = 0.0002;
 const MAX_COMET_RATE = 0.005;
 
 /**
@@ -33,19 +33,19 @@ const MAX_COMET_RATE = 0.005;
  * @property {number} MIN_COMET_CHEER - minimum comet-cheer reduction.
  */
 const MIN_COMET_CHEER = 5;
-const MAX_COMET_CHEER = 30;
+const MAX_COMET_CHEER = 50;
 
 /**
  *  @const {number} MIN_SPAWNER_RATE - Base rate at which Spawn flakes spawn, in 100*pct per frame.
  */
-const MIN_SPAWNER_RATE = 0.002;
+const MIN_SPAWNER_RATE = 0.001;
 const MAX_SPAWNER_RATE = 0.01;
 
 /**
  * @const {number} MIN_GLOOM_RATE
  */
-const MIN_GLOOM_RATE = 0.001;
-const MAX_GLOOM_RATE = 0.008;
+const MIN_GLOOM_RATE = 0.003;
+const MAX_GLOOM_RATE = 0.007;
 
 /**
  * @const {number} MIN_SPAWNER_TIME - Min. spawner flake effect length, in seconds.

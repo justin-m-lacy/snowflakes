@@ -2,7 +2,7 @@ import { Component } from "gibbon.js";
 import { GLOOM_COLOR } from "../ui/uiGroup";
 import { TYP_GLOOM } from "../groups/snowGroup";
 
-const CHEER_RATE = -0.1;
+const CHEER_RATE = -0.01;
 
 export default class GloomFlake extends Component {
 

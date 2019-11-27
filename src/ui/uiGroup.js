@@ -8,7 +8,7 @@ import GameUI from "./gameUI";
 import MenuView from "./menuView";
 import PauseView from "./pauseView";
 
-export const CHEER_COLOR = 0xf5426c;
+export const CHEER_COLOR = 0xf06969; //0xf5426c;
 export const GLOOM_COLOR = 0x0091ff;
 
 const TEXT_COLOR = 0xffffff;
