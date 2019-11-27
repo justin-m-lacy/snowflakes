@@ -18,15 +18,37 @@ export default class HelpView extends MultiPane {
 
 		MakeBg( this, this.width, this.height );
 
+		this.initRules();
 
+		this.showIndex(0);
 
 	}
 
 	initRules() {
 
-		let r = makeBlock( null, 'Collect Snowflakes to survive the night of winter gloom.' );
+		var screen = new Container();
 
+		let r = makeBlock( null, 'Create Snowflakes to keep your cheer up during the night.' );
 
+		this.addContentY( r, 0, this.padding, screen );
+
+		r = makeBlock( null, 'Finding special snowflakes gives burst of winter cheer.');
+
+		this.addContentY( r, 0, this.padding, screen );
+
+		r = makeBlock( null, 'Magic snowflakes increase shooting stars.');
+
+		this.addContentY( r, 0, this.padding, screen );
+
+		r = this.makeBlock( null, 'Shooting stars give extra cheer and increase magic snowflakes.');
+		this.addContentY( r, 0, this.padding, screen );
+
+		r = this.makeBlock( null, 'Gloom flakes make winter gloomy. Get rid of them right away.');
+
+		this.addContentY( r, 0, this.padding, screen );
+
+		this.center( screen );
+		this.addView( screen );
 
 	}
 
@@ -54,46 +76,12 @@ export default class HelpView extends MultiPane {
 			lastY = p.height;
 		}
 
-	}
-
-	addSnowRule(){
-
-		const t = MakeText( 'Make snowflakes to keep cheery during the night.' );
-		this.addSection( t );
-
-	}
-
-	addSpecialRule(){
-
-		let t = MakeText( 'Catch the special snowflakes to advance.' );
-		this.addSection( t );
-
-	}
-
-	addMagicRule() {
-
-		let t = MakeText( 'Magic snowflakes have magical effects.');
-		this.addSection(t);
-
-	}
-
-	addCometRule() {
-
-		const t = MakeText( 'Catch shooting stars increases other effects' );
-		this.addSection( t );
+		return p;
 
 	}
 
 	show(){
 		gsap.to( this, {alpha:1, duration:1} );
-	}
-
-	addSection( mc ) {
-
-		this.addChild(mc);
-		mc.y = this.lastY;
-		this.lastY += mc.height + this.padding;
-
 	}
 
 }
