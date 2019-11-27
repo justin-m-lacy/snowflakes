@@ -3,7 +3,7 @@ import CanvasDraw from "gibbon.js/utils/canvasDraw";
 import * as PIXI from 'pixi.js';
 import { Gradient } from "gibbon.js/data/gradient";
 import { lerpColor } from "gibbon.js/utils/colorUtils";
-import { EVT_SNOW } from "./stats";
+import { EVT_SNOW, WIN_SNOW } from "./stats";
 
 
 const TEX_WIDTH = 1;
@@ -19,12 +19,12 @@ const TEX_HEIGHT = 512;
 var SkyColors = [
 
 	{ at:0, colors:[0x1308d2,0x4040da, 0xff6200 ], stops:[0.2,0.75,1] },
-	{ at:1000, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
-	{ at:3000, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
-	{ at:7000, colors:[0x040141,0x110088,0x771181 ], stops:[0.2,0.75,1] },
-	{ at:15000, colors:[0x020024,0x131378,0x4c00ff ], stops:[0.2,0.75,1] },
-	{ at:30000, colors:[0x010121,0x0d0f44,0x1a0d7e ], stops:[0.2,0.75,1] },
-	{ at:50000, colors:[0x010121,0x070b32,0x03073e ], stops:[0.2,0.75,1] }
+	{ at:0.1*WIN_SNOW, colors:[0x17109a,0x2020a6,0xba0e0e ], stops:[0.2,0.75,1]  },
+	{ at:0.25*WIN_SNOW, colors:[0x000044,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:0.40*WIN_SNOW, colors:[0x040141,0x110088,0x771181 ], stops:[0.2,0.75,1] },
+	{ at:0.55*WIN_SNOW, colors:[0x020024,0x131378,0x4c00ff ], stops:[0.2,0.75,1] },
+	{ at:0.75*WIN_SNOW, colors:[0x010121,0x0d0f44,0x1a0d7e ], stops:[0.2,0.75,1] },
+	{ at:WIN_SNOW, colors:[0x010121,0x070b32,0x03073e ], stops:[0.2,0.75,1] }
 
 
 ]

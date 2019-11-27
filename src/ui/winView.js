@@ -1,6 +1,6 @@
-import { MakeText, TextButton } from "./uiGroup";
+import { MakeText, TextButton, MakeSubText } from "./uiGroup";
 import { Pane } from "pixiwixi";
-import { EVT_MENU } from "../components/stats";
+import { EVT_MENU, EVT_RESUME } from "../components/stats";
 
 export default class WinView extends Pane {
 
@@ -8,25 +8,33 @@ export default class WinView extends Pane {
 
 		super( game.app );
 
-		this.padding = padding;
 		this.emitter = game.emitter;
 
 		this.width = game.screen.width;
 		this.height = game.screen.height;
 
+		this.bg = MakeBg( this, game.screen.width, game.screen.height );
 
 		let t = MakeText( 'you has won' );
-		this.addContentY( t, padding, padding );
+		this.center( t, 0.5, 0.3 );
+		this.addChild( t );
 
-		let btn = TextButton('menu', this.onRestart, this );
-		this.addContentY( btn, padding, padding );
+		let sub = MakeSubText( 'You made it through the gloomy night. Time for bed.');
+		this.addContentY( sub, t.x, padding );
 
-		btn = TextButton( 'continue', this.onCont, this );
-		this.addContentY( btn, padding, padding );
+		let btn = TextButton('main menu', this.onRestart, this );
+		this.addContentY( btn, t.x, padding );
+
+		btn = TextButton( 'continue', this.onResume, this );
+		this.addContentY( btn, t.x, padding );
+
+		sub = MakeSubText( 'continue playing for high score' );
+		this.addContentY( sub, t.x, padding );
 
 	}
 
-	onCont() {
+	onResume() {
+		this.game.emitter.emit( EVT_RESUME );
 		this.destroy();
 	}
 

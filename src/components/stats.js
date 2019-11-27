@@ -10,6 +10,11 @@ export const EVT_WIN = 'win';
 export const EVT_MENU = 'menu';
 export const EVT_END = 'endgame';
 
+/**
+ * Resume game in progress.
+ */
+export const EVT_RESUME = 'resume';
+
 export const StatEvents = [
 	EVT_SNOW,
 	'magic',
@@ -17,7 +22,7 @@ export const StatEvents = [
 	'specials'
 ];
 
-export const WIN_SNOW = 30000;
+export const WIN_SNOW = 1000;
 
 export const MAX_CHEER = 100;
 
@@ -85,6 +90,11 @@ export default class Stats extends Component {
 	set specials(v) {
 		this._specials = v;
 		this.emitter.emit( EVT_STAT, 'specials', v);
+
+		if ( this._snow > WIN_SNOW ) {
+			this.emitter.emit( EVT_WIN );
+		}
+
 	}
 
 	/**
