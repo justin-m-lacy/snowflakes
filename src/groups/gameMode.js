@@ -40,7 +40,6 @@ export default class GameMode extends CasualMode {
 
 		this.uiView.showCheer();
 
-		game.on( EVT_RESUME, this.start, this );
 		game.on( EVT_WIN, this.onWin, this );
 		game.on( EVT_LOSE, this.onLose, this );
 
@@ -90,8 +89,6 @@ export default class GameMode extends CasualMode {
 	}
 
 	destroy(){
-
-		this.game.removeListener( EVT_RESUME, this.start, this );
 
 		this.removeListeners();
 		super.destroy();

@@ -2,6 +2,7 @@ import { System } from "gibbon.js";
 import { Container } from "pixi.js";
 import SnowGroup from "./snowGroup";
 import Sky from "../components/sky";
+import { EVT_PAUSE } from "../components/stats";
 
 /**
  * Play game as win/lose game.
@@ -36,6 +37,9 @@ export default class CasualMode extends System {
 		this.uiView = game.ui.showGameView();
 		this.uiView.hideCheer();
 
+		game.on( EVT_RESUME, this.start, this );
+		game.on( EVT_PAUSE, this.onpause, this );
+
 	}
 
 	start() {
@@ -44,6 +48,13 @@ export default class CasualMode extends System {
 
 		this.game.stage.interactive=true;
 		this.game.stage.on( 'click', this.clickBg, this );
+
+	}
+
+	onpause() {
+
+		this.game.ui.showPause();
+		this.stop();
 
 	}
 
@@ -58,7 +69,10 @@ export default class CasualMode extends System {
 		this.flakes.mkFlake( e.data.global );
 	}
 
-	update(){
+	destroy(){
+		this.game.removeListener( EVT_RESUME, this.start, this );
+		this.game.removeListener( EVT_PAUSE, this.onpause, this );
+		super.destroy();
 	}
 
 }

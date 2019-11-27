@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { EVT_STAT, EVT_CHEER, EVT_END, EVT_MENU } from "../components/stats";
+import { EVT_STAT, EVT_CHEER, EVT_PAUSE } from "../components/stats";
 import { lerpColor } from "gibbon.js/utils/colorUtils";
 import { CHEER_COLOR, TextButton, FontStyle } from "./uiGroup";
 import SpecialView from './specialView';
@@ -16,9 +16,9 @@ export default class GameUI extends Container {
 		this.padding = padding;
 
 		//this.btnHelp = TextButton( 'help', this.onHelp, this );
-		this.btnMenu = TextButton( 'menu', this.onMenu, this );
-		this.btnMenu.position.set( padding, padding );
-		this.addChild( this.btnMenu );
+		this.btnPause = TextButton( 'pause', this.onPause, this );
+		this.btnPause.position.set( padding, padding );
+		this.addChild( this.btnPause );
 
 
 		this._special = new SpecialView( game, FontStyle, padding/2 );
@@ -46,9 +46,8 @@ export default class GameUI extends Container {
 
 	}
 
-	onMenu() {
-		this.game.emitter.emit( EVT_END );
-		this.game.emitter.emit( EVT_MENU );
+	onPause() {
+		this.game.emitter.emit( EVT_PAUSE );
 	}
 
 	showCheer(){this.cheerView.visible = true; }

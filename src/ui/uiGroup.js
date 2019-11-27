@@ -6,6 +6,7 @@ import LoseView from "./loseView";
 import HelpView from "./helpView";
 import GameUI from "./gameUI";
 import MenuView from "./menuView";
+import PauseView from "./pauseView";
 
 export const CHEER_COLOR = 0x0091ff;
 
@@ -125,6 +126,14 @@ export default class UIGroup extends Group {
 
 		this.mainMenu.visible = false;
 		this.clip.removeChild( this.mainMenu );
+
+	}
+
+	showPause(){
+
+		let p = new PauseView( this.game, PADDING );
+		this.clip.addChild( p );
+		this.centerPane(p);
 
 	}
 

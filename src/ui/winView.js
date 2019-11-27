@@ -22,7 +22,7 @@ export default class WinView extends Pane {
 		let sub = MakeSubText( 'You made it through the gloomy night. Time for bed.');
 		this.addContentY( sub, t.x, padding );
 
-		let btn = TextButton('main menu', this.onRestart, this );
+		let btn = TextButton('main menu', this.onMenu, this );
 		this.addContentY( btn, t.x, padding );
 
 		btn = TextButton( 'continue', this.onResume, this );
@@ -38,7 +38,7 @@ export default class WinView extends Pane {
 		this.destroy();
 	}
 
-	onRestart(){
+	onMenu(){
 
 		this.emitter.emit( EVT_MENU );
 		this.destroy();

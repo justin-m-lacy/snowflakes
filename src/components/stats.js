@@ -10,6 +10,8 @@ export const EVT_WIN = 'win';
 export const EVT_MENU = 'menu';
 export const EVT_END = 'endgame';
 
+export const EVT_PAUSE = 'pause';
+
 /**
  * Resume game in progress.
  */
