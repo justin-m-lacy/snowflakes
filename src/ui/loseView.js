@@ -1,4 +1,4 @@
-import { MakeText, TextButton, MakeBg } from "./uiGroup";
+import { MakeText, TextButton, MakeBg, MakeLgText, MakeSmText } from "./uiGroup";
 import { Pane } from "pixiwixi";
 import { EVT_MENU } from "../components/stats";
 
@@ -16,9 +16,12 @@ export default class LoseView extends Pane {
 
 		this.bg = MakeBg( this, game.screen.width, game.screen.height );
 
-		let t = MakeText( 'You got frozed.' );
+		let t = MakeLgText( 'Defeat' );
 		this.center( t, 0.5, 0.3 );
 		this.addChild(t);
+
+		let it = MakeSmText( 'You succumbed to the gloom.');
+		this.addContentY( it, t.x, padding );
 
 		let btn = TextButton('menu', this.onRestart, this );
 		this.addContentY( btn, t.x, padding );

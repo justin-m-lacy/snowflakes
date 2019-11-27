@@ -6,7 +6,7 @@ import SnowGroup from "./groups/snowGroup";
 import StarGroup from "./groups/starGroup";
 import BackSnow from "./components/backSnow";
 import Sky from "./components/sky";
-import Stats, { EVT_PLAY, EVT_REPORT, EVT_MENU } from "./components/stats";
+import Stats, { EVT_PLAY, EVT_REPORT, EVT_MENU, ReportStats } from "./components/stats";
 import UIGroup from "./ui/uiGroup";
 import ZWorld from "./data/zworld";
 import GameMode from "./groups/gameMode";
@@ -132,6 +132,17 @@ export default class SnowGame extends Game {
 	reportStats() {
 
 		console.log( 'REPORT STATS' );
+		if ( !window.kong ) {
+			console.log('No kong.');
+			return;
+		}
+
+		let reporter = window.kong.stats;
+		let a = ReportStats;
+		for( let i = a.length-1; i >= 0; i-- ) {
+			reporter.submit( a[i], this.stats[ a[i] ] );
+
+		}
 
 	}
 

@@ -9,6 +9,7 @@ import Flake from "../components/flake";
 import Comet from '../components/comet';
 import ZMover from "../components/zmover";
 import { randElm } from "gibbon.js/utils/arrayUtils";
+import GloomFlake from "../components/gloomFlake";
 
 
 /**
@@ -111,6 +112,18 @@ export default class SnowFactory extends Factory {
 		obj.add(Comet);
 
 		return obj;
+
+	}
+
+	mkGloom(){
+
+		let s = this.createFlake(pt);
+		let g = new GameObject(s);
+		g.setDestroyOpts(true,true,true);
+		g.add(Flake);
+		g.add(GloomFlake);
+
+		return g;
 
 	}
 

@@ -8,7 +8,8 @@ import GameUI from "./gameUI";
 import MenuView from "./menuView";
 import PauseView from "./pauseView";
 
-export const CHEER_COLOR = 0x0091ff;
+export const CHEER_COLOR = 0xf5426c;
+export const GLOOM_COLOR = 0x0091ff;
 
 const TEXT_COLOR = 0xffffff;
 const BASE_COLOR = 0xf5f6f7;
@@ -28,8 +29,8 @@ export const FontStyle = {
 	fontSize:24
 };
 
-const SmallStyle = Object.assign( {}, FontStyle );
-SmallStyle.fontSize = 16;
+const SmStyle = Object.assign( {}, FontStyle );
+SmStyle.fontSize = 16;
 
 const LgStyle = Object.assign( {}, FontStyle );
 LgStyle.fontSize = 32;
@@ -42,6 +43,14 @@ export const MakeClose = () => {
 
 }
 
+export const MakeLgText = (text)=>{
+
+	let t = new Text( text, LgStyle );
+	t.tint = TEXT_COLOR;
+	return t;
+
+}
+
 export const MakeText = (text )=>{
 
 	let t = new Text( text, FontStyle );
@@ -51,9 +60,9 @@ export const MakeText = (text )=>{
 
 }
 
-export const MakeSubText = (text)=>{
+export const MakeSmText = (text, opts )=>{
 
-	let t = new Text( text, SmallStyle );
+	let t = new Text( text, opts ? Object.assign( opts, SmStyle) : SmStyle );
 	t.tint = TEXT_COLOR;
 	return t;
 

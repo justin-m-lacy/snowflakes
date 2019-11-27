@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { TextButton, MakeSubText, MakeBg } from "./uiGroup";
+import { TextButton, MakeSmText, MakeBg, MakeLgText } from "./uiGroup";
 import { Pane } from "pixiwixi";
 import { EVT_PLAY } from "../components/stats";
 
@@ -9,7 +9,6 @@ export default class MenuView extends Pane {
 
 		super( game.app );
 
-		this.padding = padding;
 		this.emitter = game.emitter;
 
 		this.width = game.screen.width;
@@ -19,21 +18,30 @@ export default class MenuView extends Pane {
 
 		let centerView = new Container();
 
-		this.btnGame = TextButton( 'Game Mode', this.playGame, this );
-		this.addContentY( this.btnGame, 0, 0, centerView );
+		let it = MakeLgText( 'Special of Snowflakes' );
+		this.addContentY( it, 0, 0, centerView );
 
-		this.subGame = MakeSubText( 'get specials and stars to keep from freezing.');
-		this.addContentY( this.subGame, padding, padding, centerView );
+		it = TextButton( 'Game Mode', this.playGame, this );
+		this.addContentY( it, 0, 2*padding, centerView );
 
-		this.btnCasual = TextButton( 'Casual Mode', this.playCasual, this );
-		this.addContentY( this.btnCasual, 0, padding, centerView );
+		it = MakeSmText( 'Create snowflakes and find the special ones to fight the winter gloom.',
+			{wordWrap:true, wordWrapWidth:400 });
+		this.addContentY( it, padding, padding, centerView );
 
-		this.subCasual = MakeSubText( 'relax and make snowflake' );
-		this.addContentY( this.subCasual, padding, padding, centerView );
+		it = TextButton( 'Casual Mode', this.playCasual, this );
+		this.addContentY( it, 0, padding, centerView );
+
+		it = MakeSmText( 'Relax and make snowflake' );
+		this.addContentY( it, padding, padding, centerView );
+
+		it = TextButton( 'Help', this.onHelp, this );
 
 		this.center( centerView, 0.5, 0.3 );
 		this.addChild( centerView );
 
+	}
+
+	onHelp(){
 	}
 
 	playGame() {

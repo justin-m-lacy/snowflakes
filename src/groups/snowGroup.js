@@ -1,4 +1,4 @@
-import Gibbon, { Game, System, Group, GameObject, Rand } from "gibbon.js";
+import Gibbon, { Game, System, Group, GameObject } from "gibbon.js";
 import { Point } from "pixi.js";
 import Flake from "../components/flake";
 import { Components } from 'gibbon.js';
@@ -131,6 +131,16 @@ export default class SnowGroup extends System {
 
 	}
 
+	/**
+	 * Flake created.
+	 */
+	onStat( stat, n ) {
+
+		if ( stat === EVT_SNOW ) {
+			this.spawnerRate = expLerp( MIN_SPAWNER_RATE, MAX_SPAWNER_RATE, n, 0.00001 );
+		}
+	}
+
 	destroy(){
 		this.game.removeListener( EVT_STAT, this.onStat, this );
 		super.destroy();
@@ -207,16 +217,6 @@ export default class SnowGroup extends System {
 	}
 
 	/**
-	 * Flake created.
-	 */
-	onStat( stat, n ) {
-
-		if ( stat === EVT_SNOW ) {
-			this.spawnerRate = expLerp( MIN_SPAWNER_RATE, MAX_SPAWNER_RATE, n, 0.00001 );
-		}
-	}
-
-	/**
 	 *
 	 * @param {InteractionEvent} evt
 	 */
@@ -272,7 +272,7 @@ export default class SnowGroup extends System {
 
 		e.stopPropagation();
 
-		let n = this.stats.spawners++;
+		let n = this.stats.magics++;
 		this.cometRate = expLerp( MIN_COMET_RATE, MAX_COMET_RATE, n );
 
 		this.startAutoSpawn();
@@ -299,7 +299,7 @@ export default class SnowGroup extends System {
 
 		this.stats.cheer += expLerp( MIN_COMET_CHEER, MAX_COMET_CHEER, this.stats.specials, 0.01 );
 
-		let n = this.stats.comets++;
+		let n = this.stats.stars++;
 		this.spawnerTime = expLerp( MIN_SPAWNER_TIME, MAX_SPAWNER_TIME, n );
 
 	}

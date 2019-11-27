@@ -24,11 +24,12 @@ export const EVT_RESUME = 'resume';
 export const StatEvents = [
 	EVT_SNOW,
 	'magic',
-	'comets',
+	'stars',
 	'specials'
 ];
 
-export const WIN_SNOW = 1000;
+export const ReportStats = [ 'snow', 'magics', 'stars', 'specials', 'clicks' ]
+export const WIN_SNOW = 100;
 
 export const MAX_CHEER = 100;
 
@@ -78,18 +79,21 @@ export default class Stats extends Component {
 	set clicks(v){this._clicks=v;}
 
 	/**
-	 * @property {number} spawners - spawners clicked.
+	 * @property {number} magics - spawners clicked.
 	 */
-	get spawners(){return this._spawners;}
-	set spawners(v) {
-		this._spawners = v;
-		this.emitter.emit( EVT_STAT, 'magic', v );
+	get magics(){return this._magics;}
+	set magics(v) {
+		this._magics = v;
+		this.emitter.emit( EVT_STAT, 'magics', v );
 	}
 
-	get comets() { return this._comets; }
-	set comets(v) {
-		this._comets = v;
-		this.emitter.emit( EVT_STAT, 'comets', v );
+	/**
+	 * @property {number} stars - Number of shooting stars clicked.
+	 */
+	get stars() { return this._stars; }
+	set stars(v) {
+		this._stars = v;
+		this.emitter.emit( EVT_STAT, 'stars', v );
 	}
 
 	get specials(){return this._specials; }
@@ -110,8 +114,8 @@ export default class Stats extends Component {
 
 		this._snow = 0;
 		this._clicks = 0;
-		this._spawners = 0;
-		this._comets = 0;
+		this._magics = 0;
+		this._stars = 0;
 		this._specials = 0;
 
 		this._lastCheer = 0;

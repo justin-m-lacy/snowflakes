@@ -1,4 +1,4 @@
-import { MakeText, TextButton, MakeSubText, MakeBg } from "./uiGroup";
+import { MakeText, TextButton, MakeSmText, MakeBg, MakeLgText } from "./uiGroup";
 import { Pane } from "pixiwixi";
 import { EVT_MENU, EVT_RESUME } from "../components/stats";
 
@@ -15,20 +15,20 @@ export default class WinView extends Pane {
 
 		this.bg = MakeBg( this, game.screen.width, game.screen.height );
 
-		let t = MakeText( 'you has won' );
-		this.center( t, 0.5, 0.3 );
+		let t = MakeLgText( 'Victory!' );
+		this.center( t, 0.45, 0.3 );
 		this.addChild( t );
 
-		let sub = MakeSubText( 'You made it through the gloomy night. Time for bed.');
+		let sub = MakeSmText( 'You made it through the gloomy night. Time for bed.');
 		this.addContentY( sub, t.x, padding );
 
 		let btn = TextButton('main menu', this.onMenu, this );
-		this.addContentY( btn, t.x, padding );
+		this.addContentY( btn, t.x, 2*padding );
 
 		btn = TextButton( 'continue', this.onResume, this );
-		this.addContentY( btn, t.x, padding );
+		this.addContentY( btn, t.x, 2*padding );
 
-		sub = MakeSubText( 'continue playing for high score' );
+		sub = MakeSmText( 'continue playing for high score' );
 		this.addContentY( sub, t.x, padding );
 
 	}
