@@ -6,7 +6,7 @@ import SnowGroup from "./groups/snowGroup";
 import StarGroup from "./groups/starGroup";
 import BackSnow from "./components/backSnow";
 import Sky from "./components/sky";
-import Stats, { EVT_PLAY, EVT_REPORT, EVT_MENU, ReportStats } from "./components/stats";
+import Stats, { EVT_PLAY, EVT_REPORT, EVT_MENU, ReportStats, EVT_HELP } from "./components/stats";
 import UIGroup from "./ui/uiGroup";
 import ZWorld from "./data/zworld";
 import GameMode from "./groups/gameMode";
@@ -80,6 +80,7 @@ export default class SnowGame extends Game {
 		this.emitter.on( EVT_MENU, this.showMenu, this );
 		this.emitter.on( EVT_REPORT, this.reportStats, this );
 		this.emitter.on( EVT_PLAY, this.onPlay, this );
+		this.emitter.on( EVT_HELP, this.showHelp, this );
 
 		//this.loader.load( (loader,resources)=>this.assetsLoaded(loader,resources) );
 		this.start();
@@ -102,6 +103,12 @@ export default class SnowGame extends Game {
 
 		this.ui.hideGameView();
 		this.ui.showMenu();
+	}
+
+	showHelp(){
+
+		this.ui.showHelp();
+
 	}
 
 	onPlay( mode ) {

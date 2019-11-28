@@ -1,6 +1,6 @@
 import { Container, Text, Graphics } from "pixi.js";
 import gsap from "gsap";
-import { MakeBg, MakeText, MakeSmText } from "./uiGroup";
+import { MakeBg, MakeText, MakeSmText, TextButton } from "./uiGroup";
 import { MultiPane } from "pixiwixi";
 
 export default class HelpView extends MultiPane {
@@ -9,14 +9,21 @@ export default class HelpView extends MultiPane {
 
 		super( game.app );
 
+		this.game = game;
 		this.padding = padding;
 
 		this.lastY = 0;
+
+		this.maxWidth = 0.8*game.screen;
 
 		this.width = game.screen.width;
 		this.height = game.screen.height;
 
 		MakeBg( this, this.width, this.height );
+
+		let btn = TextButton('close', this.onClose, this );
+		btn.position.set( padding, padding );
+		this.addChild( btn );
 
 		this.initRules();
 
@@ -24,19 +31,26 @@ export default class HelpView extends MultiPane {
 
 	}
 
+	onClose(e){
+
+		e.stopPropagation();
+		this.game.ui.hideHelp();
+
+	}
+
 	initRules() {
 
 		var screen = new Container();
 
-		let r = makeBlock( null, 'Create Snowflakes to keep your cheer up during the night.' );
+		let r = this.makeBlock( null, 'Create Snowflakes to keep your cheer up during the night.' );
 
 		this.addContentY( r, 0, this.padding, screen );
 
-		r = makeBlock( null, 'Finding special snowflakes gives burst of winter cheer.');
+		r = this.makeBlock( null, 'Finding special snowflakes gives burst of winter cheer.');
 
 		this.addContentY( r, 0, this.padding, screen );
 
-		r = makeBlock( null, 'Magic snowflakes increase shooting stars.');
+		r = this.makeBlock( null, 'Magic snowflakes increase shooting stars.');
 
 		this.addContentY( r, 0, this.padding, screen );
 

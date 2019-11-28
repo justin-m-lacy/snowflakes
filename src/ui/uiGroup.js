@@ -1,12 +1,13 @@
 import { Group } from "gibbon.js";
 import { CounterFld } from 'pixiwixi';
-import { Point, Graphics, Text } from "pixi.js";
+import { Point, Graphics, Text, DisplayObject } from "pixi.js";
 import WinView from "./winView";
 import LoseView from "./loseView";
 import HelpView from "./helpView";
 import GameUI from "./gameUI";
 import MenuView from "./menuView";
 import PauseView from "./pauseView";
+import {gsap} from 'gsap';
 
 export const CHEER_COLOR = 0xf06969; //0xf5426c;
 export const GLOOM_COLOR = 0x0091ff;
@@ -35,8 +36,27 @@ SmStyle.fontSize = 16;
 const LgStyle = Object.assign( {}, FontStyle );
 LgStyle.fontSize = 32;
 
-export const MakeHiliter = (targ) => {
-	return gsap.to( targ, { duration:0.5, tint:HILITE_COLOR } );
+/**
+ *
+ * @param {DisplayObject} targ
+ */
+export const MakeRollover = (targ) => {
+
+	//return gsap.to( targ, { duration:0.5, tint:HILITE_COLOR } );
+	targ.rollOver = gsap.fromTo( targ.scale, {x:1, y:1}, {x:1.2, y:1.2, duration:0.1, paused:true } );
+	targ.pivot.set(0.5,0.5);
+	targ.on('pointerover', (e)=>{
+
+		e.stopPropagation();
+		targ.rollOver.play();
+
+	} );
+
+	targ.on( 'pointerout', (e)=>{
+		e.stopPropagation();
+		targ.rollOver.reverse();
+	} )
+
 }
 
 export const MakeClose = () => {
@@ -74,6 +94,8 @@ export const TextButton = (text, fn, context)=>{
 	t.interactive = true;
 
 	if ( fn ) t.on('click', fn, context );
+
+	MakeRollover(t);
 
 	return t;
 
@@ -176,7 +198,6 @@ export default class UIGroup extends Group {
 	hideHelp(){
 
 		if ( this.helpView){
-			this.clip.removeChild(this.helpView);
 			this.helpView.destroy();
 			this.helpView = null;
 		}

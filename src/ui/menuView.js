@@ -1,7 +1,7 @@
 import { Container } from "pixi.js";
 import { TextButton, MakeSmText, MakeBg, MakeLgText } from "./uiGroup";
 import { Pane } from "pixiwixi";
-import { EVT_PLAY } from "../components/stats";
+import { EVT_PLAY, EVT_HELP } from "../components/stats";
 
 export default class MenuView extends Pane {
 
@@ -35,6 +35,7 @@ export default class MenuView extends Pane {
 		this.addContentY( it, padding, padding, centerView );
 
 		it = TextButton( 'Help', this.onHelp, this );
+		this.addContentY( it, padding, padding, centerView );
 
 		this.center( centerView, 0.5, 0.3 );
 		this.addChild( centerView );
@@ -43,6 +44,7 @@ export default class MenuView extends Pane {
 
 	onHelp(e){
 		e.stopPropagation();
+		this.emitter.emit( EVT_HELP );
 
 	}
 

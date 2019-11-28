@@ -16,6 +16,8 @@ export const EVT_REPORT = 'report';
 
 export const EVT_PAUSE = 'pause';
 
+export const EVT_HELP = 'help';
+
 /**
  * Resume game in progress.
  */
