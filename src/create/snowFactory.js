@@ -8,7 +8,6 @@ import { setLerp, lerpPt } from "gibbon.js/utils/geom";
 import Flake from "../components/flake";
 import Comet from '../components/comet';
 import ZMover from "../components/zmover";
-import { randElm } from "gibbon.js/utils/arrayUtils";
 import GloomFlake from "../components/gloomFlake";
 
 
@@ -140,7 +139,7 @@ export default class SnowFactory extends Factory {
 
 	mkGloom( pt ){
 
-		let s = this.createFlake(pt);
+		let s = this.flakeDisplay(pt);
 		let g = new GameObject(s);
 		g.setDestroyOpts(true,true,true);
 		g.add(Flake);
@@ -156,7 +155,7 @@ export default class SnowFactory extends Factory {
 	 */
 	mkSnowflake( pt ){
 
-		let s = this.createFlake(pt);
+		let s = this.flakeDisplay(pt);
 		//s.cacheAsBitmap = true;
 		let g = new GameObject(s);
 		g.setDestroyOpts(true,true,true);
@@ -167,10 +166,10 @@ export default class SnowFactory extends Factory {
 
 	}
 
-	createFlake( loc ){
+	flakeDisplay( loc ){
 
 		let r = DRAW_RADIUS;
-		const tex = this.makeFlakeTex( r, MAX_SEGS );
+		const tex = this.mkFlakeTex( r, MAX_SEGS );
 
 		const sprite = new PIXI.Sprite();
 		sprite.interactive = false;
@@ -192,7 +191,7 @@ export default class SnowFactory extends Factory {
 	 * @param {number} r
 	 * @param {number} segs
 	 */
-	makeFlakeTex( r, segs ){
+	mkFlakeTex( r, segs ){
 
 		if ( (segs % 2) !== 0 ) segs++;
 

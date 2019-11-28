@@ -1,6 +1,6 @@
-import { Container, Text, Graphics } from "pixi.js";
+import { Container, Text, Graphics, Point } from "pixi.js";
 import gsap from "gsap";
-import { MakeBg, MakeText, MakeSmText, TextButton } from "./uiGroup";
+import { MakeBg, MakeText, MakeSmText, TextButton, MAGIC_COLOR, GLOOM_COLOR } from "./uiGroup";
 import { MultiPane } from "pixiwixi";
 
 export default class HelpView extends MultiPane {
@@ -21,13 +21,15 @@ export default class HelpView extends MultiPane {
 
 		MakeBg( this, this.width, this.height );
 
-		let btn = TextButton('close', this.onClose, this );
-		btn.position.set( padding, padding );
-		this.addChild( btn );
 
-		this.initRules();
+		this.initRules( game.factory );
 
 		this.showIndex(0);
+
+		let btn = TextButton('close', this.onClose, this );
+		//btn.position.set( padding, padding );
+		this.addContentY( btn );
+
 
 	}
 
@@ -38,26 +40,35 @@ export default class HelpView extends MultiPane {
 
 	}
 
-	initRules() {
+	/**
+	 *
+	 * @param {SnowFactory} factory
+	 */
+	initRules( factory ) {
 
 		var screen = new Container();
+		var p = new Point();
 
-		let r = this.makeBlock( null, 'Create Snowflakes to keep your cheer up during the night.' );
-
-		this.addContentY( r, 0, this.padding, screen );
-
-		r = this.makeBlock( null, 'Finding special snowflakes gives burst of winter cheer.');
+		let r = this.makeBlock( 'Snowflakes', 'Create Snowflakes to keep your cheer up during the night.', factory.flakeDisplay( p ) );
 
 		this.addContentY( r, 0, this.padding, screen );
 
-		r = this.makeBlock( null, 'Magic snowflakes increase shooting stars.');
+		r = this.makeBlock( null, 'Finding the special snowflake gives a large cheer boost.');
+
+		this.addContentY( r, 0, this.padding, screen );
+
+		let flake = factory.flakeDisplay(p);
+		flake.tint = MAGIC_COLOR;
+		r = this.makeBlock( null, 'Magic snowflakes increase shooting stars.', flake );
 
 		this.addContentY( r, 0, this.padding, screen );
 
 		r = this.makeBlock( null, 'Shooting stars give extra cheer and increase magic snowflakes.');
 		this.addContentY( r, 0, this.padding, screen );
 
-		r = this.makeBlock( null, 'Gloom flakes make winter gloomy. Get rid of them right away.');
+		flake = factory.flakeDisplay(p);
+		flake.tint = GLOOM_COLOR;
+		r = this.makeBlock( null, 'Gloom flakes make winter gloomy. Get rid of them right away.', flake );
 
 		this.addContentY( r, 0, this.padding, screen );
 
@@ -70,24 +81,21 @@ export default class HelpView extends MultiPane {
 
 		let p = new Container();
 
-		var lastY = 0;
-		var textX = 0;
-
-		if ( graphic ) {
-			graphic.position.set( 0, 0 );
-			p.addChild( graphic );
-			textX = graphic.width + this.padding;
-		}
+		var textX = graphic ? graphic.width + this.padding : this.padding;
 
 		if ( mainTex ) {
 
 			this.addContentY( MakeText(mainTex), textX, 0, p );
-			lastY = p.height;
 
 		}
 		if ( subTex ) {
-			this.addContentY( MakeSmText( subTex ), textX, lastY + this.padding, p );
-			lastY = p.height;
+			this.addContentY( MakeSmText( subTex ), textX, this.padding, p );
+		}
+
+		if ( graphic ) {
+			graphic.position.set( graphic.width/2, graphic.height/2 );
+			p.addChild( graphic );
+			textX = graphic.width + this.padding;
 		}
 
 		return p;

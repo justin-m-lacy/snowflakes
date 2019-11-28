@@ -11,6 +11,7 @@ import {gsap} from 'gsap';
 
 export const CHEER_COLOR = 0xf06969; //0xf5426c;
 export const GLOOM_COLOR = 0x0091ff;
+export const MAGIC_COLOR = 0xff11bb;
 
 const TEXT_COLOR = 0xffffff;
 const BASE_COLOR = 0xf5f6f7;
@@ -56,10 +57,6 @@ export const MakeRollover = (targ) => {
 		e.stopPropagation();
 		targ.rollOver.reverse();
 	});
-
-}
-
-export const MakeClose = () => {
 
 }
 

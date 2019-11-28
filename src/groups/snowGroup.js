@@ -10,10 +10,9 @@ import Dispersal from "../components/dispersal";
 import { FLAKE_RADIUS } from "../create/snowFactory";
 import ZBound from "../components/zbound";
 import ZMover from "../components/zmover";
+import { MAGIC_COLOR } from "../ui/uiGroup";
 
 const {TimeDestroy} = Components;
-
-const SPAWNER_TINT = 0xff11bb;
 
 /**
  * @property {number} MIN_SPEC_RATE - special snowflake rate.
@@ -271,7 +270,7 @@ export default class SnowGroup extends System {
 	mkSpawner() {
 
 		let g = this.factory.mkSnowflake( this.windPos() );
-		g.clip.tint = SPAWNER_TINT;
+		g.clip.tint = MAGIC_COLOR;
 		g.clip.interactive = true;
 		g.flags = TYP_SPAWNER;
 
