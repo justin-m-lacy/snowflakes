@@ -18,10 +18,6 @@ export const maxLerp = (v0, v1, t ) => {
 
 }
 
-const STATE_PLAY=1;
-const STATE_WON=2;
-const STATE_LOST=3;
-
 /**
  * Play game as win/lose game.
  */
@@ -76,7 +72,6 @@ export default class GameMode extends CasualMode {
 
 		this.stop();
 
-		console.log('GAME WIN');
 		this.game.emitter.emit( EVT_REPORT );
 		this.game.ui.showWin();
 
