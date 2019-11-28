@@ -48,30 +48,31 @@ export default class HelpView extends MultiPane {
 		var screen = new Container();
 		var p = new Point();
 
-		let r = this.makeBlock( 'Snowflakes', 'Create Snowflakes to keep your cheer up during the night.', factory.flakeDisplay( p ) );
+		let r = this.makeBlock( 'Snowflakes', ['Create Snowflakes to keep your cheer up during the night.',
+								'Find special snowflakes for a large boost of cheer.'], factory.flakeDisplay( p ) );
 
 		this.addContentY( r, 0, this.padding, screen );
 
-		r = this.makeBlock( null, 'Finding the special snowflake gives a large cheer boost.');
-
-		this.addContentY( r, 0, 0, screen );
+		//r = this.makeBlock( null, 'Find special snowflakes for a large boost of cheer.');
+		//this.addContentY( r, 0, 0, screen );
 
 		let flake = factory.flakeDisplay(p);
 		flake.tint = MAGIC_COLOR;
-		r = this.makeBlock( null, 'Magic snowflakes increase shooting stars.', flake );
+		r = this.makeBlock( 'Magic Snowflakes', [
+			'Magic snowflakes give bursts of snow and increase the chance of shooting stars.',
+			'Shooting stars bring extra cheer when caught and increase the power of magic snowflakes.'], flake );
+
+		//r = this.makeBlock( null, 'Shooting stars bring extra cheer when caught and increase the power of magic snowflakes.');
+		//this.addContentY( r, 0, this.padding, screen );
 
 		this.addContentY( r, 0, 2*this.padding, screen );
 
-		r = this.makeBlock( null, 'Shooting stars give extra cheer and increase magic snowflakes.');
-		this.addContentY( r, 0, this.padding, screen );
-
 		flake = factory.flakeDisplay(p);
 		flake.tint = GLOOM_COLOR;
-		r = this.makeBlock( null, 'Gloom flakes make winter gloomy. Get rid of them right away.', flake );
-
+		r = this.makeBlock( 'Gloom Flakes', 'Gloom flakes make winter gloomy. Get rid of them right away.', flake );
 		this.addContentY( r, 0, this.padding, screen );
 
-		this.center( screen );
+		this.center( screen, 0.5, 0.3 );
 		this.addView( screen );
 
 	}
@@ -88,7 +89,15 @@ export default class HelpView extends MultiPane {
 
 		}
 		if ( subTex ) {
-			this.addContentY( MakeSmText( subTex ), textX, this.padding, p );
+
+			if ( Array.isArray(subTex) ) {
+
+				for( let i = 0; i <subTex.length; i++ ) {
+					this.addContentY( MakeSmText(subTex[i]), textX, this.padding, p );
+				}
+
+			} else this.addContentY( MakeSmText( subTex ), textX, this.padding, p );
+
 		}
 
 		if ( graphic ) {
