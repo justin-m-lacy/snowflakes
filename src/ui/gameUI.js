@@ -17,7 +17,7 @@ export default class GameUI extends Container {
 
 		//this.btnHelp = TextButton( 'help', this.onHelp, this );
 		this.btnPause = TextButton( 'pause', this.onPause, this );
-		this.btnPause.position.set( padding, padding );
+		this.btnPause.position.set( this.btnPause.width/2 + padding, this.btnPause.height/2 + padding );
 		this.addChild( this.btnPause );
 
 

@@ -21,14 +21,13 @@ export default class HelpView extends MultiPane {
 
 		MakeBg( this, this.width, this.height );
 
+		let btn = TextButton('back', this.onClose, this );
+		btn.position.set( btn.width/2 + 3*padding, btn.height/2 + 3*padding );
+		this.addChild(btn);
 
 		this.initRules( game.factory );
 
 		this.showIndex(0);
-
-		let btn = TextButton('close', this.onClose, this );
-		//btn.position.set( padding, padding );
-		this.addContentY( btn );
 
 
 	}
@@ -55,13 +54,13 @@ export default class HelpView extends MultiPane {
 
 		r = this.makeBlock( null, 'Finding the special snowflake gives a large cheer boost.');
 
-		this.addContentY( r, 0, this.padding, screen );
+		this.addContentY( r, 0, 0, screen );
 
 		let flake = factory.flakeDisplay(p);
 		flake.tint = MAGIC_COLOR;
 		r = this.makeBlock( null, 'Magic snowflakes increase shooting stars.', flake );
 
-		this.addContentY( r, 0, this.padding, screen );
+		this.addContentY( r, 0, 2*this.padding, screen );
 
 		r = this.makeBlock( null, 'Shooting stars give extra cheer and increase magic snowflakes.');
 		this.addContentY( r, 0, this.padding, screen );
