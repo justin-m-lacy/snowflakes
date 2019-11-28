@@ -13,7 +13,7 @@ export default class PauseView extends Pane {
 		this.width = game.screen.width;
 		this.height = game.screen.height;
 
-		this.bg = MakeBg( this, this.width, this.height );
+		this.bg = MakeBg( this, this.width, this.height, 0, 0.7 );
 
 		var t = MakeLgText( 'Paused');
 		this.center( t , 0.5, 0.3 );

@@ -13,7 +13,7 @@ export default class WinView extends Pane {
 		this.width = game.screen.width;
 		this.height = game.screen.height;
 
-		this.bg = MakeBg( this, game.screen.width, game.screen.height );
+		this.bg = MakeBg( this, game.screen.width, game.screen.height, 0, 0.7 );
 
 		let t = MakeLgText( 'Victory!' );
 		this.center( t, 0.45, 0.3 );

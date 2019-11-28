@@ -44,18 +44,18 @@ export const MakeRollover = (targ) => {
 
 	//return gsap.to( targ, { duration:0.5, tint:HILITE_COLOR } );
 	targ.rollOver = gsap.fromTo( targ.scale, {x:1, y:1}, {x:1.2, y:1.2, duration:0.1, paused:true } );
-	targ.pivot.set(0.5,0.5);
+	targ.anchor.set(0.5,0.5);
 	targ.on('pointerover', (e)=>{
 
 		e.stopPropagation();
 		targ.rollOver.play();
 
-	} );
+	});
 
 	targ.on( 'pointerout', (e)=>{
 		e.stopPropagation();
 		targ.rollOver.reverse();
-	} )
+	});
 
 }
 

@@ -4,7 +4,7 @@ import Gibbon, { Factory, Geom, GameObject } from "../../../gibbon";
 const { randInt, randRange} = Gibbon.Rand;
 
 import * as PIXI from 'pixi.js';
-import { setLerp } from "gibbon.js/utils/geom";
+import { setLerp, lerpPt } from "gibbon.js/utils/geom";
 import Flake from "../components/flake";
 import Comet from '../components/comet';
 import ZMover from "../components/zmover";
@@ -64,6 +64,28 @@ export const BASE_SCALE = FLAKE_RADIUS/DRAW_RADIUS;
 const MAX_SEGS = 12;
 
 /**
+ * @const {Matrix} tempMat - reusable Matrix.
+ */
+const tempMat = new PIXI.Matrix();
+/**
+ * @const {Point} tempPt - reusable drawing point.
+ */
+const tempPt = new Point();
+
+
+/**
+ * @const {Graphics} tmpGraphics - graphics used for drawing.
+ */
+const tmpGraphics = new Graphics();
+
+/**
+ * @const {Container} tmpContainer - container used for drawing.
+ */
+const tmpContainer = new PIXI.Container();
+tmpContainer.addChild( tmpGraphics);
+
+
+/**
  * Get the length of an arc of angle theta
  * at distance r.
  * @param {number} theta
@@ -79,7 +101,8 @@ export default class SnowFactory extends Factory {
 
 		super(game);
 
-		this.maskArc = this.fillArc( 0, 2*Math.PI/MAX_SEGS, DRAW_RADIUS );
+		tmpGraphics.mask = this.fillArc( 0, 2*Math.PI/MAX_SEGS, DRAW_RADIUS );
+		tmpContainer.addChild( tmpGraphics.mask );
 
 		this.initTextures();
 
@@ -152,7 +175,6 @@ export default class SnowFactory extends Factory {
 		const sprite = new PIXI.Sprite();
 		sprite.interactive = false;
 
-		if (!loc) loc = new Point();
 		sprite.position.set( loc.x, loc.y );
 
 		sprite.texture = tex;
@@ -160,7 +182,7 @@ export default class SnowFactory extends Factory {
 		//sprite.pivot = new Point( r, r );
 		sprite.rotation = Math.PI*Math.random();
 
-		sprite.scale = new Point( BASE_SCALE, BASE_SCALE );
+		sprite.scale.set( BASE_SCALE, BASE_SCALE );
 
 		return sprite;
 
@@ -177,13 +199,13 @@ export default class SnowFactory extends Factory {
 		let arc=2*Math.PI/segs;
 		let tex = PIXI.RenderTexture.create( 2*r, 2*r );
 
-		let g = this.drawArc( r, arc );
+		let g = this.drawArc( r );
 
-		let mat = new PIXI.Matrix();
-		mat.translate(r,r);
+		let mat = tempMat;
+		mat.set( 1, 0, 0, 1, r, r );
 
-		var theta = 0;
-		this.renderer.render(g,tex,true, mat);
+		let theta = 0;
+		this.renderer.render(g,tex,false, mat);
 
 		for( let i = 1; i < segs; i++ ) {
 
@@ -191,9 +213,9 @@ export default class SnowFactory extends Factory {
 
 			if ( i%2 === 0){
 				g.rotation = theta;
-				g.scale = new Point(1,1);
+				g.scale.set(1,1);
 			} else {
-				g.scale = new Point(1,-1);
+				g.scale.set(1,-1);
 				g.rotation = -(theta + arc);
 
 			}
@@ -208,26 +230,24 @@ export default class SnowFactory extends Factory {
 
 	drawArc( r ){
 
-		const c = new PIXI.Container();
-		let g = new Graphics();
-		g.mask = this.maskArc;
+		tmpContainer.rotation = 0;
+		tmpContainer.scale.set(1,1);
+
+		let g = tmpGraphics;
 
 		//let s = randRange(0.7,1);
 		//this.maskArc.scale.set( s,s )
 
-		let p = new Point();
+		tempPt.set(0,0);
+		g.clear();
 
 		// central shape.
-		this.drawSolid(g, p, (0.01 + 0.09*Math.random())*r );
+		this.drawSolid( g, tempPt, (0.01 + 0.09*Math.random())*r );
 
-		this.branch( g, p, 0, 1.4*r );
+		this.branch( g, tempPt, 0, 1.4*r );
 		//this.arcItems(g, r, arc );
 
-		c.addChild(this.maskArc );
-		c.addChild(g);
-
-
-		return c;
+		return tmpContainer;
 
 	}
 
@@ -235,10 +255,10 @@ export default class SnowFactory extends Factory {
 
 		g.moveTo( p0.x, p0.y );
 
-		var subR = ( 0.12 + 0.09*Math.random() )*maxR;
+		let subR = ( 0.12 + 0.09*Math.random() )*maxR;
 		/*if ( subR <= 8 ) { subR = maxR; }*/
 
-		var p1 = new Point( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
+		let p1 = new Point( p0.x + subR*Math.cos(angle), p0.y + subR*Math.sin(angle) );
 
 		g.lineStyle( (0.02 + 0.05*Math.random())*DRAW_RADIUS, FLAKE_COLOR );
 		this.drawShape(g, p1, subR );
@@ -246,6 +266,7 @@ export default class SnowFactory extends Factory {
 		if ( maxR < DRAW_RADIUS && subR <= 8 ) return;
 
 		setLerp( p0, p1, 0.4 + 0.8*Math.random() );
+
 		this.branch( g, p0,
 			angle + ( Math.random() < 0.5 ? -1 : 1 ) *(33 + 33*Math.random()*DEG_TO_RAD ),
 			(0.8+0.2*Math.random())*(maxR -subR)  );
@@ -317,7 +338,9 @@ export default class SnowFactory extends Factory {
 
 	makeCometTex(){
 
-		let g = new Graphics();
+		let g = tmpGraphics;
+
+		g.clear();
 		g.beginFill( 0xffffff );
 		g.drawStar( COMET_R, COMET_R, 5, COMET_R );
 		g.endFill();
@@ -330,12 +353,16 @@ export default class SnowFactory extends Factory {
 
 	makeSparkTex() {
 
-		const g = new Graphics();
+		const g = tmpGraphics;
+
+		g.clear();
+
 		g.beginFill( 0xffffff );
 		g.drawStar( SPARK_R, SPARK_R, 3, SPARK_R, SPARK_R/2 );
 		g.endFill();
 
 		this.sparkTex = this.makeTex(g);
+
 
 	}
 
@@ -359,16 +386,14 @@ export default class SnowFactory extends Factory {
 
 	/**
 	 * Fill an arc of a circle.
-	 * @param {*} minArc
-	 * @param {*} arc
-	 * @param {*} radius
-	 * @param {*} fill
+	 * @param {number} minArc
+	 * @param {number} arc - total angle of arc
+	 * @param {number} radius
+	 * @param {number} fill
 	 */
 	fillArc( minArc, arc, radius=100, fill=0xffffff ){
 
 		const g = new Graphics();
-		g.interactive = false;
-		g.buttonMode = false;
 
 		g.moveTo(0,0);
 		g.beginFill( fill );

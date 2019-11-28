@@ -14,7 +14,7 @@ export default class LoseView extends Pane {
 		this.width = game.screen.width;
 		this.height = game.screen.height;
 
-		this.bg = MakeBg( this, game.screen.width, game.screen.height );
+		this.bg = MakeBg( this, game.screen.width, game.screen.height, 0, 0.7 );
 
 		let t = MakeLgText( 'Defeat' );
 		this.center( t, 0.5, 0.3 );

@@ -54,6 +54,12 @@ const MIN_SPAWNER_TIME = 1;
 const MAX_SPAWNER_TIME = 8;
 
 /**
+ * Reusable point.
+ * @const {Point} tempPt;
+ */
+const tempPt = new Point();
+
+/**
  * Object flags.
  */
 export const TYP_FLAKE = 1;
@@ -159,7 +165,8 @@ export default class SnowGroup extends System {
 	 * @returns {Point}
 	*/
 	windPos(){
-		return new Point( this.wind.x > 0 ? this.bounds.x : this.bounds.right, 0.8*Math.random()*this.bounds.height );
+		tempPt.set( this.wind.x > 0 ? this.bounds.x : this.bounds.right, 0.8*Math.random()*this.bounds.height );
+		return tempPt;
 	}
 
 	/**
@@ -167,7 +174,8 @@ export default class SnowGroup extends System {
 	 * @returns {Point}
 	*/
 	aleePos() {
-		return new Point( this.wind.x > 0 ? this.view.right : this.view.x, 0.8*Math.random()*this.bounds.height );
+		tempPt.set( this.wind.x > 0 ? this.view.right : this.view.x, 0.8*Math.random()*this.bounds.height );
+		return tempPt;
 	}
 
 	update(){
