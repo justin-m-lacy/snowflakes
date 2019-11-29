@@ -6,7 +6,7 @@ const { randRange } = Rand;
 
 export const MAX_OMEGA = Math.PI/800;
 
-const MIN_ALPHA = 0.2;
+const MIN_ALPHA = 0.1;
 const MAX_ALPHA = 1;
 
 const MAX_V = 1;

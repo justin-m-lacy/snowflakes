@@ -52,9 +52,12 @@ export default class BackSnow extends Component {
 		let clip = this.clip;
 		clip.visible = false;
 
+		var p = new Point();
+
 		for( let i = FLAKE_COUNT; i >= 0; i-- ) {
 
-			var g = factory.mkSnowflake( new Point( Math.random()*bounds.width, Math.random()*bounds.height) );
+			p.set( Math.random()*bounds.width, Math.random()*bounds.height );
+			var g = factory.mkSnowflake( p );
 
 			this.game.addObject(g);
 

@@ -107,7 +107,7 @@ export default class ZMover extends Component {
 	rescale(){
 
 		this.clip.scale.set( this._k*this._baseScale );
-		this.clip.alpha = this._minAlpha + ( this._maxAlpha - this._minAlpha )*this._k;
+		this.clip.alpha = this._minAlpha + ( this._maxAlpha - this._minAlpha )*( this.zworld.zmax - this.z)/(this.zworld.zmax - this.zworld.zmin);
 
 	}
 

@@ -181,10 +181,10 @@ export default class SnowGroup extends System {
 
 		this.wrapSnow();
 
-		if ( Math.random() < this.gloomRate ) {
-			this.mkGloom();
-		} else if ( Math.random() < this.spawnerRate ) {
+		if ( Math.random() < this.spawnerRate ) {
 			this.mkSpawner();
+		} else if ( Math.random() < this.gloomRate ) {
+			this.mkGloom();
 		}
 
 		if ( Math.random() < this.cometRate ) {
@@ -329,6 +329,29 @@ export default class SnowGroup extends System {
 	 */
 	mkSpecial() {
 
+		let spec = this.findSpecial();
+		if ( !spec) return;
+
+		this.special = spec;
+		spec.passes = -1;
+
+		let mv = spec.get(ZMover);
+		if ( mv.vz > 0 ) mv.vz = 0;
+
+		if ( !spec.has(ZBound)) spec.addExisting( new ZBound( mv ), ZBound );
+		spec.passes = 0;		// reset passes to prevent instant-fade.
+		spec.clip.interactive = true;
+		spec.on('click', this.specClicked, this );
+
+		this.game.emitter.emit('new-special', spec );
+
+	}
+
+	/**
+	 * Find valid flake for becoming special.
+	 */
+	findSpecial(){
+
 		let len = this.objects.length;
 		if ( len === 0 ) return;
 
@@ -349,16 +372,7 @@ export default class SnowGroup extends System {
 
 		} while ( i !== st );
 
-		if ( !spec) return;
-
-		this.special = spec;
-		if ( !spec.has(ZBound)) spec.addExisting( new ZBound( spec.get(ZMover) ), ZBound );
-		spec.passes = 0;		// reset passes to prevent instant-fade.
-		spec.clip.interactive = true;
-		spec.on('click', this.specClicked, this );
-
-		this.game.emitter.emit('new-special', spec );
-
+		return spec;
 	}
 
 	/**
