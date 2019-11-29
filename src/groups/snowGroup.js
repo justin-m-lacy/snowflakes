@@ -18,7 +18,7 @@ const {TimeDestroy} = Components;
  * @property {number} MIN_SPEC_RATE - special snowflake rate.
  */
 const MIN_SPEC_RATE = 0.009;
-const MAX_SPEC_RATE = 0.01;
+//const MAX_SPEC_RATE = 0.01;
 
 const MIN_COMET_RATE = 0.0002;
 const MAX_COMET_RATE = 0.005;
@@ -43,8 +43,8 @@ const MAX_SPAWNER_RATE = 0.01;
 /**
  * @const {number} MIN_GLOOM_RATE
  */
-const MIN_GLOOM_RATE = 0.003;
-const MAX_GLOOM_RATE = 0.007;
+const MIN_GLOOM_RATE = 0.0001;
+//const MAX_GLOOM_RATE = 0.007;
 
 /**
  * @const {number} MIN_SPAWNER_TIME - Min. spawner flake effect length, in seconds.

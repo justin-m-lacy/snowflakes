@@ -31,9 +31,9 @@ export const StatEvents = [
 ];
 
 export const ReportStats = [ 'snow', 'magics', 'stars', 'specials', 'clicks', 'glooms' ]
-export const WIN_SNOW = 50;
+export const WIN_SNOW = 30000;
 
-export const MAX_CHEER = 100;
+export const MAX_CHEER = 100.5;
 
 /**
  * Stats to share a values across multiple components/objects.

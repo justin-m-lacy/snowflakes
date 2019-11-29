@@ -337,9 +337,9 @@ export default class SnowFactory extends Factory {
 
 	makeCometTex(){
 
-		let g = tmpGraphics;
+		let g = new Graphics();
 
-		g.clear();
+		//g.clear();
 		g.beginFill( 0xffffff );
 		g.drawStar( COMET_R, COMET_R, 5, COMET_R );
 		g.endFill();
@@ -352,9 +352,9 @@ export default class SnowFactory extends Factory {
 
 	makeSparkTex() {
 
-		const g = tmpGraphics;
+		const g = new Graphics();
 
-		g.clear();
+		//g.clear();
 
 		g.beginFill( 0xffffff );
 		g.drawStar( SPARK_R, SPARK_R, 3, SPARK_R, SPARK_R/2 );

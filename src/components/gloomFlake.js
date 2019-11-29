@@ -1,6 +1,7 @@
 import { Component } from "gibbon.js";
 import { GLOOM_COLOR } from "../ui/uiGroup";
 import { TYP_GLOOM, TYP_FLAKE } from "../groups/snowGroup";
+import Snowburst from "./snowburst";
 
 const CHEER_RATE = -0.01;
 
@@ -25,9 +26,10 @@ export default class GloomFlake extends Component {
 	onClick(e){
 
 		e.stopPropagation();
-
-		this.gameObject.Destroy();
 		this.stats = null;
+		this.addExisting( new Snowburst(this.clip.position, 4 ));
+		this.Destroy();
+
 	}
 
 }
