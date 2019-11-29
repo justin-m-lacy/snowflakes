@@ -31,7 +31,7 @@ export const StatEvents = [
 ];
 
 export const ReportStats = [ 'snow', 'magics', 'stars', 'specials', 'clicks', 'glooms' ]
-export const WIN_SNOW = 100;
+export const WIN_SNOW = 50;
 
 export const MAX_CHEER = 100;
 

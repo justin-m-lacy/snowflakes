@@ -28,7 +28,9 @@ const PADDING = 24;
 
 export const FontStyle = {
 	fontFamily:FONT_NAME, fill:TEXT_COLOR,
-	fontSize:24
+	fontSize:24,
+	wordWrap:true,
+	wordWrapWidth:800
 };
 
 const SmStyle = Object.assign( {}, FontStyle );

@@ -20,10 +20,10 @@ export default class PauseView extends Pane {
 		this.addChild(t );
 
 		let btn = TextButton( 'resume', this.onResume, this );
-		this.addContentY( btn, t.x, 2*padding );
+		this.addContentY( btn, t.x + btn.width/2, 2*padding );
 
 		btn = TextButton('main menu', this.onMenu, this );
-		this.addContentY( btn, t.x, padding );
+		this.addContentY( btn, t.x + btn.width/2, padding );
 
 	}
 

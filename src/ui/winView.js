@@ -1,6 +1,7 @@
 import { MakeText, TextButton, MakeSmText, MakeBg, MakeLgText } from "./uiGroup";
 import { Pane } from "pixiwixi";
 import { EVT_MENU, EVT_RESUME } from "../components/stats";
+import { Container } from "pixi.js";
 
 export default class WinView extends Pane {
 
@@ -13,23 +14,29 @@ export default class WinView extends Pane {
 		this.width = game.screen.width;
 		this.height = game.screen.height;
 
+		var maxWidth = 800;
+
 		this.bg = MakeBg( this, game.screen.width, game.screen.height, 0, 0.7 );
 
+		var p = new Container();
+
 		let t = MakeLgText( 'Victory!' );
-		this.center( t, 0.45, 0.3 );
-		this.addChild( t );
+		this.addContentY( t, 200, 0, p );
 
-		let sub = MakeSmText( 'You made it through the gloomy night. Time for bed.');
-		this.addContentY( sub, t.x, padding );
+		let sub = MakeSmText( 'You made it through the gloomy night. Now consider going to bed.', {wordWrapWidth:maxWidth } );
+		this.addContentY( sub, 0, padding, p );
 
-		let btn = TextButton('main menu', this.onMenu, this );
-		this.addContentY( btn, t.x, 2*padding );
+		let btn = TextButton( 'continue', this.onResume, this );
+		this.addContentY( btn, btn.width/2, 2*padding, p );
 
-		btn = TextButton( 'continue', this.onResume, this );
-		this.addContentY( btn, t.x, 2*padding );
+		sub = MakeSmText( 'continue playing for higher score' );
+		this.addContentY( sub, 0, padding, p );
 
-		sub = MakeSmText( 'continue playing for high score' );
-		this.addContentY( sub, t.x, padding );
+		btn = TextButton('main menu', this.onMenu, this );
+		this.addContentY( btn, btn.width/2, 2*padding, p );
+
+		this.center( p, 0.5, 0.45 );
+		this.addChild( p );
 
 	}
 
