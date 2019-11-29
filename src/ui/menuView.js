@@ -19,23 +19,24 @@ export default class MenuView extends Pane {
 		let centerView = new Container();
 
 		let it = MakeLgText( 'Special of Snowflakes' );
-		this.addContentY( it, 0, 0, centerView );
+		this.center(it, 0.5, 0.2 );
+		this.addChild(it);
 
 		it = TextButton( 'Game Mode', this.playGame, this );
-		this.addContentY( it, 0, 2*padding, centerView );
+		this.addContentY( it, it.width/2, 2*padding, centerView );
 
 		it = MakeSmText( 'Create snowflakes and find the special ones to fight the winter gloom.',
 			{wordWrap:true, wordWrapWidth:400 });
 		this.addContentY( it, padding, padding, centerView );
 
 		it = TextButton( 'Casual Mode', this.playCasual, this );
-		this.addContentY( it, 0, padding, centerView );
+		this.addContentY( it, it.width/2, padding, centerView );
 
 		it = MakeSmText( 'Relax and make snowflake' );
 		this.addContentY( it, padding, padding, centerView );
 
 		it = TextButton( 'Help', this.onHelp, this );
-		this.addContentY( it, padding, padding, centerView );
+		this.addContentY( it,  it.width/2, padding, centerView );
 
 		this.center( centerView, 0.5, 0.3 );
 		this.addChild( centerView );

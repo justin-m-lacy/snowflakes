@@ -1,6 +1,7 @@
 import { MakeText, TextButton, MakeBg, MakeLgText, MakeSmText } from "./uiGroup";
 import { Pane } from "pixiwixi";
 import { EVT_MENU } from "../components/stats";
+import { Container } from "pixi.js";
 
 export default class LoseView extends Pane {
 
@@ -17,14 +18,17 @@ export default class LoseView extends Pane {
 		this.bg = MakeBg( this, game.screen.width, game.screen.height, 0, 0.7 );
 
 		let t = MakeLgText( 'Defeat' );
-		this.center( t, 0.5, 0.3 );
+		this.center( t, 0.5, 0.2 );
 		this.addChild(t);
 
+		let p = new Container();
 		let it = MakeSmText( 'You succumbed to winter gloom.');
-		this.addContentY( it, t.x, padding );
+		this.addContentY( it, 0, padding, p );
 
 		let btn = TextButton('menu', this.onRestart, this );
-		this.addContentY( btn, t.x, 2*padding );
+		this.addContentY( btn, btn+btn.width/2, 2*padding, p );
+
+		this.addContentY( p, (game.screen.width-p.width)/2, padding );
 
 	}
 
