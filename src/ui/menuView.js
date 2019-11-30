@@ -23,7 +23,7 @@ export default class MenuView extends Pane {
 		this.addChild(it);
 
 		it = TextButton( 'Game Mode', this.playGame, this );
-		this.addContentY( it, it.width/2, 2*padding, centerView );
+		this.addContentY( it, it.width/2, 3*padding, centerView );
 
 		it = MakeSmText( 'Create snowflakes and find the special ones to fight the winter gloom.',
 			{wordWrap:true, wordWrapWidth:400 });

@@ -74,6 +74,9 @@ export default class Stats extends Component {
 
 	}
 
+	get won(){return this._won;}
+	set won(v) { this._won = v;}
+
 	get glooms(){return this._glooms;}
 	set glooms(v){this._glooms=v}
 
@@ -123,6 +126,8 @@ export default class Stats extends Component {
 		this._stars = 0;
 		this._specials = 0;
 		this._glooms = 0;
+
+		this._won = 0;
 
 		this._lastCheer = 0;
 		this._cheer = MAX_CHEER;

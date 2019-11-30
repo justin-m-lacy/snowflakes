@@ -34,6 +34,7 @@ export default class CasualMode extends System {
 		this.stats.reset();
 
 		this.uiView = game.ui.showGameView();
+		this.uiView.reset( game.stats );
 		this.uiView.hideCheer();
 
 		game.on( EVT_RESUME, this.start, this );

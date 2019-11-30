@@ -25,9 +25,10 @@ const app = new PIXI.Application({
 
 	width:window.innerWidth,
 	height:window.innerHeight,
-	autoResize:true,
 	transparent:false,
+	sharedLoader:true,
 	antialias:true,
+	resizeTo:window,
 	backgroundColor:0x000055
 });
 

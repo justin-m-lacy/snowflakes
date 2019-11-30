@@ -96,6 +96,7 @@ export default class SnowGame extends Game {
 	showMenu(){
 
 		if ( this.controller ) {
+			this.emitter.emit( EVT_REPORT, this.mode );
 			this.removeGroup( this.controller );
 			this.controller.destroy();
 			this.controller = null;
@@ -136,18 +137,19 @@ export default class SnowGame extends Game {
 	/**
 	 * Report all stats to backend, if any.
 	 */
-	reportStats() {
+	reportStats( mode, win=false ) {
 
-		console.log( 'REPORT STATS' );
 		if ( !window.kong ) {
 			console.log('No kong.');
 			return;
 		}
 
+		let prefix = mode + '_';
+
 		let reporter = window.kong.stats;
 		let a = ReportStats;
 		for( let i = a.length-1; i >= 0; i-- ) {
-			reporter.submit( a[i], this.stats[ a[i] ] );
+			reporter.submit( prefix + a[i], this.stats[ a[i] ] );
 
 		}
 

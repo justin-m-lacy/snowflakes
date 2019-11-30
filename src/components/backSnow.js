@@ -1,5 +1,5 @@
 import Gibbon, { Game, GameObject, Rand, Component } from "gibbon.js";
-import Flake from "./flake";
+import Flake, { MIN_ALPHA } from "./flake";
 import { Point } from "pixi.js";
 import { MAX_OMEGA } from './flake';
 import ZWorld from "../data/zworld";
@@ -7,7 +7,7 @@ import ZMover from "./zmover";
 
 const { randRange } = Rand;
 
-const FLAKE_COUNT = 100;
+const FLAKE_COUNT = 148;
 
 const MIN_WIND = 0.25;
 const MAX_WIND = 3.4;
@@ -62,6 +62,7 @@ export default class BackSnow extends Component {
 			this.game.addObject(g);
 
 			var f = g.get( ZMover );
+			f.maxAlpha = 0.8;
 			f.z = this.world.randZ();
 
 			clip.addChild(g.clip);
@@ -84,7 +85,7 @@ export default class BackSnow extends Component {
 			var f = a[i];
 			var p = f.position;
 
-			if ( !bounds.contains( p.x, p.y ) ) {
+			if ( !bounds.contains( p.x, p.y ) || f.clip.alpha <= MIN_ALPHA ) {
 
 				this.randomize(f);
 

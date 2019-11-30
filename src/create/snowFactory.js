@@ -306,19 +306,19 @@ export default class SnowFactory extends Factory {
 
 		//if ( size < 4 ) size = 4;
 		var n = Math.random();
-		if ( n < 0.09 ) {
+		if ( n < 0.07 ) {
 
 			g.drawShape( new PIXI.Ellipse(p.x,p.y, (0.5 +0.3* Math.random())*size,(0.5 + 0.3*Math.random())*size ) );
 
-		} else if ( n < 0.23 ) {
+		} else if ( n < 0.17 ) {
 
 			g.drawShape( new PIXI.RoundedRectangle(p.x,p.y, (0.5 +1* Math.random())*size, (0.5 +1*Math.random())*size, Math.random()*size/8 ) );
 
-		} else if ( n < 0.27 ) {
+		} else if ( n < 0.25 ) {
 
 			g.drawCircle( p.x, p.y, (0.7+0.3*Math.random())*size );
 
-		} else if ( n < 0.33 ) {
+		} else if ( n < 0.31 ) {
 
 			g.drawRect( new PIXI.Rectangle( p.x, p.y, (0.7 +1* Math.random())*size,(0.7 + 1*Math.random())*size ) );
 		}else {

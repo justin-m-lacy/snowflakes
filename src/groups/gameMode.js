@@ -2,7 +2,7 @@ import { expLerp } from "./snowGroup";
 import { EVT_LOSE, EVT_WIN, EVT_REPORT } from "../components/stats";
 import CasualMode from "./casualMode";
 
-const MIN_CHEER_RATE = -0.007;
+const MIN_CHEER_RATE = -0.009;
 const MAX_CHEER_RATE = -0.25;
 
 /**
@@ -58,9 +58,10 @@ export default class GameMode extends CasualMode {
 
 		this.stop();
 
+		this.stats.won = true;
 		this.game.removeListener( EVT_WIN, this.onWin, this );
 
-		this.game.emitter.emit( EVT_REPORT );
+		this.game.emitter.emit( EVT_REPORT, this.mode );
 		this.game.ui.showWin();
 
 	}
@@ -74,6 +75,8 @@ export default class GameMode extends CasualMode {
 	onLose(){
 
 		this.stop();
+		this.removeListeners();
+		this.game.emitter.emit( EVT_REPORT, this.mode );
 		this.game.ui.showLose();
 
 	}

@@ -63,6 +63,16 @@ export default class GameUI extends Container {
 		this.cheerView.tint = lerpColor( 0xffffff, CHEER_COLOR, amt/100 );
 	}
 
+	reset( stats ){
+
+		let fld = this.statViews.snow;
+		if ( fld ) {
+			fld.setValue( stats.snow );
+		}
+		this.cheerView.setValue( stats.cheer );
+
+	}
+
 	onStat( stat, count ) {
 
 		let fld = this.statViews[stat];
